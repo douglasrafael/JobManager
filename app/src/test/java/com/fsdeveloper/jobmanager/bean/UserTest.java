@@ -6,6 +6,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
+ * Test User class.
+ *
  * @author Created by Douglas Rafael on 21/04/2016.
  * @version 1.0
  */
