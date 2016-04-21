@@ -6,7 +6,7 @@ import java.util.List;
  *  The Client class represents all objects of type Customer.
  *  All objects of type Client are implemented as instances of this class.
  *
- * @author Douglas Rafael
+ * @author Created by Douglas Rafael on 20/04/2016.
  * @version 1.0
  */
 public class Client {

@@ -34,7 +34,7 @@ public class JobCategory {
     /**
      * Set the id of category.
      *
-     * @param id
+     * @param id The id of category.
      */
     public void setId(int id) {
         this.id = id;

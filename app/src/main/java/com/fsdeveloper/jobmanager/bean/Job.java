@@ -113,7 +113,7 @@ public class Job {
     /**
      * Set the note of job.
      *
-     * @param note
+     * @param note The note of job.
      */
     public void setNote(String note) {
         this.note = note;
@@ -122,7 +122,7 @@ public class Job {
     /**
      * Retrieves/get price of job.
      *
-     * @return
+     * @return The note of job.
      */
     public Double getPrice() {
         return price;
