@@ -1,25 +1,35 @@
 package com.fsdeveloper.jobmanager.bean;
 
+
+import java.io.Serializable;
+
 /**
- *  The JobCategory class represents all objects of type JobCategory.
- *  All objects of type JobCategory are implemented as instances of this class.
+ * The JobCategory class represents all objects of type JobCategory.
+ * All objects of type JobCategory are implemented as instances of this class.
  *
  * @author Douglas Rafael
  * @version 1.0
  */
-public class JobCategory {
+public class JobCategory implements Serializable {
+    private static final long serialVersionUID = -7372855818195544957L;
     private int id;
     private String name;
 
     /**
      * JobCategory class constructor.
      *
-     * @param id The id of category.
+     * @param id   The id of category.
      * @param name The name of category.
      */
     public JobCategory(int id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    /**
+     * Constructor empty.
+     */
+    public JobCategory() {
     }
 
     /**

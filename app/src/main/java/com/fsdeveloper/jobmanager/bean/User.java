@@ -3,8 +3,8 @@ package com.fsdeveloper.jobmanager.bean;
 import java.util.List;
 
 /**
- *  The User class represents all objects of type User.
- *  All objects of type User are implemented as instances of this class.
+ * The User class represents all objects of type User.
+ * All objects of type User are implemented as instances of this class.
  *
  * @author Douglas Rafael
  * @version 1.0
@@ -20,10 +20,10 @@ public class User {
     /**
      * User class constructor.
      *
-     * @param id The id of user.
-     * @param name The name of user.
-     * @param email The email of user.
-     * @param password The password of user.
+     * @param id         The id of user.
+     * @param name       The name of user.
+     * @param email      The email of user.
+     * @param password   The password of user.
      * @param created_at The data and time created of user.
      */
     public User(int id, String name, String email, String password, String created_at) {
@@ -32,6 +32,27 @@ public class User {
         this.email = email;
         this.password = password;
         this.created_at = created_at;
+    }
+
+    /**
+     * User class constructor.
+     *
+     * @param name       The name of user.
+     * @param email      The email of user.
+     * @param password   The password of user.
+     * @param created_at The data and time created of user.
+     */
+    public User(String name, String email, String password, String created_at) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.created_at = created_at;
+    }
+
+    /**
+     * Constructor empty
+     */
+    public User() {
     }
 
     /**
@@ -45,6 +66,7 @@ public class User {
 
     /**
      * Set the id of user.
+     *
      * @param id The id.
      */
     public void setId(int id) {

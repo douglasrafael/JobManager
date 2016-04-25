@@ -5,11 +5,20 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.fsdeveloper.jobmanager.R;
+import com.fsdeveloper.jobmanager.bean.User;
+import com.fsdeveloper.jobmanager.dao.JobCategoryDao;
+import com.fsdeveloper.jobmanager.dao.UserDao;
+import com.fsdeveloper.jobmanager.exception.JobManagerException;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,6 +28,23 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        Log.i("USER", "CHEGOU AQUI");
+        TextView txt = (TextView) findViewById(R.id.categorias);
+
+        UserDao user = new UserDao(this);
+
+        User u = new User("Douglas Rafael", "doug@mail.com", "156", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        try {
+            Log.i("USER", "PASSOU AQUI");
+            user.save(u);
+
+            txt.setText(user.list(1).toString());
+
+        } catch (JobManagerException e) {
+            e.printStackTrace();
+        }
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
