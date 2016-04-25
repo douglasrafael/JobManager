@@ -1,8 +1,5 @@
 package com.fsdeveloper.jobmanager.dao;
 
-import android.content.Context;
-import android.database.Cursor;
-
 import com.fsdeveloper.jobmanager.bean.JobCategory;
 import com.fsdeveloper.jobmanager.exception.JobManagerException;
 
@@ -15,30 +12,12 @@ import java.util.List;
  * @author Created by Douglas Rafael on 23/04/2016.
  * @version 1.0
  */
-public class JobCategoryDao extends DatabaseAccess implements Dao<JobCategory> {
+public class JobCategoryDao implements Dao<JobCategory> {
 
-    public JobCategoryDao(Context context) {
-        super(context);
-    }
 
     @Override
     public List<JobCategory> list(int id_user) throws JobManagerException {
         List<JobCategory> result = new ArrayList<>();
-
-        open(); // open connection
-        Cursor cursor = getDatabase().rawQuery("SELECT * FROM job_category", null);
-        cursor.moveToFirst();
-        JobCategory c;
-        while (!cursor.isAfterLast()) {
-            c = new JobCategory();
-            c.setId(cursor.getInt(0));
-            c.setName(cursor.getString(1));
-            result.add(c);
-
-            cursor.moveToNext();
-        }
-        cursor.close();
-        close(); // // close connection
 
         return result;
     }

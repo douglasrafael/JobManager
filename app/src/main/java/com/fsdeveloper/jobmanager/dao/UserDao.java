@@ -8,11 +8,8 @@ import android.database.sqlite.SQLiteDatabase;
 import com.fsdeveloper.jobmanager.bean.User;
 import com.fsdeveloper.jobmanager.exception.JobManagerException;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.logging.SimpleFormatter;
 
 /**
  * @author Created by Douglas Rafael on 24/04/2016.
@@ -27,9 +24,9 @@ public class UserDao implements Dao<User> {
     }
 
     @Override
-    public List<User> list(int id_user) throws JobManagerException {
+    public List<User> list(int id_user) throws JobManagerException, NullPointerException {
         db = helper.getReadableDatabase();
-        List<User> result = new ArrayList<User>();;
+        List<User> result = new ArrayList<>();
         String sql = "SELECT * FROM " + DatabaseHelper.TABLE_USER + " WHERE " + DatabaseHelper.ID + "=" + id_user;
         Cursor cursor = db.rawQuery(sql, null);
 
@@ -53,7 +50,7 @@ public class UserDao implements Dao<User> {
 
     @Override
     public void save(User o) throws JobManagerException {
-        if(!o.equals(null)) {
+        if(o != null) {
             db = helper.getWritableDatabase();
 
             ContentValues values = new ContentValues();
