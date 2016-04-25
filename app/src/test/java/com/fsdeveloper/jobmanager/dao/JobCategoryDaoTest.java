@@ -18,7 +18,6 @@ public class JobCategoryDaoTest extends AndroidTestCase {
     @Before
     public void setUp() throws Exception {
         RenamingDelegatingContext context = new RenamingDelegatingContext(getContext(), "test_");
-        category = new JobCategoryDao(context);
     }
 
     @Test
