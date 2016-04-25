@@ -1,7 +1,5 @@
 package com.fsdeveloper.jobmanager.dao;
 
-import android.content.AsyncQueryHandler;
-
 import com.fsdeveloper.jobmanager.exception.JobManagerException;
 
 import java.util.List;
