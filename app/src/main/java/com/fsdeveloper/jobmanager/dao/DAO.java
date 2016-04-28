@@ -23,20 +23,31 @@ public interface Dao<T> {
     public List<T> list(int id_user) throws JobManagerException;
 
     /**
+     * Return object according to your id.
+     *
+     * @param _id The id
+     * @return The object
+     * @throws JobManagerException If there is an exception.
+     */
+    public T getById(int _id) throws JobManagerException;
+
+    /**
      * Saves an object.
      *
      * @param o The object to be saved.
+     * @return True if inserted and False if not.
      * @throws JobManagerException If there is an exception.
      */
-    public void save(T o) throws JobManagerException;
+    public boolean insert(T o) throws JobManagerException;
 
     /**
      * Upgrades a specific object.
      *
      * @param o The object to be upgraded.
+     * @return True if updated and False if not.
      * @throws JobManagerException If there is an exception.
      */
-    public void update(T o) throws JobManagerException;
+    public boolean update(T o) throws JobManagerException;
 
     /**
      * Removes a specific object.
@@ -46,16 +57,6 @@ public interface Dao<T> {
      * @throws JobManagerException If there is an exception.
      */
     public boolean delete(T o) throws JobManagerException;
-
-    /**
-     * Search for a specific object according to your id.
-     * The found object will be returned, or null if it does not exist.
-     *
-     * @param id The id of the object to be searched.
-     * @return The found object or null if not found.
-     * @throws JobManagerException If there is an exception.
-     */
-    public T search(int id) throws JobManagerException;
 
     /**
      * Search for objects in accordance with the string and user id passed as a parameter.
