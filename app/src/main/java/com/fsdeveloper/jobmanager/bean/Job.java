@@ -1,14 +1,18 @@
 package com.fsdeveloper.jobmanager.bean;
 
+import java.io.Serializable;
+
 /**
- *  The Job class represents all objects of type Job.
- *  All objects of type Job are implemented as instances of this class.
+ * The Job class represents all objects of type Job.
+ * All objects of type Job are implemented as instances of this class.
  *
  * @author Created by Douglas Rafael on 20/04/2016.
  * @version 1.1
  */
-public class Job {
-    private int id;
+public class Job implements Serializable {
+    private static final long serialVersionUID = -7790542829078114180L;
+
+    private int protocol;
     private String title;
     private String description;
     private String note;
@@ -17,25 +21,25 @@ public class Job {
     private String finalized_at;
     private String created_at;
     private String updated_at;
-    private User user;
-    private Client client;
+    private int user_id;
+    private int client_id;
 
     /**
      * Job class constructor.
      *
-     * @param id The id of job.
-     * @param title The title of job.
-     * @param description The description of job.
-     * @param note The note of job.
-     * @param price The price of job.
-     * @param expense The value of the expenditure spent for performing the job.
+     * @param protocol     The protocol of job.
+     * @param title        The title of job.
+     * @param description  The description of job.
+     * @param note         The note of job.
+     * @param price        The price of job.
+     * @param expense      The value of the expenditure spent for performing the job.
      * @param finalized_at The date and time that was finalized.
-     * @param created_at The date and time that was created.
-     * @param user The user who made the job.
-     * @param client The client that requested the job.
+     * @param created_at   The date and time that was created.
+     * @param user_id      The id of user who made the job.
+     * @param client_id    The id of client that requested the job.
      */
-    public Job(int id, String title, String description, String note, Double price, Double expense, String finalized_at, String created_at, User user, Client client) {
-        this.id = id;
+    public Job(int protocol, String title, String description, String note, Double price, Double expense, String finalized_at, String created_at, int user_id, int client_id) {
+        this.protocol = protocol;
         this.title = title;
         this.description = description;
         this.note = note;
@@ -43,26 +47,26 @@ public class Job {
         this.expense = expense;
         this.finalized_at = finalized_at;
         this.created_at = created_at;
-        this.user = user;
-        this.client = client;
+        this.user_id = user_id;
+        this.client_id = client_id;
     }
 
     /**
-     * Retrieves/get the id of job.
+     * Retrieves/get the protocol of job.
      *
-     * @return The id of job.
+     * @return The protocol of job.
      */
-    public int getId() {
-        return id;
+    public int getProtocol() {
+        return protocol;
     }
 
     /**
-     * Set the id of job.
+     * Set the protocol of job.
      *
-     * @param id The id of job.
+     * @param protocol The protocol of job.
      */
-    public void setId(int id) {
-        this.id = id;
+    public void setProtocol(int protocol) {
+        this.protocol = protocol;
     }
 
     /**
@@ -210,45 +214,45 @@ public class Job {
     }
 
     /**
-     * Retrieves/get the user who made the job.
+     * Retrieves/get the id user who made the job.
      *
-     * @return The user.
+     * @return The id of user.
      */
-    public User getUser() {
-        return user;
+    public int getUser_id() {
+        return user_id;
     }
 
     /**
-     * Set the user who made the job.
+     * Set the id user who made the job.
      *
-     * @param user The user.
+     * @param user_id The id of user.
      */
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
     }
 
     /**
-     * Retrieves/get the client The client that requested the job.
+     * Retrieves/get the id of client The client that requested the job.
      *
-     * @return The client.
+     * @return The id of client.
      */
-    public Client getClient() {
-        return client;
+    public int getClient_id() {
+        return client_id;
     }
 
     /**
-     * Set the client The client that requested the job.
+     * Set the id of client The client that requested the job.
      *
-     * @param client The client.
+     * @param client_id The id of  client.
      */
-    public void setClient(Client client) {
-        this.client = client;
+    public void setClient_id(int client_id) {
+        this.client_id = client_id;
     }
 
     @Override
     public String toString() {
         return "Job{" +
-                "id=" + id +
+                "protocol=" + protocol +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", note='" + note + '\'' +
@@ -257,8 +261,8 @@ public class Job {
                 ", finalized_at='" + finalized_at + '\'' +
                 ", created_at='" + created_at + '\'' +
                 ", updated_at='" + updated_at + '\'' +
-                ", user=" + user +
-                ", client=" + client +
+                ", user_id=" + user_id +
+                ", client_id=" + client_id +
                 '}';
     }
 
@@ -274,15 +278,14 @@ public class Job {
 
         Job job = (Job) o;
 
-        return (id == job.id && title.equals(job.title) && user.equals(job.user) && client.equals(job.client));
+        return (protocol == job.protocol && title.equals(job.title) && user_id == job.user_id && client_id == job.client_id);
     }
 
     @Override
     public int hashCode() {
-        int result = id;
-        result = 31 * result + (title != null ? title.hashCode() : 0);
-        result = 31 * result + (user != null ? user.hashCode() : 0);
-        result = 31 * result + (client != null ? client.hashCode() : 0);
+        int result = protocol;
+        result = 31 * result + user_id;
+        result = 31 * result + client_id;
         return result;
     }
 }

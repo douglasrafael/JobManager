@@ -1,27 +1,37 @@
 package com.fsdeveloper.jobmanager.bean;
 
+import java.io.Serializable;
+
 /**
  * The PhoneType class represents all objects of type PhoneType.
  * All objects of type PhoneType are implemented as instances of this class.
- *
+ * <p/>
  * The type of phone can be: Mobile, Home or Work.
  *
  * @author Created by Douglas Rafael on 20/04/2016.
  * @version 1.0
  */
-public class PhoneType {
+public class PhoneType implements Serializable {
+    private static final long serialVersionUID = -2979141078592808318L;
+
     private int id;
     private String title;
 
     /**
      * PhoneType class constructor.
      *
-     * @param id The id of the type of phone.
+     * @param id    The id of the type of phone.
      * @param title The title of the type of phone.
      */
     public PhoneType(int id, String title) {
         this.id = id;
         this.title = title;
+    }
+
+    /**
+     * PhoneType class constructor.
+     */
+    public PhoneType() {
     }
 
     /**

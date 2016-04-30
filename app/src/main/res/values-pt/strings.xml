@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Job Manager</string>
+    <string name="action_settings">Configurações</string>
+
+    <string-array name="categories_default">
+        <item>Manutenção</item>
+        <item>Desenvolvimento</item>
+        <item>Design</item>
+        <item>Construção</item>
+        <item>Reforma</item>
+        <item>Limpeza</item>
+        <item>Consulta</item>
+        <item>Assessoria</item>
+        <item>Aula</item>
+        <item>Outros</item>
+    </string-array>
+    
+    <string-array name="types_phone">
+        <item>Celular</item>
+        <item>Trabalho</item>
+        <item>Casa</item>
+        <item>Outros</item>
+    </string-array>
+</resources>

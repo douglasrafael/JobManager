@@ -1,5 +1,6 @@
 package com.fsdeveloper.jobmanager.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -9,7 +10,9 @@ import java.util.List;
  * @author Douglas Rafael
  * @version 1.0
  */
-public class User {
+public class User implements Serializable {
+    private static final long serialVersionUID = 8165444006888555412L;
+
     private int id;
     private String name;
     private String email;

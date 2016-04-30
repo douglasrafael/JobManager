@@ -3,7 +3,6 @@ package com.fsdeveloper.jobmanager.dao;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
 import com.fsdeveloper.jobmanager.bean.JobCategory;
 import com.fsdeveloper.jobmanager.exception.JobManagerException;
@@ -17,9 +16,8 @@ import java.util.List;
  * @author Created by Douglas Rafael on 23/04/2016.
  * @version 1.0
  */
-public class JobCategoryDao implements Dao<JobCategory> {
-    private DatabaseHelper helper;
-    private SQLiteDatabase db;
+public class JobCategoryDao extends DBManager implements Dao<JobCategory> {
+
     private String[] columns = {
             DatabaseHelper.ID,
             DatabaseHelper.NAME
@@ -30,15 +28,15 @@ public class JobCategoryDao implements Dao<JobCategory> {
      *
      * @param context Abstract class whose implementation is provided by Android system.
      */
-    public JobCategoryDao(Context context) {
-        this.helper = new DatabaseHelper(context);
+    public JobCategoryDao(Context context) throws JobManagerException {
+        super(context);
     }
 
     @Override
     public List<JobCategory> list(int id_user) throws JobManagerException {
-        List<JobCategory> result = new ArrayList<>();
+        mGetReadableDatabase();
 
-        db = helper.getReadableDatabase();
+        List<JobCategory> result = new ArrayList<>();
 
         /**
          * SELECT job_category._id, job_category.name FROM job_category
@@ -54,87 +52,76 @@ public class JobCategoryDao implements Dao<JobCategory> {
                 DatabaseHelper.TABLE_JOB_HAS_JOB_CATEGORY + " ON " + DatabaseHelper.TABLE_JOB_CATEGORY + "." + DatabaseHelper.ID + " = " +
                 DatabaseHelper.TABLE_JOB_HAS_JOB_CATEGORY + "." + DatabaseHelper.JOB_HAS_JOB_CATEGORY_JOB_CATEGORY_ID + " INNER JOIN " +
                 DatabaseHelper.TABLE_JOB + " ON " + DatabaseHelper.TABLE_JOB_HAS_JOB_CATEGORY + "." + DatabaseHelper.JOB_HAS_JOB_CATEGORY_JOB_PROTOCOL + " = " +
-                DatabaseHelper.TABLE_JOB + "." + DatabaseHelper.JOB_PROTOCOL + " WHERE " + DatabaseHelper.TABLE_JOB + "." + DatabaseHelper.ID + " = " + id_user + " GROUP BY " +
+                DatabaseHelper.TABLE_JOB + "." + DatabaseHelper.JOB_PROTOCOL + " WHERE " + DatabaseHelper.TABLE_JOB + "." + DatabaseHelper.USER_ID + " = " + id_user + " GROUP BY " +
                 DatabaseHelper.TABLE_JOB_CATEGORY + "." + DatabaseHelper.NAME + " ORDER BY " + DatabaseHelper.TABLE_JOB_CATEGORY + "." + DatabaseHelper.NAME + " ASC;";
 
         Cursor cursor = db.rawQuery(query, null);
 
-        try {
-            if (cursor != null) {
-                while (cursor.moveToNext()) {
-                    JobCategory category = new JobCategory();
-                    category.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ID)));
-                    category.setName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.NAME)));
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                JobCategory category = new JobCategory();
+                category.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ID)));
+                category.setName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.NAME)));
 
-                    result.add(category);
-                }
+                result.add(category);
             }
-        } finally {
             cursor.close();
-            db.close();
         }
+        DBClose();
 
         return result;
     }
 
     @Override
     public JobCategory getById(int _id) throws JobManagerException {
-        db = helper.getReadableDatabase();
-        Cursor cursor = db.query(DatabaseHelper.TABLE_JOB_CATEGORY, columns, DatabaseHelper.ID, new String[]{String.valueOf(_id)}, null, null, null);
+        mGetReadableDatabase();
+        JobCategory category = null;
 
-        try {
-            if (cursor != null) {
-                cursor.moveToFirst();
+        Cursor cursor = db.query(DatabaseHelper.TABLE_JOB_CATEGORY, columns, DatabaseHelper.ID + "=?", new String[]{String.valueOf(_id)}, null, null, null);
 
-                return new JobCategory(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ID)), cursor.getString(cursor.getColumnIndex(DatabaseHelper.NAME)));
-            }
-        } finally {
+        if (cursor != null) {
+            cursor.moveToFirst();
+
+            category = new JobCategory();
+            category.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ID)));
+            category.setName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.NAME)));
+
             cursor.close();
-            db.close();
         }
+        DBClose();
 
-        return null;
+        return category;
     }
 
     @Override
-    public boolean insert(JobCategory o) throws JobManagerException {
-        db = helper.getWritableDatabase();
+    public int insert(JobCategory o) throws JobManagerException {
+        mGetWritableDatabase();
+        long _id = 0;
 
-        try {
-            ContentValues values = new ContentValues();
-            values.put(DatabaseHelper.NAME, o.getName());
+        ContentValues values = new ContentValues();
+        values.put(DatabaseHelper.NAME, o.getName());
 
-            long _id = db.insert(DatabaseHelper.TABLE_JOB_CATEGORY, null, values);
+        _id = db.insert(DatabaseHelper.TABLE_JOB_CATEGORY, null, values);
 
-            // Verifies if inserted successfully
-            if (_id != -1) {
-                o.setId((int) _id);
-
-                return true;
-            }
-        } finally {
-            db.close();
-        }
-
-        return false;
+        return (int) _id;
     }
 
     @Override
     public boolean update(JobCategory o) throws JobManagerException {
-        db = helper.getWritableDatabase();
+        mGetWritableDatabase();
 
         try {
             ContentValues values = new ContentValues();
             values.put(DatabaseHelper.NAME, o.getName());
 
-            int rowsAffected = db.update(DatabaseHelper.TABLE_JOB_CATEGORY, values, DatabaseHelper.ID + " = ?", new String[]{String.valueOf(o.getId())});
+            int rowsAffected = db.update(DatabaseHelper.TABLE_JOB_CATEGORY, values, DatabaseHelper.ID + "=?", new String[]{String.valueOf(o.getId())});
 
             // Verifies that was successfully updated
             if (rowsAffected == 1) {
                 return true;
             }
         } finally {
-            db.close();
+            DBClose();
         }
 
         return false;
@@ -142,20 +129,17 @@ public class JobCategoryDao implements Dao<JobCategory> {
 
     @Override
     public boolean delete(JobCategory o) throws JobManagerException {
-        db = helper.getWritableDatabase();
+        mGetWritableDatabase();
 
         try {
-            ContentValues values = new ContentValues();
-            values.put(DatabaseHelper.NAME, o.getName());
-
-            int rowsAffected = db.delete(DatabaseHelper.TABLE_JOB_CATEGORY, DatabaseHelper.ID + " = ?", new String[]{String.valueOf(o.getId())});
+            int rowsAffected = db.delete(DatabaseHelper.TABLE_JOB_CATEGORY, DatabaseHelper.ID + "=?", new String[]{String.valueOf(o.getId())});
 
             // Verifies that was successfully deleted
             if (rowsAffected == 1) {
                 return true;
             }
         } finally {
-            db.close();
+            DBClose();
         }
 
         return false;
@@ -163,8 +147,8 @@ public class JobCategoryDao implements Dao<JobCategory> {
 
     @Override
     public List<JobCategory> search_all(String s, int id_user) throws JobManagerException {
+        mGetReadableDatabase();
         List<JobCategory> result = new ArrayList<>();
-        db = helper.getReadableDatabase();
 
         /**
          * SELECT job_category._id, job_category.name FROM job_category
@@ -181,25 +165,59 @@ public class JobCategoryDao implements Dao<JobCategory> {
                 DatabaseHelper.TABLE_JOB_HAS_JOB_CATEGORY + "." + DatabaseHelper.JOB_HAS_JOB_CATEGORY_JOB_CATEGORY_ID + " INNER JOIN " +
                 DatabaseHelper.TABLE_JOB + " ON " + DatabaseHelper.TABLE_JOB_HAS_JOB_CATEGORY + "." + DatabaseHelper.JOB_HAS_JOB_CATEGORY_JOB_PROTOCOL + " = " +
                 DatabaseHelper.TABLE_JOB + "." + DatabaseHelper.JOB_PROTOCOL + " WHERE " + DatabaseHelper.TABLE_JOB + "." + DatabaseHelper.ID + " = " + id_user + " AND " +
-                DatabaseHelper.TABLE_JOB_CATEGORY + "." + DatabaseHelper.NAME + " LIKE '"  + s + "%'" + " GROUP BY " +
-                DatabaseHelper.TABLE_JOB_CATEGORY + "." + DatabaseHelper.NAME + " ORDER BY " + DatabaseHelper.TABLE_JOB_CATEGORY + "." + DatabaseHelper.NAME + " ASC;";
+                DatabaseHelper.TABLE_JOB_CATEGORY + "." + DatabaseHelper.NAME + " LIKE '" + s + "%'" + " GROUP BY " +
+                DatabaseHelper.TABLE_JOB_CATEGORY + "." + DatabaseHelper.NAME + " ORDER BY " + DatabaseHelper.TABLE_JOB_CATEGORY + "." + DatabaseHelper.NAME + " ASC LIMIT 5;";
 
         Cursor cursor = db.rawQuery(query, null);
 
-        try {
-            if (cursor != null) {
-                while (cursor.moveToNext()) {
-                    JobCategory category = new JobCategory();
-                    category.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ID)));
-                    category.setName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.NAME)));
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                JobCategory category = new JobCategory();
+                category.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ID)));
+                category.setName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.NAME)));
 
-                    result.add(category);
-                }
+                result.add(category);
             }
-        } finally {
             cursor.close();
-            db.close();
         }
+        DBClose();
+
+        return result;
+    }
+
+    @Override
+    public int size(int id_user) throws JobManagerException {
+        return 0;
+    }
+
+    /**
+     * Select all categories of job.
+     *
+     * @param protocol_job The protocol of job.
+     * @return Categories of job.
+     * @throws JobManagerException If there is an exception.
+     */
+    public List<JobCategory> getCategoriesJob(int protocol_job) throws JobManagerException {
+        mGetReadableDatabase();
+        List<JobCategory> result = new ArrayList<>();
+
+        String query = "SELECT " + DatabaseHelper.ID + "," + DatabaseHelper.NAME + " FROM " + DatabaseHelper.TABLE_JOB_CATEGORY + " " +
+                "INNER JOIN " + DatabaseHelper.TABLE_JOB_HAS_JOB_CATEGORY + " ON " + DatabaseHelper.JOB_HAS_JOB_CATEGORY_JOB_CATEGORY_ID + "=" + DatabaseHelper.ID + " " +
+                "WHERE " + DatabaseHelper.JOB_HAS_JOB_CATEGORY_JOB_PROTOCOL + "=" + protocol_job + ";";
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                JobCategory category = new JobCategory();
+                category.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ID)));
+                category.setName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.NAME)));
+
+                result.add(category);
+            }
+            cursor.close();
+        }
+        DBClose();
 
         return result;
     }

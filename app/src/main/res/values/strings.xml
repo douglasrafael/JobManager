@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">JobManager</string>
+    <string name="app_name">Job Manager</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_login">Sign in</string>
 
@@ -15,4 +15,24 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
+    <string-array name="categories_default">
+        <item>Maintenance</item>
+        <item>Development</item>
+        <item>Design</item>
+        <item>Construction</item>
+        <item>Reform</item>
+        <item>Cleaning</item>
+        <item>Consultation</item>
+        <item>Advisory</item>
+        <item>Classroom</item>
+        <item>Other</item>
+    </string-array>
+
+    <string-array name="types_phone">
+        <item>Mobile</item>
+        <item>Work</item>
+        <item>Home</item>
+        <item>Other</item>
+    </string-array>
 </resources>

@@ -9,22 +9,45 @@ import java.io.Serializable;
  * @author Created by Douglas Rafael on 20/04/2016.
  * @version 1.0
  */
-public class Phone {
+public class Phone implements Serializable {
+    private static final long serialVersionUID = -7181903763870895362L;
+
     private int id;
-    private int number;
+    private String number;
+    private int client_id;
     private PhoneType type;
 
     /**
      * Phone class constructor.
      *
-     * @param id     Id of phone.
+     * @param id        Id of phone.
+     * @param number    Number of phone.
+     * @param client_id The id of client.
+     * @param type      Type of phone.
+     */
+    public Phone(int id, String number, int client_id, PhoneType type) {
+        this.id = id;
+        this.number = number;
+        this.client_id = client_id;
+        this.type = type;
+    }
+
+    /**
+     * Phone class constructor.
+     *
      * @param number Number of phone.
      * @param type   Type of phone.
      */
-    public Phone(int id, int number, PhoneType type) {
-        this.id = id;
+    public Phone(String number, PhoneType type) {
         this.number = number;
+        this.client_id = client_id;
         this.type = type;
+    }
+
+    /**
+     * Phone class constructor.
+     */
+    public Phone() {
     }
 
     /**
@@ -50,7 +73,7 @@ public class Phone {
      *
      * @return The phone number.
      */
-    public int getNumber() {
+    public String getNumber() {
         return number;
     }
 
@@ -59,8 +82,26 @@ public class Phone {
      *
      * @param number The phone number.
      */
-    public void setNumber(int number) {
+    public void setNumber(String number) {
         this.number = number;
+    }
+
+    /**
+     * Retrieve/get the id of client.
+     *
+     * @return The id of client.
+     */
+    public int getClient_id() {
+        return client_id;
+    }
+
+    /**
+     * Set the id of client.
+     *
+     * @param client_id The id of client.
+     */
+    public void setClient_id(int client_id) {
+        this.client_id = client_id;
     }
 
     /**
@@ -107,7 +148,8 @@ public class Phone {
     @Override
     public int hashCode() {
         int result = id;
-        result = 31 * result + number;
+        result = 31 * result + (number != null ? number.hashCode() : 0);
+        result = 31 * result + client_id;
         result = 31 * result + (type != null ? type.hashCode() : 0);
         return result;
     }

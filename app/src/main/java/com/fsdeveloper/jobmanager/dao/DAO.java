@@ -16,17 +16,17 @@ public interface Dao<T> {
     /**
      * Returns a list containing the objects of the agreement with the user id.
      *
-     * @param id_user The user id
+     * @param _id The id.
      * @return The list containing the objects.
      * @throws JobManagerException If there is an exception.
      */
-    public List<T> list(int id_user) throws JobManagerException;
+    public List<T> list(int _id) throws JobManagerException;
 
     /**
      * Return object according to your id.
      *
-     * @param _id The id
-     * @return The object
+     * @param _id The id.
+     * @return The object.
      * @throws JobManagerException If there is an exception.
      */
     public T getById(int _id) throws JobManagerException;
@@ -35,10 +35,10 @@ public interface Dao<T> {
      * Saves an object.
      *
      * @param o The object to be saved.
-     * @return True if inserted and False if not.
+     * @return The id inserted.
      * @throws JobManagerException If there is an exception.
      */
-    public boolean insert(T o) throws JobManagerException;
+    public int insert(T o) throws JobManagerException;
 
     /**
      * Upgrades a specific object.
@@ -63,10 +63,18 @@ public interface Dao<T> {
      * A list of objects found is returned. If not found no corresponding object the string, the list will be returned empty.
      *
      * @param s The string to be searched.
-     * @param id_user The user id
+     * @param _id The id.
      * @return The object list.
      * @throws JobManagerException If there is an exception.
      */
-    public List<T> search_all(String s, int id_user) throws JobManagerException;
+    public List<T> search_all(String s, int _id) throws JobManagerException;
 
+    /**
+     * Quantity of records in accordance with the user id.
+     *
+     * @param _id The id.
+     * @return Quantity of records.
+     * @throws JobManagerException If there is an exception.
+     */
+    public int size(int _id) throws JobManagerException;
 }

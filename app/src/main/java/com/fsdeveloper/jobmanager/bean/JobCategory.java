@@ -12,6 +12,7 @@ import java.io.Serializable;
  */
 public class JobCategory implements Serializable {
     private static final long serialVersionUID = -7372855818195544957L;
+
     private int id;
     private String name;
 
@@ -23,6 +24,15 @@ public class JobCategory implements Serializable {
      */
     public JobCategory(int id, String name) {
         this.id = id;
+        this.name = name;
+    }
+
+    /**
+     * JobCategory class constructor.
+     *
+     * @param name The name of category.
+     */
+    public JobCategory(String name) {
         this.name = name;
     }
 
