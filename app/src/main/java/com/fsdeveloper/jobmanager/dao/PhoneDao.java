@@ -27,7 +27,7 @@ public class PhoneDao extends DBManager implements Dao<Phone> {
     };
 
     /**
-     * Class constructor, create instance of class DatabaseHelper.
+     * Class constructor.
      *
      * @param context Abstract class whose implementation is provided by Android system.
      */
@@ -97,11 +97,7 @@ public class PhoneDao extends DBManager implements Dao<Phone> {
         int rowsAffected = db.update(DatabaseHelper.TABLE_PHONE, values, DatabaseHelper.ID + "=?", new String[]{String.valueOf(o.getId())});
 
         // Verifies that was successfully updated
-        if (rowsAffected == 1) {
-            return true;
-        }
-
-        return false;
+        return rowsAffected == 1;
     }
 
     @Override
@@ -111,11 +107,7 @@ public class PhoneDao extends DBManager implements Dao<Phone> {
         int rowsAffected = db.delete(DatabaseHelper.TABLE_PHONE, DatabaseHelper.ID + "=?", new String[]{String.valueOf(o.getId())});
 
         // Verifies that was successfully deleted
-        if (rowsAffected == 1) {
-            return true;
-        }
-
-        return false;
+        return rowsAffected == 1;
     }
 
     @Override
