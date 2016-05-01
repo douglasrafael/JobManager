@@ -24,7 +24,7 @@ public class JobCategoryDao extends DBManager implements Dao<JobCategory> {
     };
 
     /**
-     * Class constructor, create instance of class DatabaseHelper.
+     * Class constructor.
      *
      * @param context Abstract class whose implementation is provided by Android system.
      */
@@ -38,26 +38,9 @@ public class JobCategoryDao extends DBManager implements Dao<JobCategory> {
 
         List<JobCategory> result = new ArrayList<>();
 
-        /**
-         * SELECT job_category._id, job_category.name FROM job_category
-         * INNER JOIN job_has_job_category ON job_category._id = job_has_job_category.job_category_id
-         * INNER JOIN job ON job_has_job_category.job_protocol = job.protocol
-         * WHERE job.user_id = 1
-         * GROUP BY job_category.name
-         * ORDER BY job_category.name ASC;
-         *
-         * Selects in ascending order all categories registered by user.
-         */
-        String query = "SELECT " + DatabaseHelper.ID + ", " + DatabaseHelper.NAME + " FROM " + DatabaseHelper.TABLE_JOB_CATEGORY + " INNER JOIN " +
-                DatabaseHelper.TABLE_JOB_HAS_JOB_CATEGORY + " ON " + DatabaseHelper.TABLE_JOB_CATEGORY + "." + DatabaseHelper.ID + " = " +
-                DatabaseHelper.TABLE_JOB_HAS_JOB_CATEGORY + "." + DatabaseHelper.JOB_HAS_JOB_CATEGORY_JOB_CATEGORY_ID + " INNER JOIN " +
-                DatabaseHelper.TABLE_JOB + " ON " + DatabaseHelper.TABLE_JOB_HAS_JOB_CATEGORY + "." + DatabaseHelper.JOB_HAS_JOB_CATEGORY_JOB_PROTOCOL + " = " +
-                DatabaseHelper.TABLE_JOB + "." + DatabaseHelper.JOB_PROTOCOL + " WHERE " + DatabaseHelper.TABLE_JOB + "." + DatabaseHelper.USER_ID + " = " + id_user + " GROUP BY " +
-                DatabaseHelper.TABLE_JOB_CATEGORY + "." + DatabaseHelper.NAME + " ORDER BY " + DatabaseHelper.TABLE_JOB_CATEGORY + "." + DatabaseHelper.NAME + " ASC;";
+        Cursor cursor = db.query(DatabaseHelper.TABLE_JOB_CATEGORY, columns, null, null, null, null, DatabaseHelper.NAME);
 
-        Cursor cursor = db.rawQuery(query, null);
-
-        if (cursor != null) {
+        if (cursor != null && cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
                 JobCategory category = new JobCategory();
                 category.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ID)));
@@ -67,7 +50,6 @@ public class JobCategoryDao extends DBManager implements Dao<JobCategory> {
             }
             cursor.close();
         }
-        DBClose();
 
         return result;
     }
@@ -79,7 +61,7 @@ public class JobCategoryDao extends DBManager implements Dao<JobCategory> {
 
         Cursor cursor = db.query(DatabaseHelper.TABLE_JOB_CATEGORY, columns, DatabaseHelper.ID + "=?", new String[]{String.valueOf(_id)}, null, null, null);
 
-        if (cursor != null) {
+        if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
 
             category = new JobCategory();
@@ -88,7 +70,6 @@ public class JobCategoryDao extends DBManager implements Dao<JobCategory> {
 
             cursor.close();
         }
-        DBClose();
 
         return category;
     }
@@ -96,12 +77,11 @@ public class JobCategoryDao extends DBManager implements Dao<JobCategory> {
     @Override
     public int insert(JobCategory o) throws JobManagerException {
         mGetWritableDatabase();
-        long _id = 0;
 
         ContentValues values = new ContentValues();
         values.put(DatabaseHelper.NAME, o.getName());
 
-        _id = db.insert(DatabaseHelper.TABLE_JOB_CATEGORY, null, values);
+        long _id = db.insert(DatabaseHelper.TABLE_JOB_CATEGORY, null, values);
 
         return (int) _id;
     }
@@ -110,39 +90,23 @@ public class JobCategoryDao extends DBManager implements Dao<JobCategory> {
     public boolean update(JobCategory o) throws JobManagerException {
         mGetWritableDatabase();
 
-        try {
-            ContentValues values = new ContentValues();
-            values.put(DatabaseHelper.NAME, o.getName());
+        ContentValues values = new ContentValues();
+        values.put(DatabaseHelper.NAME, o.getName());
 
-            int rowsAffected = db.update(DatabaseHelper.TABLE_JOB_CATEGORY, values, DatabaseHelper.ID + "=?", new String[]{String.valueOf(o.getId())});
+        int rowsAffected = db.update(DatabaseHelper.TABLE_JOB_CATEGORY, values, DatabaseHelper.ID + "=?", new String[]{String.valueOf(o.getId())});
 
-            // Verifies that was successfully updated
-            if (rowsAffected == 1) {
-                return true;
-            }
-        } finally {
-            DBClose();
-        }
-
-        return false;
+        // Verifies that was successfully updated
+        return rowsAffected == 1;
     }
 
     @Override
     public boolean delete(JobCategory o) throws JobManagerException {
         mGetWritableDatabase();
 
-        try {
-            int rowsAffected = db.delete(DatabaseHelper.TABLE_JOB_CATEGORY, DatabaseHelper.ID + "=?", new String[]{String.valueOf(o.getId())});
+        int rowsAffected = db.delete(DatabaseHelper.TABLE_JOB_CATEGORY, DatabaseHelper.ID + "=?", new String[]{String.valueOf(o.getId())});
 
-            // Verifies that was successfully deleted
-            if (rowsAffected == 1) {
-                return true;
-            }
-        } finally {
-            DBClose();
-        }
-
-        return false;
+        // Verifies that was successfully deleted
+        return rowsAffected == 1;
     }
 
     @Override
@@ -150,27 +114,9 @@ public class JobCategoryDao extends DBManager implements Dao<JobCategory> {
         mGetReadableDatabase();
         List<JobCategory> result = new ArrayList<>();
 
-        /**
-         * SELECT job_category._id, job_category.name FROM job_category
-         * INNER JOIN job_has_job_category ON job_category._id = job_has_job_category.job_category_id
-         * INNER JOIN job ON job_has_job_category.job_protocol = job.protocol
-         * WHERE job.user_id = id_user AND job_category.name LIKE "s%"
-         * GROUP BY job_category.name
-         * ORDER BY job_category.name ASC;
-         *
-         * Selects in ascending order all categories registered by user.
-         */
-        String query = "SELECT " + DatabaseHelper.ID + ", " + DatabaseHelper.NAME + " FROM " + DatabaseHelper.TABLE_JOB_CATEGORY + " INNER JOIN " +
-                DatabaseHelper.TABLE_JOB_HAS_JOB_CATEGORY + " ON " + DatabaseHelper.TABLE_JOB_CATEGORY + "." + DatabaseHelper.ID + " = " +
-                DatabaseHelper.TABLE_JOB_HAS_JOB_CATEGORY + "." + DatabaseHelper.JOB_HAS_JOB_CATEGORY_JOB_CATEGORY_ID + " INNER JOIN " +
-                DatabaseHelper.TABLE_JOB + " ON " + DatabaseHelper.TABLE_JOB_HAS_JOB_CATEGORY + "." + DatabaseHelper.JOB_HAS_JOB_CATEGORY_JOB_PROTOCOL + " = " +
-                DatabaseHelper.TABLE_JOB + "." + DatabaseHelper.JOB_PROTOCOL + " WHERE " + DatabaseHelper.TABLE_JOB + "." + DatabaseHelper.ID + " = " + id_user + " AND " +
-                DatabaseHelper.TABLE_JOB_CATEGORY + "." + DatabaseHelper.NAME + " LIKE '" + s + "%'" + " GROUP BY " +
-                DatabaseHelper.TABLE_JOB_CATEGORY + "." + DatabaseHelper.NAME + " ORDER BY " + DatabaseHelper.TABLE_JOB_CATEGORY + "." + DatabaseHelper.NAME + " ASC LIMIT 5;";
+        Cursor cursor = db.query(true, DatabaseHelper.TABLE_JOB_CATEGORY, columns, DatabaseHelper.NAME + " LIKE ?", new String[]{s + "%"}, null, null, null, null);
 
-        Cursor cursor = db.rawQuery(query, null);
-
-        if (cursor != null) {
+        if (cursor != null && cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
                 JobCategory category = new JobCategory();
                 category.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ID)));
@@ -180,7 +126,6 @@ public class JobCategoryDao extends DBManager implements Dao<JobCategory> {
             }
             cursor.close();
         }
-        DBClose();
 
         return result;
     }
@@ -207,7 +152,7 @@ public class JobCategoryDao extends DBManager implements Dao<JobCategory> {
 
         Cursor cursor = db.rawQuery(query, null);
 
-        if (cursor != null) {
+        if (cursor != null && cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
                 JobCategory category = new JobCategory();
                 category.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ID)));
@@ -217,7 +162,6 @@ public class JobCategoryDao extends DBManager implements Dao<JobCategory> {
             }
             cursor.close();
         }
-        DBClose();
 
         return result;
     }
