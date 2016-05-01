@@ -255,25 +255,31 @@ public class Client implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
         Client client = (Client) o;
 
-        if (id != client.id) return false;
-        if (rating != client.rating) return false;
-        if (user_id != client.user_id) return false;
+        if (id != client.id)
+            return false;
+        if (rating != client.rating)
+            return false;
+        if (user_id != client.user_id)
+            return false;
         if (first_name != null ? !first_name.equals(client.first_name) : client.first_name != null)
             return false;
         if (last_name != null ? !last_name.equals(client.last_name) : client.last_name != null)
             return false;
-        if (email != null ? !email.equals(client.email) : client.email != null) return false;
+        if (email != null ? !email.equals(client.email) : client.email != null)
+            return false;
         if (address != null ? !address.equals(client.address) : client.address != null)
             return false;
         if (created_at != null ? !created_at.equals(client.created_at) : client.created_at != null)
             return false;
-        return phoneList != null ? phoneList.equals(client.phoneList) : client.phoneList == null;
 
+        return phoneList != null ? phoneList.equals(client.phoneList) : client.phoneList == null;
     }
 
     @Override
