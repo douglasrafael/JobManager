@@ -3,8 +3,6 @@ package com.fsdeveloper.jobmanager.dao;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 
 import com.fsdeveloper.jobmanager.bean.PhoneType;
 import com.fsdeveloper.jobmanager.exception.JobManagerException;
@@ -41,7 +39,7 @@ public class PhoneTypeDao extends DBManager implements Dao<PhoneType> {
 
         Cursor cursor = db.query(DatabaseHelper.TABLE_PHONE_TYPE, columns, null, null, null, null, null);
 
-        if (cursor != null) {
+        if (cursor != null && cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
                 PhoneType type = new PhoneType();
                 type.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ID)));
@@ -51,7 +49,6 @@ public class PhoneTypeDao extends DBManager implements Dao<PhoneType> {
             }
             cursor.close();
         }
-        DBClose();
 
         return result;
     }
@@ -63,13 +60,12 @@ public class PhoneTypeDao extends DBManager implements Dao<PhoneType> {
 
         Cursor cursor = db.query(DatabaseHelper.TABLE_PHONE_TYPE, columns, DatabaseHelper.ID + "=?", new String[]{String.valueOf(_id)}, null, null, null);
 
-        if (cursor != null) {
+        if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
 
             type = new PhoneType(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ID)), cursor.getString(cursor.getColumnIndex(DatabaseHelper.TITLE)));
             cursor.close();
         }
-        DBClose();
 
         return type;
     }
@@ -77,14 +73,11 @@ public class PhoneTypeDao extends DBManager implements Dao<PhoneType> {
     @Override
     public int insert(PhoneType o) throws JobManagerException {
         mGetWritableDatabase();
-        long _id = 0;
 
         ContentValues values = new ContentValues();
         values.put(DatabaseHelper.TITLE, o.getTitle());
 
-        _id = db.insert(DatabaseHelper.TABLE_PHONE_TYPE, null, values);
-
-       DBClose();
+        long _id = db.insert(DatabaseHelper.TABLE_PHONE_TYPE, null, values);
 
         return (int) _id;
     }
@@ -93,39 +86,23 @@ public class PhoneTypeDao extends DBManager implements Dao<PhoneType> {
     public boolean update(PhoneType o) throws JobManagerException {
         mGetWritableDatabase();
 
-        try {
-            ContentValues values = new ContentValues();
-            values.put(DatabaseHelper.TITLE, o.getTitle());
+        ContentValues values = new ContentValues();
+        values.put(DatabaseHelper.TITLE, o.getTitle());
 
-            int rowsAffected = db.update(DatabaseHelper.TABLE_PHONE_TYPE, values, DatabaseHelper.ID + "=?", new String[]{String.valueOf(o.getId())});
+        int rowsAffected = db.update(DatabaseHelper.TABLE_PHONE_TYPE, values, DatabaseHelper.ID + "=?", new String[]{String.valueOf(o.getId())});
 
-            // Verifies that was successfully updated
-            if (rowsAffected == 1) {
-                return true;
-            }
-        } finally {
-            DBClose();
-        }
-
-        return false;
+        // Verifies that was successfully updated
+        return rowsAffected == 1;
     }
 
     @Override
     public boolean delete(PhoneType o) throws JobManagerException {
         mGetWritableDatabase();
 
-        try {
-            int rowsAffected = db.delete(DatabaseHelper.TABLE_PHONE_TYPE, DatabaseHelper.ID + "=?", new String[]{String.valueOf(o.getId())});
+        int rowsAffected = db.delete(DatabaseHelper.TABLE_PHONE_TYPE, DatabaseHelper.ID + "=?", new String[]{String.valueOf(o.getId())});
 
-            // Verifies that was successfully deleted
-            if (rowsAffected == 1) {
-                return true;
-            }
-        } finally {
-           DBClose();
-        }
-
-        return false;
+        // Verifies that was successfully deleted
+        return rowsAffected == 1;
     }
 
     @Override
