@@ -1,6 +1,7 @@
 package com.fsdeveloper.jobmanager.bean;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
 /**
  * The Phone class represents all objects of type Phone.
@@ -9,7 +10,7 @@ import java.io.Serializable;
  * @author Created by Douglas Rafael on 20/04/2016.
  * @version 1.0
  */
-public class Phone implements Serializable {
+public class Phone implements Comparable<Phone>, Serializable {
     private static final long serialVersionUID = -7181903763870895362L;
 
     private int id;
@@ -35,10 +36,11 @@ public class Phone implements Serializable {
     /**
      * Phone class constructor.
      *
-     * @param number Number of phone.
-     * @param type   Type of phone.
+     * @param number    Number of phone.
+     * @param client_id The id of client
+     * @param type      Type of phone.
      */
-    public Phone(String number, PhoneType type) {
+    public Phone(String number, int client_id, PhoneType type) {
         this.number = number;
         this.client_id = client_id;
         this.type = type;
@@ -132,17 +134,21 @@ public class Phone implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof Phone)) {
             return false;
         }
 
         Phone phone = (Phone) o;
 
-        return (id == phone.id && number == phone.number && type.equals(phone.type));
+        if (client_id != phone.client_id) {
+            return false;
+        }
+
+        if (number != null ? !number.equals(phone.number) : phone.number != null) {
+            return false;
+        }
+
+        return type != null ? type.equals(phone.type) : phone.type == null;
     }
 
     @Override
@@ -152,5 +158,16 @@ public class Phone implements Serializable {
         result = 31 * result + client_id;
         result = 31 * result + (type != null ? type.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public int compareTo(Phone phone) {
+        if (id < phone.getId() || (number.equals(phone.getNumber()) && type.equals(phone.getType()))) {
+            return 1;
+        } else if (id > phone.getId()) {
+            return -1;
+        } else {
+            return 0;
+        }
     }
 }
