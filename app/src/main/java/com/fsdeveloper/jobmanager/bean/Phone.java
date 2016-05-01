@@ -1,7 +1,6 @@
 package com.fsdeveloper.jobmanager.bean;
 
 import java.io.Serializable;
-import java.util.Comparator;
 
 /**
  * The Phone class represents all objects of type Phone.
@@ -10,7 +9,7 @@ import java.util.Comparator;
  * @author Created by Douglas Rafael on 20/04/2016.
  * @version 1.0
  */
-public class Phone implements Comparable<Phone>, Serializable {
+public class Phone implements Serializable {
     private static final long serialVersionUID = -7181903763870895362L;
 
     private int id;
@@ -127,7 +126,9 @@ public class Phone implements Comparable<Phone>, Serializable {
     @Override
     public String toString() {
         return "Phone{" +
-                "number=" + number +
+                "id=" + id +
+                ", number='" + number + '\'' +
+                ", client_id=" + client_id +
                 ", type=" + type +
                 '}';
     }
@@ -158,16 +159,5 @@ public class Phone implements Comparable<Phone>, Serializable {
         result = 31 * result + client_id;
         result = 31 * result + (type != null ? type.hashCode() : 0);
         return result;
-    }
-
-    @Override
-    public int compareTo(Phone phone) {
-        if (id < phone.getId() || (number.equals(phone.getNumber()) && type.equals(phone.getType()))) {
-            return 1;
-        } else if (id > phone.getId()) {
-            return -1;
-        } else {
-            return 0;
-        }
     }
 }
