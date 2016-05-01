@@ -3,7 +3,6 @@ package com.fsdeveloper.jobmanager.dao;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
 import com.fsdeveloper.jobmanager.bean.Phone;
 import com.fsdeveloper.jobmanager.exception.JobManagerException;
@@ -45,13 +44,12 @@ public class PhoneDao extends DBManager implements Dao<Phone> {
         // Select all the numbers of client phones
         Cursor cursor = db.query(DatabaseHelper.TABLE_PHONE, columns, DatabaseHelper.CLIENT_ID + "=?", new String[]{String.valueOf(client_id)}, null, null, null);
 
-        if (cursor != null) {
+        if (cursor != null && cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
                 result.add(createPhone(cursor));
             }
             cursor.close();
         }
-        DBClose();
 
         return result;
     }
@@ -63,13 +61,12 @@ public class PhoneDao extends DBManager implements Dao<Phone> {
 
         Cursor cursor = db.query(DatabaseHelper.TABLE_PHONE, columns, DatabaseHelper.ID + "=?", new String[]{String.valueOf(_id)}, null, null, null);
 
-        if (cursor != null) {
+        if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
             phone = createPhone(cursor);
 
             cursor.close();
         }
-        DBClose();
 
         return phone;
     }
@@ -92,20 +89,16 @@ public class PhoneDao extends DBManager implements Dao<Phone> {
     public boolean update(Phone o) throws JobManagerException {
         mGetWritableDatabase();
 
-        try {
-            ContentValues values = new ContentValues();
-            values.put(DatabaseHelper.PHONE_NUMBER, o.getNumber());
-            values.put(DatabaseHelper.CLIENT_ID, o.getClient_id());
-            values.put(DatabaseHelper.PHONE_TYPE_ID, o.getType().getId());
+        ContentValues values = new ContentValues();
+        values.put(DatabaseHelper.PHONE_NUMBER, o.getNumber());
+        values.put(DatabaseHelper.CLIENT_ID, o.getClient_id());
+        values.put(DatabaseHelper.PHONE_TYPE_ID, o.getType().getId());
 
-            int rowsAffected = db.update(DatabaseHelper.TABLE_PHONE, values, DatabaseHelper.ID + "=?", new String[]{String.valueOf(o.getId())});
+        int rowsAffected = db.update(DatabaseHelper.TABLE_PHONE, values, DatabaseHelper.ID + "=?", new String[]{String.valueOf(o.getId())});
 
-            // Verifies that was successfully updated
-            if (rowsAffected == 1) {
-                return true;
-            }
-        } finally {
-            DBClose();
+        // Verifies that was successfully updated
+        if (rowsAffected == 1) {
+            return true;
         }
 
         return false;
@@ -113,17 +106,13 @@ public class PhoneDao extends DBManager implements Dao<Phone> {
 
     @Override
     public boolean delete(Phone o) throws JobManagerException {
-        mGetReadableDatabase();
+        mGetWritableDatabase();
 
-        try {
-            int rowsAffected = db.delete(DatabaseHelper.TABLE_PHONE_TYPE, DatabaseHelper.ID + "=?", new String[]{String.valueOf(o.getId())});
+        int rowsAffected = db.delete(DatabaseHelper.TABLE_PHONE, DatabaseHelper.ID + "=?", new String[]{String.valueOf(o.getId())});
 
-            // Verifies that was successfully deleted
-            if (rowsAffected == 1) {
-                return true;
-            }
-        } finally {
-            DBClose();
+        // Verifies that was successfully deleted
+        if (rowsAffected == 1) {
+            return true;
         }
 
         return false;
