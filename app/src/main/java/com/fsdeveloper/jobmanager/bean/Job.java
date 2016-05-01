@@ -12,7 +12,7 @@ import java.io.Serializable;
 public class Job implements Serializable {
     private static final long serialVersionUID = -7790542829078114180L;
 
-    private int protocol;
+    private String protocol;
     private String title;
     private String description;
     private String note;
@@ -23,6 +23,7 @@ public class Job implements Serializable {
     private String updated_at;
     private int user_id;
     private int client_id;
+    private Client client;
 
     /**
      * Job class constructor.
@@ -38,7 +39,7 @@ public class Job implements Serializable {
      * @param user_id      The id of user who made the job.
      * @param client_id    The id of client that requested the job.
      */
-    public Job(int protocol, String title, String description, String note, Double price, Double expense, String finalized_at, String created_at, int user_id, int client_id) {
+    public Job(String protocol, String title, String description, String note, Double price, Double expense, String finalized_at, String created_at, int user_id, int client_id) {
         this.protocol = protocol;
         this.title = title;
         this.description = description;
@@ -52,11 +53,17 @@ public class Job implements Serializable {
     }
 
     /**
+     * Job class constructor.
+     */
+    public Job() {
+    }
+
+    /**
      * Retrieves/get the protocol of job.
      *
      * @return The protocol of job.
      */
-    public int getProtocol() {
+    public String getProtocol() {
         return protocol;
     }
 
@@ -65,7 +72,7 @@ public class Job implements Serializable {
      *
      * @param protocol The protocol of job.
      */
-    public void setProtocol(int protocol) {
+    public void setProtocol(String protocol) {
         this.protocol = protocol;
     }
 
@@ -249,6 +256,24 @@ public class Job implements Serializable {
         this.client_id = client_id;
     }
 
+    /**
+     * Retrieves/get client.
+     *
+     * @return The client.
+     */
+    public Client getClient() {
+        return client;
+    }
+
+    /**
+     * Set client.
+     *
+     * @param client The client.
+     */
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
     @Override
     public String toString() {
         return "Job{" +
@@ -263,6 +288,7 @@ public class Job implements Serializable {
                 ", updated_at='" + updated_at + '\'' +
                 ", user_id=" + user_id +
                 ", client_id=" + client_id +
+                ", client=" + client +
                 '}';
     }
 
@@ -283,7 +309,8 @@ public class Job implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = protocol;
+        int result = protocol != null ? protocol.hashCode() : 0;
+        result = 31 * result + (title != null ? title.hashCode() : 0);
         result = 31 * result + user_id;
         result = 31 * result + client_id;
         return result;
