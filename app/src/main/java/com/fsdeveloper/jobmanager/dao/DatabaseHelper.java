@@ -26,7 +26,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "job_manager";
 
     // Database version
-    private static final int DATABASE_VERSION = 29;
+    private static final int DATABASE_VERSION = 30;
 
     // Database tables
     public static final String TABLE_USER = "user";
@@ -94,7 +94,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "CREATE INDEX '" + TABLE_CLIENT + ".first_name_idx' ON " + TABLE_CLIENT + "(" + CLIENT_FIRST_NAME + ");";
 
     // Script to create the job table
-    private final String CREATE_TABLE_JOB = "CREATE TABLE " + TABLE_JOB + "(" + JOB_PROTOCOL + " INTEGER PRIMARY KEY," + TITLE + " VARCHAR(125) NOT NULL," +
+    private final String CREATE_TABLE_JOB = "CREATE TABLE " + TABLE_JOB + "(" + JOB_PROTOCOL + " VARCHAR(10) PRIMARY KEY," + TITLE + " VARCHAR(125) NOT NULL," +
             JOB_DESCRIPTION + " VARCHAR(545)," + JOB_NOTE + " VARCHAR(545)," + JOB_PRICE + " DOUBLE NOT NULL," + JOB_EXPENSE + " DOUBLE DEFAULT 0.0," + JOB_FINALIZED_AT + " TIMESTAMP," +
             CREATED_AT + " TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," + JOB_UPDATE_AT + " TIMESTAMP," + USER_ID + " INTEGER NOT NULL," + CLIENT_ID + " INTEGER NOT NULL," +
             "CONSTRAINT 'id_UNIQUE' UNIQUE(" + JOB_PROTOCOL + "), CONSTRAINT 'fk_job_user' FOREIGN KEY(" + USER_ID + ") REFERENCES " + TABLE_USER + "(" + ID + ") ON DELETE CASCADE ON UPDATE CASCADE," +
