@@ -6,6 +6,7 @@ import android.database.Cursor;
 
 import com.fsdeveloper.jobmanager.bean.Client;
 import com.fsdeveloper.jobmanager.bean.Phone;
+import com.fsdeveloper.jobmanager.exception.ConnectionException;
 import com.fsdeveloper.jobmanager.exception.JobManagerException;
 
 import java.util.ArrayList;
@@ -35,8 +36,10 @@ public class ClientDao extends DBManager implements Dao<Client> {
      * Class constructor.
      *
      * @param context Abstract class whose implementation is provided by Android system.
+     * @throws JobManagerException If there is a general exception of the system.
+     * @throws ConnectionException If there is one exception of database connection.
      */
-    public ClientDao(Context context) throws JobManagerException {
+    public ClientDao(Context context) throws JobManagerException, ConnectionException {
         super(context);
         this.context = context;
     }
@@ -105,6 +108,8 @@ public class ClientDao extends DBManager implements Dao<Client> {
             }
 
             db.setTransactionSuccessful();
+        } catch (ConnectionException e) {
+            e.printStackTrace();
         } finally {
             db.endTransaction();
         }
@@ -158,6 +163,8 @@ public class ClientDao extends DBManager implements Dao<Client> {
                     return true;
                 }
 
+            } catch (ConnectionException e) {
+                e.printStackTrace();
             } finally {
                 db.endTransaction();
             }
@@ -215,8 +222,12 @@ public class ClientDao extends DBManager implements Dao<Client> {
         client.setUser_id(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.USER_ID)));
         client.setCreated_at(cursor.getString(cursor.getColumnIndex(DatabaseHelper.CREATED_AT)));
 
-        // Get list all the phone of client.
-        client.setPhoneList(new PhoneDao(context).list(client.getId()));
+        try {
+            // Get list all the phone of client.
+            client.setPhoneList(new PhoneDao(context).list(client.getId()));
+        } catch (ConnectionException e) {
+            e.printStackTrace();
+        }
 
         return client;
     }
