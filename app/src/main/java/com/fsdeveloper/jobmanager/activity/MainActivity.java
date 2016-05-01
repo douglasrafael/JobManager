@@ -23,6 +23,7 @@ import com.fsdeveloper.jobmanager.dao.JobCategoryDao;
 import com.fsdeveloper.jobmanager.dao.Manager;
 import com.fsdeveloper.jobmanager.dao.PhoneTypeDao;
 import com.fsdeveloper.jobmanager.dao.UserDao;
+import com.fsdeveloper.jobmanager.exception.ConnectionException;
 import com.fsdeveloper.jobmanager.exception.JobManagerException;
 
 import java.text.SimpleDateFormat;
@@ -53,18 +54,23 @@ public class MainActivity extends AppCompatActivity {
 
             PhoneType type = manager.getPhoneType(1);
             PhoneType type2 = manager.getPhoneType(3);
-            listPhones.add(new Phone("(083) 3335-2801", type));
-            listPhones.add(new Phone("(083) 98770-5202",type2));
+            PhoneType type3 = manager.getPhoneType(4);
+            listPhones.add(new Phone("(083) 3331-5590",15, type));
+            listPhones.add(new Phone("(083) 3335-9995", 15,type3));
+            listPhones.add(new Phone("(083) 98770-1515",15,type2));
 
-            Client client = new Client("Fulano", "dos Santos", "fulano@mail.com", "Rua almirante, 62", 0, 1, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()), listPhones);
-            int client_id = manager.insertClient(client);
-
-            PhoneTypeDao types = new PhoneTypeDao(this);
-
-            txt.setText("ID " + client_id + " " + manager.getClient(client_id));
+            Client client = new Client("Fui Atualizado", "Tudo", "fulano@mail.com", "Rua almirante, 62", 0, 1, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()), listPhones);
+            client.setId(15);
+//            if(manager.updateClient(client)){
+//                Log.i("UPDATE:", "Com sucess");
+//            }
+            txt.setText(manager.generateProtocol() + "  ");
+//            txt.setText(manager.searchAllCategory("a").toString());
 
         } catch (JobManagerException e) {
             Log.i("Exceção Job Manager", e.getMessage());
+        } catch (ConnectionException e) {
+            e.printStackTrace();
         }
 
         Resources res = getResources();

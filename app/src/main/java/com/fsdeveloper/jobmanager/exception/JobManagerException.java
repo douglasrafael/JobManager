@@ -1,7 +1,7 @@
 package com.fsdeveloper.jobmanager.exception;
 
 /**
- * Class to manage exceptions of type validation of the system.
+ * Class to manage overall system exceptions.
  *
  * @author Created by Douglas Rafael on 22/04/2016.
  * @version 1.0

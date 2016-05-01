@@ -1,6 +1,5 @@
 package com.fsdeveloper.jobmanager.bean;
 
-
 import java.io.Serializable;
 
 /**

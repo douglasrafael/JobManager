@@ -3,9 +3,9 @@ package com.fsdeveloper.jobmanager.dao;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
 import com.fsdeveloper.jobmanager.bean.User;
+import com.fsdeveloper.jobmanager.exception.ConnectionException;
 import com.fsdeveloper.jobmanager.exception.JobManagerException;
 
 import java.util.ArrayList;
@@ -30,8 +30,10 @@ public class UserDao extends DBManager implements Dao<User> {
      * Class constructor, create instance of class DatabaseHelper.
      *
      * @param context Abstract class whose implementation is provided by Android system.
+     * @throws JobManagerException If there is a general exception of the system.
+     * @throws ConnectionException If there is one exception of database connection.
      */
-    public UserDao(Context context) throws JobManagerException {
+    public UserDao(Context context) throws JobManagerException, ConnectionException {
         super(context);
     }
 

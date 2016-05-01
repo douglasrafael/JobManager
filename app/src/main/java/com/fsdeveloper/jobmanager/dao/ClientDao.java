@@ -209,6 +209,7 @@ public class ClientDao extends DBManager implements Dao<Client> {
      *
      * @param cursor It contains data.
      * @return The client.
+     * @throws JobManagerException If there is a general exception of the system.
      */
     private Client createClient(Cursor cursor) throws JobManagerException {
         Client client = new Client();

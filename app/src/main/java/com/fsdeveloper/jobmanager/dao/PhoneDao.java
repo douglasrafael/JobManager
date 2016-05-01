@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.fsdeveloper.jobmanager.bean.Phone;
+import com.fsdeveloper.jobmanager.exception.ConnectionException;
 import com.fsdeveloper.jobmanager.exception.JobManagerException;
 
 import java.util.ArrayList;
@@ -30,8 +31,10 @@ public class PhoneDao extends DBManager implements Dao<Phone> {
      * Class constructor.
      *
      * @param context Abstract class whose implementation is provided by Android system.
+     * @throws JobManagerException If there is a general exception of the system.
+     * @throws ConnectionException If there is one exception of database connection.
      */
-    public PhoneDao(Context context) throws JobManagerException {
+    public PhoneDao(Context context) throws JobManagerException, ConnectionException {
         super(context);
         this.context = context;
     }
@@ -125,15 +128,21 @@ public class PhoneDao extends DBManager implements Dao<Phone> {
      *
      * @param cursor It contains data.
      * @return The Phone.
+     * @throws JobManagerException If there is a general exception of the system.
      */
     private Phone createPhone(Cursor cursor) throws JobManagerException {
         Phone phone = new Phone();
-        PhoneTypeDao type = new PhoneTypeDao(context);
 
-        phone.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ID)));
-        phone.setNumber(cursor.getString(cursor.getColumnIndex(DatabaseHelper.PHONE_NUMBER)));
-        phone.setClient_id(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.CLIENT_ID)));
-        phone.setType(type.getById(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.PHONE_TYPE_ID))));
+        try {
+            PhoneTypeDao type = new PhoneTypeDao(context);
+
+            phone.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ID)));
+            phone.setNumber(cursor.getString(cursor.getColumnIndex(DatabaseHelper.PHONE_NUMBER)));
+            phone.setClient_id(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.CLIENT_ID)));
+            phone.setType(type.getById(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.PHONE_TYPE_ID))));
+        } catch (ConnectionException e) {
+            e.printStackTrace();
+        }
 
         return phone;
     }

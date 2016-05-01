@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.fsdeveloper.jobmanager.bean.JobCategory;
+import com.fsdeveloper.jobmanager.exception.ConnectionException;
 import com.fsdeveloper.jobmanager.exception.JobManagerException;
 
 import java.util.ArrayList;
@@ -27,8 +28,10 @@ public class JobCategoryDao extends DBManager implements Dao<JobCategory> {
      * Class constructor.
      *
      * @param context Abstract class whose implementation is provided by Android system.
+     * @throws JobManagerException If there is a general exception of the system.
+     * @throws ConnectionException If there is one exception of database connection.
      */
-    public JobCategoryDao(Context context) throws JobManagerException {
+    public JobCategoryDao(Context context) throws JobManagerException, ConnectionException {
         super(context);
     }
 
