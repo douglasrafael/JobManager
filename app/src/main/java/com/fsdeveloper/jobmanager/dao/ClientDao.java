@@ -32,7 +32,7 @@ public class ClientDao extends DBManager implements Dao<Client> {
     };
 
     /**
-     * Class constructor, create instance of class DatabaseHelper.
+     * Class constructor.
      *
      * @param context Abstract class whose implementation is provided by Android system.
      */
@@ -49,13 +49,12 @@ public class ClientDao extends DBManager implements Dao<Client> {
         // Select all clients of the user
         Cursor cursor = db.query(DatabaseHelper.TABLE_CLIENT, columns, DatabaseHelper.USER_ID + "=?", new String[]{String.valueOf(user_id)}, null, null, DatabaseHelper.CLIENT_FIRST_NAME);
 
-        if (cursor != null) {
+        if (cursor != null && cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
                 result.add(createClient(cursor));
             }
             cursor.close();
         }
-        DBClose();
 
         return result;
     }
@@ -67,13 +66,12 @@ public class ClientDao extends DBManager implements Dao<Client> {
 
         Cursor cursor = db.query(DatabaseHelper.TABLE_CLIENT, columns, DatabaseHelper.ID + "=?", new String[]{String.valueOf(_id)}, null, null, null);
 
-        if (cursor != null) {
+        if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
             client = createClient(cursor);
 
             cursor.close();
         }
-        DBClose();
 
         return client;
     }
@@ -109,7 +107,6 @@ public class ClientDao extends DBManager implements Dao<Client> {
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
-            DBClose();
         }
 
         return (int) _id;
@@ -135,20 +132,21 @@ public class ClientDao extends DBManager implements Dao<Client> {
                 values.put(DatabaseHelper.USER_ID, o.getUser_id());
                 values.put(DatabaseHelper.CREATED_AT, o.getCreated_at());
 
-                // remove client phones
-                if (old_client.getPhoneList().size() > 0) {
-                    PhoneDao phone = new PhoneDao(context);
-                    for (Phone p : o.getPhoneList()) {
-                        phone.delete(p);
-                    }
-                }
+                if (!old_client.getPhoneList().equals(o.getPhoneList())) {
 
-                // inserting client phones
-                if (o.getPhoneList().size() > 0) {
+                    // remove client phones
                     PhoneDao phone = new PhoneDao(context);
+                    if (old_client.getPhoneList().size() > 0) {
+                        for (Phone p : old_client.getPhoneList()) {
+                            phone.delete(p);
+                        }
+                    }
+
+                    // inserting client phones
                     for (Phone p : o.getPhoneList()) {
                         phone.insert(p);
                     }
+
                 }
 
                 // update client
@@ -162,7 +160,6 @@ public class ClientDao extends DBManager implements Dao<Client> {
 
             } finally {
                 db.endTransaction();
-                DBClose();
             }
         }
 
@@ -173,23 +170,26 @@ public class ClientDao extends DBManager implements Dao<Client> {
     public boolean delete(Client o) throws JobManagerException {
         mGetWritableDatabase();
 
-        try {
-            int rowsAffected = db.delete(DatabaseHelper.TABLE_CLIENT, DatabaseHelper.ID + "=?", new String[]{String.valueOf(o.getId())});
+        int rowsAffected = db.delete(DatabaseHelper.TABLE_CLIENT, DatabaseHelper.ID + "=?", new String[]{String.valueOf(o.getId())});
 
-            // Verifies that was successfully deleted
-            if (rowsAffected == 1) {
-                return true;
-            }
-        } finally {
-            DBClose();
-        }
-
-        return false;
+        // Verifies that was successfully deleted
+        return rowsAffected == 1;
     }
 
     @Override
     public List<Client> search_all(String s, int _id) throws JobManagerException {
-        return null;
+        List<Client> result = new ArrayList<>();
+
+        Cursor cursor = db.query(true, DatabaseHelper.TABLE_CLIENT, columns, DatabaseHelper.NAME + " LIKE ?", new String[]{s + "%"}, null, null, null, null);
+
+        if (cursor != null && cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                result.add(createClient(cursor));
+            }
+            cursor.close();
+        }
+
+        return result;
     }
 
     @Override
