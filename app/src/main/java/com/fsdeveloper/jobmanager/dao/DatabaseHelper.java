@@ -1,7 +1,6 @@
 package com.fsdeveloper.jobmanager.dao;
 
 import android.content.Context;
-import android.content.Loader;
 import android.content.res.Resources;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -213,6 +212,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return query;
     }
 
+    /**
+     * Insert phone types default.
+     *
+     * @return SQL inserting phone types default.
+     */
     public String insertTypesPphone() {
         String query = "";
 
