@@ -24,7 +24,7 @@ public class PhoneTypeDao extends DBManager implements Dao<PhoneType> {
     };
 
     /**
-     * Class constructor, create instance of class DatabaseHelper.
+     * Class constructor.
      *
      * @param context Abstract class whose implementation is provided by Android system.
      */
