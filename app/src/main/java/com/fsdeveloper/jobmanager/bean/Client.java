@@ -249,7 +249,8 @@ public class Client implements Serializable {
                 ", address='" + address + '\'' +
                 ", rating=" + rating +
                 ", user_id=" + user_id +
-                ", phoneList=" + phoneList.toString() +
+                ", created_at='" + created_at + '\'' +
+                ", phoneList=" + phoneList +
                 '}';
     }
 
