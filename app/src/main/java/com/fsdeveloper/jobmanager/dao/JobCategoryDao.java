@@ -145,7 +145,7 @@ public class JobCategoryDao extends DBManager implements Dao<JobCategory> {
      * @return Categories of job.
      * @throws JobManagerException If there is an exception.
      */
-    public List<JobCategory> getCategoriesJob(int protocol_job) throws JobManagerException {
+    public List<JobCategory> getCategoriesJob(String protocol_job) throws JobManagerException {
         mGetReadableDatabase();
         List<JobCategory> result = new ArrayList<>();
 

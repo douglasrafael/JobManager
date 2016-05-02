@@ -4,9 +4,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.fsdeveloper.jobmanager.R;
 import com.fsdeveloper.jobmanager.bean.User;
 import com.fsdeveloper.jobmanager.exception.ConnectionException;
 import com.fsdeveloper.jobmanager.exception.JobManagerException;
+import com.fsdeveloper.jobmanager.tool.MyDataTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +18,7 @@ import java.util.List;
  * @version 1.0
  */
 public class UserDao extends DBManager implements Dao<User> {
+    private Context context;
 
     private String[] columns = {
             DatabaseHelper.ID,
@@ -35,6 +38,7 @@ public class UserDao extends DBManager implements Dao<User> {
      */
     public UserDao(Context context) throws JobManagerException, ConnectionException {
         super(context);
+        this.context = context;
     }
 
     @Override
@@ -68,7 +72,7 @@ public class UserDao extends DBManager implements Dao<User> {
         values.put(DatabaseHelper.NAME, o.getName());
         values.put(DatabaseHelper.EMAIL, o.getEmail());
         values.put(DatabaseHelper.USER_PASSWORD, o.getPassword());
-        values.put(DatabaseHelper.CREATED_AT, o.getCreated_at());
+        values.put(DatabaseHelper.CREATED_AT, MyDataTime.getDataTime(context.getResources().getString(R.string.date_time_bd)));
 
         long _id = db.insert(DatabaseHelper.TABLE_USER, null, values);
 

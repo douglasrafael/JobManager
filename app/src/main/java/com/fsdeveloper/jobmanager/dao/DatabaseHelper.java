@@ -9,15 +9,13 @@ import android.util.Log;
 
 import com.fsdeveloper.jobmanager.R;
 
-import java.io.IOException;
-
 /**
  * Create or update the database SQLite.
  *
  * @author Created by Douglas Rafael on 23/04/2016.
  * @version 1.0
  */
-public class DatabaseHelper extends SQLiteOpenHelper {
+public final class DatabaseHelper extends SQLiteOpenHelper {
     private static Resources res;
     private static Context context;
     private static DatabaseHelper myInstance;

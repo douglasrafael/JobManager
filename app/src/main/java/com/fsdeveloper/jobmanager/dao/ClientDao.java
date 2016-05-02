@@ -4,10 +4,12 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.fsdeveloper.jobmanager.R;
 import com.fsdeveloper.jobmanager.bean.Client;
 import com.fsdeveloper.jobmanager.bean.Phone;
 import com.fsdeveloper.jobmanager.exception.ConnectionException;
 import com.fsdeveloper.jobmanager.exception.JobManagerException;
+import com.fsdeveloper.jobmanager.tool.MyDataTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,7 +93,7 @@ public class ClientDao extends DBManager implements Dao<Client> {
         values.put(DatabaseHelper.CLIENT_ADDRESS, o.getAddress());
         values.put(DatabaseHelper.CLIENT_RATING, o.getRating());
         values.put(DatabaseHelper.USER_ID, o.getUser_id());
-        values.put(DatabaseHelper.CREATED_AT, o.getCreated_at());
+        values.put(DatabaseHelper.CREATED_AT, MyDataTime.getDataTime(context.getResources().getString(R.string.date_time_bd)));
 
         db.beginTransaction();
         try {
@@ -135,7 +137,6 @@ public class ClientDao extends DBManager implements Dao<Client> {
                 values.put(DatabaseHelper.CLIENT_ADDRESS, o.getAddress());
                 values.put(DatabaseHelper.CLIENT_RATING, o.getRating());
                 values.put(DatabaseHelper.USER_ID, o.getUser_id());
-                values.put(DatabaseHelper.CREATED_AT, o.getCreated_at());
 
                 if (!old_client.getPhoneList().equals(o.getPhoneList())) {
 
