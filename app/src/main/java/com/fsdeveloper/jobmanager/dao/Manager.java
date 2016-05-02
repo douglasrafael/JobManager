@@ -183,7 +183,7 @@ public class Manager {
      * @return The list of categories.
      * @throws JobManagerException If there is an exception.
      */
-    public List<JobCategory> getCategoriesJob(int protocol) throws JobManagerException {
+    public List<JobCategory> getCategoriesJob(String protocol) throws JobManagerException {
         return category.getCategoriesJob(protocol);
     }
 
@@ -285,6 +285,74 @@ public class Manager {
      */
     public Job getJobByProtocol(String protocol) throws JobManagerException {
         return job.getByProtocol(protocol);
+    }
+
+    // TODO - Methods of ClientDao
+    /**
+     * Select the job list.
+     *
+     * @param user_id The job id.
+     * @return The list of jobs.
+     * @throws JobManagerException If there is an exception.
+     */
+    public List<Job> listOfJobs(int user_id) throws JobManagerException {
+        return job.list(user_id);
+    }
+
+    /**
+     * Select job.
+     *
+     * @param protocol The protocol of job.
+     * @return The job.
+     * @throws JobManagerException If there is an exception.
+     */
+    public Job getJob(String protocol) throws  JobManagerException {
+        return job.getByProtocol(protocol);
+    }
+
+    /**
+     * Insert new job.
+     *
+     * @param j The job.
+     * @return The id inserted or -1 if fail.
+     * @throws JobManagerException If there is an exception.
+     */
+    public int insertJob(Job j) throws JobManagerException {
+        return job.insert(j);
+    }
+
+    /**
+     * Update the job.
+     *
+     * @param j The job.
+     * @return True if updated and False if not.
+     * @throws JobManagerException If there is an exception.
+     */
+    public boolean updateJob(Job j) throws JobManagerException {
+        return job.update(j);
+    }
+
+    /**
+     * Delete the job.
+     *
+     * @param j The job.
+     * @return True if updated and False if not.
+     * @throws JobManagerException If there is an exception.
+     */
+    public boolean deleteJob(Job j) throws JobManagerException {
+        return job.delete(j);
+    }
+
+    /**
+     * Search user clients according to the string.
+     *
+     * @param s The string/term searching.
+     * @param user_id The user id.
+     * @return The list of clients.
+     * @throws JobManagerException If there is an exception.
+     */
+    public List<Job> searchAllJob(String s, int user_id) throws JobManagerException {
+        return job.search_all(s, user_id);
     }
 
 }
