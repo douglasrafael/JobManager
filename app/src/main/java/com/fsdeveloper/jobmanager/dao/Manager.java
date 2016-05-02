@@ -287,7 +287,6 @@ public class Manager {
         return job.getByProtocol(protocol);
     }
 
-    // TODO - Methods of ClientDao
     /**
      * Select the job list.
      *
