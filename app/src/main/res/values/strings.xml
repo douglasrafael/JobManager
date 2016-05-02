@@ -16,6 +16,15 @@
         completions."
     </string>
 
+    <!-- String related to date time -->
+    <string name="date_time_default">MMMM dd, yyyy</string>
+    <string name="date_time_bd">yyyy-MM-dd HH:mm:ss</string>
+    <string name="date_time">yyyy/MM/dd HH:mm:ss</string>
+    <string name="date_1">yyyy/MM/dd</string>
+    <string name="date_2">yyyy-MM-dd</string>
+    <string name="time">HH:mm</string>
+
+    <!-- Array related to categories -->
     <string-array name="categories_default">
         <item>Maintenance</item>
         <item>Development</item>
@@ -29,6 +38,7 @@
         <item>Other</item>
     </string-array>
 
+    <!-- Array related to types phone -->
     <string-array name="types_phone">
         <item>Mobile</item>
         <item>Work</item>
