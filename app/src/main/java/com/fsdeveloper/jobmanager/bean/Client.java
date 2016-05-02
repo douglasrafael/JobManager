@@ -57,10 +57,9 @@ public class Client implements Serializable {
      * @param address    The address of client.
      * @param rating     The rating of client.
      * @param user_id    The id of user.
-     * @param created_at The data time created.
      * @param phoneList  The phone list
      */
-    public Client(String first_name, String last_name, String email, String address, int rating, int user_id, String created_at, List<Phone> phoneList) {
+    public Client(String first_name, String last_name, String email, String address, int rating, int user_id, List<Phone> phoneList) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.email = email;
