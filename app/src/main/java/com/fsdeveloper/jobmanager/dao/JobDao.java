@@ -4,14 +4,15 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.fsdeveloper.jobmanager.R;
 import com.fsdeveloper.jobmanager.bean.Job;
 import com.fsdeveloper.jobmanager.bean.JobCategory;
 import com.fsdeveloper.jobmanager.exception.ConnectionException;
 import com.fsdeveloper.jobmanager.exception.JobManagerException;
+import com.fsdeveloper.jobmanager.tool.MyDataTime;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Random;
 
@@ -31,6 +32,7 @@ public class JobDao extends DBManager implements Dao<Job> {
             DatabaseHelper.JOB_EXPENSE,
             DatabaseHelper.JOB_FINALIZED_AT,
             DatabaseHelper.CREATED_AT,
+            DatabaseHelper.JOB_UPDATE_AT,
             DatabaseHelper.USER_ID,
             DatabaseHelper.CLIENT_ID
     };
@@ -46,7 +48,7 @@ public class JobDao extends DBManager implements Dao<Job> {
         mGetReadableDatabase();
 
         // Select all clients of the user
-        Cursor cursor = db.query(DatabaseHelper.TABLE_JOB, columns, DatabaseHelper.USER_ID + "=?", new String[]{String.valueOf(user_id)}, null, null, DatabaseHelper.CLIENT_FIRST_NAME);
+        Cursor cursor = db.query(DatabaseHelper.TABLE_JOB, columns, DatabaseHelper.USER_ID + "=?", new String[]{String.valueOf(user_id)}, null, null, DatabaseHelper.CREATED_AT);
 
         if (cursor != null && cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
@@ -97,15 +99,21 @@ public class JobDao extends DBManager implements Dao<Job> {
         values.put(DatabaseHelper.JOB_PRICE, o.getPrice());
         values.put(DatabaseHelper.JOB_EXPENSE, o.getExpense());
         values.put(DatabaseHelper.JOB_FINALIZED_AT, o.getFinalized_at());
-        values.put(DatabaseHelper.CREATED_AT, o.getCreated_at()); // ========== GET DATA CURRENT ========
-        values.put(DatabaseHelper.JOB_UPDATE_AT, o.getUpdated_at());
+        values.put(DatabaseHelper.CREATED_AT, MyDataTime.getDataTime(context.getResources().getString(R.string.date_time_bd)));
         values.put(DatabaseHelper.USER_ID, o.getUser_id());
-        values.put(DatabaseHelper.CLIENT_ID, o.getClient_id());
+        values.put(DatabaseHelper.CLIENT_ID, o.getClient().getId());
 
         db.beginTransaction();
         try {
+            // inserting of client if not exist
+            ClientDao client = new ClientDao(context);
+
+            if(client.getById(o.getClient_id()) == null) {
+                client.insert(o.getClient());
+            }
+
             // Inserting of job
-            _id = db.insert(DatabaseHelper.TABLE_CLIENT, null, values);
+            _id = db.insert(DatabaseHelper.TABLE_JOB, null, values);
 
             // Associates the categories to job
             if (o.getCategories().size() > 0) {
@@ -121,6 +129,8 @@ public class JobDao extends DBManager implements Dao<Job> {
             }
 
             db.setTransactionSuccessful();
+        } catch (ConnectionException e) {
+            e.printStackTrace();
         } finally {
             db.endTransaction();
         }
@@ -130,6 +140,41 @@ public class JobDao extends DBManager implements Dao<Job> {
 
     @Override
     public boolean update(Job o) throws JobManagerException {
+        mGetWritableDatabase();
+
+        Job old_job = getByProtocol(o.getProtocol());
+
+        // Checks for data to be actually changed.
+        if (!old_job.equals(o)) {
+            db.beginTransaction();
+
+            try {
+                ContentValues values = new ContentValues();
+                values.put(DatabaseHelper.TITLE, o.getTitle());
+                values.put(DatabaseHelper.JOB_DESCRIPTION, o.getDescription());
+                values.put(DatabaseHelper.JOB_NOTE, o.getNote());
+                values.put(DatabaseHelper.JOB_PRICE, o.getPrice());
+                values.put(DatabaseHelper.JOB_EXPENSE, o.getExpense());
+                values.put(DatabaseHelper.JOB_FINALIZED_AT, o.getFinalized_at());
+                values.put(DatabaseHelper.JOB_UPDATE_AT, MyDataTime.getDataTime(context.getResources().getString(R.string.date_time_bd)));
+                values.put(DatabaseHelper.USER_ID, o.getUser_id());
+                values.put(DatabaseHelper.CLIENT_ID, o.getClient_id());
+
+
+                // update job
+                int rowsAffected = db.update(DatabaseHelper.TABLE_JOB, values, DatabaseHelper.JOB_PROTOCOL + "=?", new String[]{String.valueOf(o.getProtocol())});
+
+                // Verifies that was successfully updated
+                if (rowsAffected == 1) {
+                    db.setTransactionSuccessful();
+                    return true;
+                }
+
+            } finally {
+                db.endTransaction();
+            }
+        }
+
         return false;
     }
 
@@ -166,14 +211,13 @@ public class JobDao extends DBManager implements Dao<Job> {
      * @throws JobManagerException If there is a general exception of the system.
      */
     public String generateProtocol() throws JobManagerException {
-        Calendar cal = GregorianCalendar.getInstance();
         Random r = new Random();
 
-        String protocol = String.valueOf(cal.get(Calendar.YEAR));
+        String protocol = String.valueOf(MyDataTime.getCalendar().get(Calendar.YEAR));
 
         while (protocol.length() < 10) {
             // generate number [0, 10)
-            protocol += r.nextInt(10) * cal.get(Calendar.SECOND);
+            protocol += r.nextInt(10) * MyDataTime.getCalendar().get(Calendar.SECOND);
         }
 
         protocol = protocol.substring(0, 10);
@@ -215,6 +259,10 @@ public class JobDao extends DBManager implements Dao<Job> {
         job.setClient_id(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.CLIENT_ID)));
 
         try {
+            // get all categories
+            job.setCategories(new JobCategoryDao(context).getCategoriesJob(job.getProtocol()));
+
+            // get Client
             job.setClient(new ClientDao(context).getById(job.getClient_id()));
         } catch (ConnectionException e) {
             e.printStackTrace();
