@@ -39,10 +39,10 @@ public class Job implements Serializable {
      * @param finalized_at The date and time that was finalized.
      * @param created_at   The date and time that was created.
      * @param user_id      The id of user who made the job.
-     * @param client_id    The id of client that requested the job.
+     * @param client       The client.
      * @param categories   The categories of job.
      */
-    public Job(String protocol, String title, String description, String note, Double price, Double expense, String finalized_at, String created_at, int user_id, int client_id, List<JobCategory> categories) {
+    public Job(String protocol, String title, String description, String note, Double price, Double expense, String finalized_at, String created_at, int user_id, Client client, List<JobCategory> categories) {
         this.protocol = protocol;
         this.title = title;
         this.description = description;
@@ -52,7 +52,7 @@ public class Job implements Serializable {
         this.finalized_at = finalized_at;
         this.created_at = created_at;
         this.user_id = user_id;
-        this.client_id = client_id;
+        this.client = client;
         this.categories = categories;
     }
 
@@ -309,7 +309,6 @@ public class Job implements Serializable {
                 ", created_at='" + created_at + '\'' +
                 ", updated_at='" + updated_at + '\'' +
                 ", user_id=" + user_id +
-                ", client_id=" + client_id +
                 ", client=" + client +
                 ", categories=" + categories +
                 '}';
