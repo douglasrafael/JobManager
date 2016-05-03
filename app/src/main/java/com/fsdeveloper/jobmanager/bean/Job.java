@@ -316,17 +316,31 @@ public class Job implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
         Job job = (Job) o;
 
-        return (protocol == job.protocol && title.equals(job.title) && user_id == job.user_id && client_id == job.client_id);
+        if (user_id != job.user_id) return false;
+        if (client_id != job.client_id) return false;
+        if (protocol != null ? !protocol.equals(job.protocol) : job.protocol != null) return false;
+        if (title != null ? !title.equals(job.title) : job.title != null) return false;
+        if (description != null ? !description.equals(job.description) : job.description != null)
+            return false;
+        if (note != null ? !note.equals(job.note) : job.note != null) return false;
+        if (price != null ? !price.equals(job.price) : job.price != null) return false;
+        if (expense != null ? !expense.equals(job.expense) : job.expense != null) return false;
+        if (finalized_at != null ? !finalized_at.equals(job.finalized_at) : job.finalized_at != null)
+            return false;
+        if (created_at != null ? !created_at.equals(job.created_at) : job.created_at != null)
+            return false;
+        if (updated_at != null ? !updated_at.equals(job.updated_at) : job.updated_at != null)
+            return false;
+        if (client != null ? !client.equals(job.client) : job.client != null) return false;
+        if (categories != null ? !categories.equals(job.categories) : job.categories != null)
+            return false;
+
+        return true;
     }
 
     @Override
