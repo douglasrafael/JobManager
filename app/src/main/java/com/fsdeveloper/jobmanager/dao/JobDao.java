@@ -3,6 +3,8 @@ package com.fsdeveloper.jobmanager.dao;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
+import android.util.Log;
 
 import com.fsdeveloper.jobmanager.R;
 import com.fsdeveloper.jobmanager.bean.Job;
@@ -48,7 +50,7 @@ public class JobDao extends DBManager implements Dao<Job> {
         mGetReadableDatabase();
 
         // Select all clients of the user
-        Cursor cursor = db.query(DatabaseHelper.TABLE_JOB, columns, DatabaseHelper.USER_ID + "=?", new String[]{String.valueOf(user_id)}, null, null, DatabaseHelper.CREATED_AT);
+        Cursor cursor = db.query(DatabaseHelper.TABLE_JOB, columns, DatabaseHelper.USER_ID + "=?", new String[]{String.valueOf(user_id)}, null, null, DatabaseHelper.CREATED_AT + " DESC");
 
         if (cursor != null && cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
@@ -92,14 +94,14 @@ public class JobDao extends DBManager implements Dao<Job> {
         long _id = 0;
 
         ContentValues values = new ContentValues();
-        values.put(DatabaseHelper.JOB_PROTOCOL, generateProtocol());
+        values.put(DatabaseHelper.JOB_PROTOCOL, o.getProtocol());
         values.put(DatabaseHelper.TITLE, o.getTitle());
         values.put(DatabaseHelper.JOB_DESCRIPTION, o.getDescription());
         values.put(DatabaseHelper.JOB_NOTE, o.getNote());
         values.put(DatabaseHelper.JOB_PRICE, o.getPrice());
         values.put(DatabaseHelper.JOB_EXPENSE, o.getExpense());
         values.put(DatabaseHelper.JOB_FINALIZED_AT, o.getFinalized_at());
-        values.put(DatabaseHelper.CREATED_AT, MyDataTime.getDataTime(context.getResources().getString(R.string.date_time_bd)));
+        values.put(DatabaseHelper.CREATED_AT, o.getCreated_at());
         values.put(DatabaseHelper.USER_ID, o.getUser_id());
         values.put(DatabaseHelper.CLIENT_ID, o.getClient().getId());
 
@@ -108,25 +110,25 @@ public class JobDao extends DBManager implements Dao<Job> {
             // inserting of client if not exist
             ClientDao client = new ClientDao(context);
 
-            if(client.getById(o.getClient_id()) == null) {
-                client.insert(o.getClient());
+            if (o.getClient_id() <= 0) {
+                int client_id = client.insert(o.getClient());
+                // set id the new client
+                values.put(DatabaseHelper.CLIENT_ID, client_id);
             }
-
-            // Inserting of job
-            _id = db.insert(DatabaseHelper.TABLE_JOB, null, values);
 
             // Associates the categories to job
             if (o.getCategories().size() > 0) {
-                ContentValues valuesCategory;
-
                 for (JobCategory c : o.getCategories()) {
-                    valuesCategory = new ContentValues();
+                    ContentValues valuesCategory = new ContentValues();
 
                     valuesCategory.put(DatabaseHelper.JOB_HAS_JOB_CATEGORY_JOB_PROTOCOL, o.getProtocol());
                     valuesCategory.put(DatabaseHelper.JOB_HAS_JOB_CATEGORY_JOB_CATEGORY_ID, c.getId());
                     db.insert(DatabaseHelper.TABLE_JOB_HAS_JOB_CATEGORY, null, valuesCategory);
                 }
             }
+
+            // Inserting of job
+            _id = db.insert(DatabaseHelper.TABLE_JOB, null, values);
 
             db.setTransactionSuccessful();
         } catch (ConnectionException e) {
@@ -157,9 +159,33 @@ public class JobDao extends DBManager implements Dao<Job> {
                 values.put(DatabaseHelper.JOB_EXPENSE, o.getExpense());
                 values.put(DatabaseHelper.JOB_FINALIZED_AT, o.getFinalized_at());
                 values.put(DatabaseHelper.JOB_UPDATE_AT, MyDataTime.getDataTime(context.getResources().getString(R.string.date_time_bd)));
-                values.put(DatabaseHelper.USER_ID, o.getUser_id());
                 values.put(DatabaseHelper.CLIENT_ID, o.getClient_id());
 
+                // inserting of client if not exist
+                ClientDao client = new ClientDao(context);
+
+                if (o.getClient().getId() <= 0) {
+                    int client_id = client.insert(o.getClient());
+                    // set id the new client
+                    values.put(DatabaseHelper.CLIENT_ID, client_id);
+                }
+
+                if (!old_job.getCategories().equals(o.getCategories())) {
+                    // Removes the association of former categories
+                    if (old_job.getCategories().size() > 0) {
+                        db.delete(DatabaseHelper.TABLE_JOB_HAS_JOB_CATEGORY, DatabaseHelper.JOB_HAS_JOB_CATEGORY_JOB_PROTOCOL + "=?", new String[]{o.getProtocol()});
+                    }
+                    // Associates the categories to job
+                    if (o.getCategories().size() > 0) {
+                        for (JobCategory c : o.getCategories()) {
+                            ContentValues valuesCategory = new ContentValues();
+
+                            valuesCategory.put(DatabaseHelper.JOB_HAS_JOB_CATEGORY_JOB_PROTOCOL, o.getProtocol());
+                            valuesCategory.put(DatabaseHelper.JOB_HAS_JOB_CATEGORY_JOB_CATEGORY_ID, c.getId());
+                            db.insert(DatabaseHelper.TABLE_JOB_HAS_JOB_CATEGORY, null, valuesCategory);
+                        }
+                    }
+                }
 
                 // update job
                 int rowsAffected = db.update(DatabaseHelper.TABLE_JOB, values, DatabaseHelper.JOB_PROTOCOL + "=?", new String[]{String.valueOf(o.getProtocol())});
@@ -170,6 +196,8 @@ public class JobDao extends DBManager implements Dao<Job> {
                     return true;
                 }
 
+            } catch (ConnectionException e) {
+                e.printStackTrace();
             } finally {
                 db.endTransaction();
             }
@@ -178,19 +206,75 @@ public class JobDao extends DBManager implements Dao<Job> {
         return false;
     }
 
+    /**
+     * Sets the job as completed.
+     *
+     * @param protocol The job protocol.
+     * @return True if updated and False if not.
+     * @throws JobManagerException If there is a general exception of the system.
+     */
+    public boolean setFinalized(String protocol) throws JobManagerException {
+        mGetWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(DatabaseHelper.JOB_FINALIZED_AT, MyDataTime.getDataTime(context.getResources().getString(R.string.date_time_bd)));
+
+        int rowsAffected = db.update(DatabaseHelper.TABLE_JOB, values, DatabaseHelper.JOB_PROTOCOL + "=?", new String[]{protocol});
+
+        // Verifies that was successfully updated
+        return rowsAffected == 1;
+    }
+
     @Override
     public boolean delete(Job o) throws JobManagerException {
-        return false;
+        mGetWritableDatabase();
+
+        int rowsAffected = db.delete(DatabaseHelper.TABLE_JOB, DatabaseHelper.JOB_PROTOCOL + "=?", new String[]{String.valueOf(o.getProtocol())});
+
+        // Verifies that was successfully deleted
+        return rowsAffected == 1;
     }
 
     @Override
     public List<Job> search_all(String s, int _id) throws JobManagerException {
-        return null;
+        List<Job> result = new ArrayList<>();
+
+        Cursor cursor = db.query(true, DatabaseHelper.TABLE_JOB, columns, DatabaseHelper.TITLE + " LIKE ?", new String[]{s + "%"}, null, null, null, null);
+
+        if (cursor != null && cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                result.add(createJob(cursor));
+            }
+            cursor.close();
+        }
+
+        return result;
     }
 
     @Override
     public int size(int _id) throws JobManagerException {
-        return 0;
+        mGetReadableDatabase();
+
+        long number = DatabaseUtils.queryNumEntries(db, DatabaseHelper.TABLE_JOB, DatabaseHelper.USER_ID + "=?", new String[]{String.valueOf(_id)});
+
+        return (int) number;
+    }
+
+    /**
+     * Returns the total number of jobs performed to the client.
+     *
+     * @param user_id   The user id.
+     * @param client_id The client id.
+     * @return The number of jobs.
+     * @throws JobManagerException If there is a general exception of the system.
+     */
+    public int numberJobClient(int user_id, int client_id) throws JobManagerException {
+        mGetReadableDatabase();
+
+        long number = DatabaseUtils.queryNumEntries(db, DatabaseHelper.TABLE_JOB, DatabaseHelper.USER_ID + "=? AND " + DatabaseHelper.CLIENT_ID + "=?",
+                new String[]{String.valueOf(user_id), String.valueOf(client_id)});
+
+        return (int) number;
     }
 
     /**
@@ -203,7 +287,7 @@ public class JobDao extends DBManager implements Dao<Job> {
      * @throws JobManagerException If there is a general exception of the system.
      */
     public boolean protocolIsUnique(String protocol) throws JobManagerException {
-        return getByProtocol(protocol) != null;
+        return getByProtocol(protocol) == null;
     }
 
     /**
@@ -216,7 +300,7 @@ public class JobDao extends DBManager implements Dao<Job> {
         String protocol = String.valueOf(MyDataTime.getCalendar().get(Calendar.YEAR));
 
         while (protocol.length() < 10) {
-            // generate number [0, 10)
+            // r.nextInt(10) >> generate number [0, 10) * SECOND
             protocol += r.nextInt(10) * MyDataTime.getCalendar().get(Calendar.SECOND);
         }
 
@@ -224,8 +308,7 @@ public class JobDao extends DBManager implements Dao<Job> {
 
         // Verifies that the protocol already exists
         try {
-            mGetReadableDatabase();
-            if (new JobDao(context).getByProtocol(protocol) != null) {
+            if (!new JobDao(context).protocolIsUnique(protocol)) {
                 return generateProtocol();
             }
         } catch (ConnectionException e) {
@@ -234,7 +317,6 @@ public class JobDao extends DBManager implements Dao<Job> {
 
         return protocol;
     }
-
 
     /**
      * Return built job.
