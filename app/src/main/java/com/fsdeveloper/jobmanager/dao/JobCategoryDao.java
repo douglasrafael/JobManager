@@ -151,16 +151,15 @@ public class JobCategoryDao extends DBManager implements Dao<JobCategory> {
 
         String query = "SELECT " + DatabaseHelper.ID + "," + DatabaseHelper.NAME + " FROM " + DatabaseHelper.TABLE_JOB_CATEGORY + " " +
                 "INNER JOIN " + DatabaseHelper.TABLE_JOB_HAS_JOB_CATEGORY + " ON " + DatabaseHelper.JOB_HAS_JOB_CATEGORY_JOB_CATEGORY_ID + "=" + DatabaseHelper.ID + " " +
-                "WHERE " + DatabaseHelper.JOB_HAS_JOB_CATEGORY_JOB_PROTOCOL + "=" + protocol_job + ";";
+                "WHERE " + DatabaseHelper.JOB_HAS_JOB_CATEGORY_JOB_PROTOCOL + "=?";
 
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = db.rawQuery(query, new String[]{protocol_job});
 
         if (cursor != null && cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
                 JobCategory category = new JobCategory();
                 category.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ID)));
                 category.setName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.NAME)));
-
                 result.add(category);
             }
             cursor.close();
