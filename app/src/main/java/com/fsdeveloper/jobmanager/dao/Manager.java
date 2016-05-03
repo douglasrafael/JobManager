@@ -354,4 +354,36 @@ public class Manager {
         return job.search_all(s, user_id);
     }
 
+    /**
+     * Sets the job as completed.
+     *
+     * @param protocol The protocol of job.
+     * @return True if updated and False if not.
+     * @throws JobManagerException If there is an exception.
+     */
+    public boolean setJobFinalized(String protocol) throws JobManagerException {
+        return job.setFinalized(protocol);
+    }
+
+    /**
+     * Number of user jobs.
+     * @param user_id The user id.
+     * @return The number of jobs.
+     * @throws JobManagerException If there is an exception.
+     */
+    public int sizeJob(int user_id) throws JobManagerException {
+        return job.size(user_id);
+    }
+
+    /**
+     * Returns the total number of jobs performed to the client.
+     *
+     * @param user_id The user id.
+     * @param client_id The client id.
+     * @return The number of jobs.
+     * @throws JobManagerException If there is an exception.
+     */
+    public int numberJobClient(int user_id, int client_id) throws JobManagerException {
+        return job.numberJobClient(user_id,client_id);
+    }
 }
