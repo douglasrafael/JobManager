@@ -43,6 +43,7 @@ public class Manager {
 
 
     // TODO - Methods of ClientDao
+
     /**
      * Select the user client list.
      *
@@ -61,8 +62,8 @@ public class Manager {
      * @return The client.
      * @throws JobManagerException If there is an exception.
      */
-    public Client getClient(int _id) throws  JobManagerException {
-        return  client.getById(_id);
+    public Client getClient(int _id) throws JobManagerException {
+        return client.getById(_id);
     }
 
     /**
@@ -101,7 +102,7 @@ public class Manager {
     /**
      * Search user clients according to the string.
      *
-     * @param s The string/term searching.
+     * @param s       The string/term searching.
      * @param user_id The user id.
      * @return The list of clients.
      * @throws JobManagerException If there is an exception.
@@ -111,6 +112,7 @@ public class Manager {
     }
 
     // TODO - Methods of JobCategoryDao
+
     /**
      * Select the job categories list.
      *
@@ -128,8 +130,8 @@ public class Manager {
      * @return The category.
      * @throws JobManagerException If there is an exception.
      */
-    public JobCategory getCategory(int _id) throws  JobManagerException {
-        return  category.getById(_id);
+    public JobCategory getCategory(int _id) throws JobManagerException {
+        return category.getById(_id);
     }
 
     /**
@@ -188,6 +190,7 @@ public class Manager {
     }
 
     // TODO - Methods of PhoneDao
+
     /**
      * Select the phone list.
      *
@@ -205,8 +208,8 @@ public class Manager {
      * @return The phone.
      * @throws JobManagerException If there is an exception.
      */
-    public Phone getPhone(int _id) throws  JobManagerException {
-        return  phone.getById(_id);
+    public Phone getPhone(int _id) throws JobManagerException {
+        return phone.getById(_id);
     }
 
     /**
@@ -243,6 +246,7 @@ public class Manager {
     }
 
     // TODO - Methods of PhoneTypeDao
+
     /**
      * Select list of phones type.
      *
@@ -305,7 +309,7 @@ public class Manager {
      * @return The job.
      * @throws JobManagerException If there is an exception.
      */
-    public Job getJob(String protocol) throws  JobManagerException {
+    public Job getJob(String protocol) throws JobManagerException {
         return job.getByProtocol(protocol);
     }
 
@@ -345,7 +349,7 @@ public class Manager {
     /**
      * Search user clients according to the string.
      *
-     * @param s The string/term searching.
+     * @param s       The string/term searching.
      * @param user_id The user id.
      * @return The list of clients.
      * @throws JobManagerException If there is an exception.
@@ -367,6 +371,7 @@ public class Manager {
 
     /**
      * Number of user jobs.
+     *
      * @param user_id The user id.
      * @return The number of jobs.
      * @throws JobManagerException If there is an exception.
@@ -378,12 +383,12 @@ public class Manager {
     /**
      * Returns the total number of jobs performed to the client.
      *
-     * @param user_id The user id.
+     * @param user_id   The user id.
      * @param client_id The client id.
      * @return The number of jobs.
      * @throws JobManagerException If there is an exception.
      */
     public int numberJobClient(int user_id, int client_id) throws JobManagerException {
-        return job.numberJobClient(user_id,client_id);
+        return job.numberJobClient(user_id, client_id);
     }
 }
