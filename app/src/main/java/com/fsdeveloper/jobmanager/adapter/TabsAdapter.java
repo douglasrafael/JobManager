@@ -9,6 +9,7 @@ import com.fsdeveloper.jobmanager.R;
 import com.fsdeveloper.jobmanager.fragments.JobListFragment;
 
 /**
+ *
  * @author Created by Douglas Rafael on 08/05/2016.
  * @version 1.0
  */
@@ -29,9 +30,9 @@ public class TabsAdapter extends FragmentPagerAdapter {
             case 0:
                 return new JobListFragment();
             case 1:
-                return null;
+                return new JobListFragment();
             case 2:
-                return null;
+                return new JobListFragment();
         }
         return null;
     }

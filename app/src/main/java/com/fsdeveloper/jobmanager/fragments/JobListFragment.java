@@ -5,11 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -38,17 +33,18 @@ public class JobListFragment extends ListFragment  {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.i("PASSOU", "JOBS");
         try {
             manager = new Manager(getContext());
+            // TODO Mudar pelo id do user
             listOfJobs = manager.listOfJobs(1);
 
-            Log.i("JOBS", listOfJobs.toString());
             setListAdapter(new JobsAdapter(getContext(), listOfJobs));
-        } catch (JobManagerException e) {
-            e.printStackTrace();
         } catch (ConnectionException e) {
             e.printStackTrace();
+            Toast.makeText(getContext(), R.string.error_bd, Toast.LENGTH_LONG).show();
+        } catch (JobManagerException e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), R.string.error_system, Toast.LENGTH_LONG).show();
         }
     }
 

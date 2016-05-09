@@ -1,7 +1,6 @@
 package com.fsdeveloper.jobmanager.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,21 +19,21 @@ import java.util.List;
  */
 public class JobsAdapter extends BaseAdapter {
     Context context;
-    List<Job> listOfjobs;
+    List<Job> listJobs;
 
-    public JobsAdapter(Context context, List<Job> listOfjobs) {
+    public JobsAdapter(Context context, List<Job> listJobs) {
         this.context = context;
-        this.listOfjobs = listOfjobs;
+        this.listJobs = listJobs;
     }
 
     @Override
     public int getCount() {
-        return listOfjobs.size();
+        return listJobs.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return listOfjobs.get(position);
+        return listJobs.get(position);
     }
 
     @Override
@@ -44,10 +43,9 @@ public class JobsAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View view, ViewGroup viewGroup) {
-        Log.i("PASOU POR AQUI", "========================= ====================================");
         View lineView = LayoutInflater.from(context).inflate(R.layout.list_job, null);
 
-        Job job = listOfjobs.get(position);
+        Job job = listJobs.get(position);
 
         TextView title = (TextView) lineView.findViewById(R.id.text_title);
         TextView description = (TextView) lineView.findViewById(R.id.text_desc);
@@ -56,7 +54,7 @@ public class JobsAdapter extends BaseAdapter {
 
         title.setText(job.getTitle());
         description.setText(job.getDescription());
-        price.setText(context.getResources().getString(R.string.currency_symbol) + " " + job.getPrice());
+        price.setText(context.getResources().getString(R.string.currency_symbol, job.getPrice()));
         finalized.setChecked(job.isFinalized());
 
         return lineView;

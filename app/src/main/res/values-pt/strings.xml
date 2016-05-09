@@ -2,6 +2,19 @@
 <resources>
     <string name="app_name">Job Manager</string>
     <string name="action_settings">Configurações</string>
+    <string name="action_search">Pesquisar</string>
+    <string name="action_new">Novo</string>
+    <string name="action_logout">Sair</string>
+    <string name="action_about">Sobre</string>
+    <string name="hint_search">Pesquisar por...</string>
+    <string name="no_job">Nenhum trabalho cadastrado...</string>
+    <string name="no_client">Nenhum cliente cadastrado...</string>
+
+    <string name="currency_symbol">R$ %1$s</string>
+
+    <!-- Strings of system messages -->
+    <string name="error_bd">Ocorreu um erro ao tentar estabelecer conexão com o banco de dados. Tente novamente!</string>
+    <string name="error_system">Desculpe. Ocorreu um erro na aplicação. Tente novamente!</string>
 
     <!-- String related to date time -->
     <string name="date_time_default">dd MMMM de yyyy</string>
@@ -11,6 +24,21 @@
     <string name="date_2">dd-MM-yyyy</string>
     <string name="time">HH:mm</string>
 
+    <!-- String of menu options -->
+    <string name="menu_job">Trabalhos</string>
+    <string name="menu_client">Clientes</string>
+    <string name="menu_balance">Balanço</string>
+    <string name="menu_settings">Configurações</string>
+    <string name="menu_others">Outros</string>
+    <string name="drawer_open">Abrir drawer</string>
+    <string name="drawer_close">Fechar drawer</string>
+
+    <!-- Array related to tabs -->
+    <string-array name="tabs">
+        <item>Trabalhos</item>
+        <item>Clientes</item>
+        <item>Balanço</item>
+    </string-array>
 
     <!-- Array related to categories -->
     <string-array name="categories_default">
@@ -33,4 +61,6 @@
         <item>Casa</item>
         <item>Outros</item>
     </string-array>
+
+
 </resources>

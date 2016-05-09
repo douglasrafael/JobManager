@@ -1,108 +1,200 @@
 package com.fsdeveloper.jobmanager.activity;
 
-import android.content.res.Resources;
+import android.annotation.TargetApi;
+import android.app.SearchManager;
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.TextView;
+import android.view.View;
 
 import com.fsdeveloper.jobmanager.R;
-import com.fsdeveloper.jobmanager.bean.Client;
-import com.fsdeveloper.jobmanager.bean.JobCategory;
-import com.fsdeveloper.jobmanager.bean.Phone;
-import com.fsdeveloper.jobmanager.bean.PhoneType;
-import com.fsdeveloper.jobmanager.bean.User;
-import com.fsdeveloper.jobmanager.dao.ClientDao;
-import com.fsdeveloper.jobmanager.dao.JobCategoryDao;
-import com.fsdeveloper.jobmanager.dao.Manager;
-import com.fsdeveloper.jobmanager.dao.PhoneTypeDao;
-import com.fsdeveloper.jobmanager.dao.UserDao;
-import com.fsdeveloper.jobmanager.exception.ConnectionException;
-import com.fsdeveloper.jobmanager.exception.JobManagerException;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import com.fsdeveloper.jobmanager.fragments.TabFragment;
 
 public class MainActivity extends AppCompatActivity {
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private Toolbar toolbar;
+    private NavigationView mNavigationView;
+    private ViewPager mViewPager;
+    private TabLayout mTabLayout;
+    private FragmentManager mFragmentManager;
+    private FragmentTransaction mFragmentTransaction;
+    private SearchView mSearchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        Log.i("USER", "CHEGOU AQUI");
-        TextView txt = (TextView) findViewById(R.id.categorias);
+        // Set a Toolbar to replace the ActionBar.
+        setupToolbar();
 
-//        JobCategoryDao cat = new JobCategoryDao(this);
+        // Find our drawer view
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.app_name, R.string.app_name);
 
-        User u = new User("AGORA VAI NOVO", "putzzz@mail.com", "156", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-        try {
-            Phone phones = new Phone();
-            Manager manager = new Manager(this);
+        // Tie DrawerLayout events to the ActionBarToggle
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
 
-            List<Phone> listPhones = new ArrayList<>();
+        // Setup drawer view
+        mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
+        setupDrawerContent(mNavigationView);
 
-            PhoneType type = manager.getPhoneType(1);
-            PhoneType type2 = manager.getPhoneType(3);
-            PhoneType type3 = manager.getPhoneType(4);
-            listPhones.add(new Phone("(083) 3331-5590",15, type));
-            listPhones.add(new Phone("(083) 3335-9995", 15,type3));
-            listPhones.add(new Phone("(083) 98770-1515",15,type2));
-
-            Client client = new Client("Fui Atualizado", "Tudo", "fulano@mail.com", "Rua almirante, 62", 0, 1, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()), listPhones);
-            client.setId(15);
-//            if(manager.updateClient(client)){
-//                Log.i("UPDATE:", "Com sucess");
-//            }
-            txt.setText(manager.generateProtocol() + "  ");
-//            txt.setText(manager.searchAllCategory("a").toString());
-
-        } catch (JobManagerException e) {
-            Log.i("Exceção Job Manager", e.getMessage());
-        } catch (ConnectionException e) {
-            e.printStackTrace();
-        }
-
-        Resources res = getResources();
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+        /**
+         * Lets inflate the very first fragment
+         * Here , we are inflating the TabFragment as the first Fragment
+         */
+        mFragmentManager = getSupportFragmentManager();
+        mFragmentTransaction = mFragmentManager.beginTransaction();
+        mFragmentTransaction.replace(R.id.container_view, new TabFragment()).commit();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
+
+    // `onPostCreate` called when activity start-up is complete after `onStart()`
+    // NOTE! Make sure to override the method with only a single `Bundle` argument
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // Pass any configuration change to the drawer toggles
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        mSearchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    /**
+     * Treat the search field.
+     *
+     * @param intent The intent
+     */
+    @Override
+    protected void onNewIntent(Intent intent) {
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            //use the query to search
+        }
+    }
+
+    /**
+     * Set toolbar
+     */
+    private void setupToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer);
+    }
+
+    /**
+     * Set navigation drawer.
+     *
+     * @param navigationView The navigationView
+     */
+    private void setupDrawerContent(NavigationView navigationView) {
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        selectDrawerItem(menuItem);
+                        return true;
+                    }
+                });
+    }
+
+    /**
+     * Treat the items clicked in menu navigation drawer.
+     *
+     * @param menuItem The menu clicked.
+     */
+    public void selectDrawerItem(MenuItem menuItem) {
+        // Create a new fragment and specify the fragment to show based on nav item clicked
+        Fragment fragment = null;
+        Class fragmentClass = null;
+
+        setTitle(getString(R.string.app_name));
+        switch (menuItem.getItemId()) {
+            case R.id.action_job:
+//                fragmentClass = FirstFragment.class;
+                Log.i("MAIN", "JOb clicked");
+                break;
+            case R.id.action_client:
+//                fragmentClass = SecondFragment.class;
+                Log.i("MAIN", "Client clicked");
+                break;
+            case R.id.action_balance:
+//                fragmentClass = ThirdFragment.class;
+                Log.i("MAIN", "Balance clicked");
+                break;
+            default:
+                setTitle(menuItem.getTitle());
+//                fragmentClass = FirstFragment.class;
+                Log.i("MAIN", "None");
+        }
+
+//        try {
+//            fragment = (Fragment) fragmentClass.newInstance();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
+        // Insert the fragment by replacing any existing fragment
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+//        fragmentManager.beginTransaction().replace(R.id.frame_content, fragment).commit();
+
+        // Highlight the selected item has been done by NavigationView
+        menuItem.setChecked(true);
+        // Set action bar title
+//        setTitle(menuItem.getTitle());
+        // Close the navigation drawer
+        mDrawerLayout.closeDrawers();
+    }
+
+    public void test(View v) {
+        Log.i("FOI", "CLICOU");
+    }
+
 }
