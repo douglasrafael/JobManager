@@ -49,8 +49,6 @@ public final class DatabaseHelper extends SQLiteOpenHelper {
     public static final String USER_LAST_LOGIN = "last_login";
 
     // Columns client table
-    public static final String CLIENT_FIRST_NAME = "first_name";
-    public static final String CLIENT_LAST_NAME = "last_name";
     public static final String CLIENT_ADDRESS = "address";
     public static final String CLIENT_RATING = "rating";
 
@@ -84,12 +82,12 @@ public final class DatabaseHelper extends SQLiteOpenHelper {
 
     // Script to create the client table
     private final String CREATE_TABLE_CLIENT = "CREATE TABLE " + TABLE_CLIENT + "(" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-            CLIENT_FIRST_NAME + " VARCHAR(45) NOT NULL," + CLIENT_LAST_NAME + " VARCHAR(45)," + EMAIL + " VARCHAR(125)," + CLIENT_ADDRESS + " VARCHAR(255)," +
+            NAME + " VARCHAR(245) NOT NULL," + EMAIL + " VARCHAR(125)," + CLIENT_ADDRESS + " VARCHAR(255)," +
             CLIENT_RATING + " INTEGER DEFAULT 0," + USER_ID + " INTEGER NOT NULL," + CREATED_AT + " TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
             "CONSTRAINT 'id_UNIQUE' UNIQUE(" + ID + "), CONSTRAINT 'fk_client_user' FOREIGN KEY(" + USER_ID + ") " +
             "REFERENCES " + TABLE_USER + "(" + ID + ") ON DELETE CASCADE ON UPDATE CASCADE);" +
             "CREATE INDEX '" + TABLE_CLIENT + ".fk_client_user_idx' ON " + TABLE_CLIENT + "(" + USER_ID + ");" +
-            "CREATE INDEX '" + TABLE_CLIENT + ".first_name_idx' ON " + TABLE_CLIENT + "(" + CLIENT_FIRST_NAME + ");";
+            "CREATE INDEX '" + TABLE_CLIENT + ".name_idx' ON " + TABLE_CLIENT + "(" + NAME + ");";
 
     // Script to create the job table
     private final String CREATE_TABLE_JOB = "CREATE TABLE " + TABLE_JOB + "(" + JOB_PROTOCOL + " VARCHAR(10) PRIMARY KEY," + TITLE + " VARCHAR(125) NOT NULL," +
