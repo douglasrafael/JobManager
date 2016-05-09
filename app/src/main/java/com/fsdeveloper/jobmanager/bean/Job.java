@@ -351,5 +351,14 @@ public class Job implements Serializable {
         result = 31 * result + client_id;
         return result;
     }
+
+    /**
+     * Checks whether the job was finalized.
+     *
+     * @return True if finalized or False if not.
+     */
+    public boolean isFinalized() {
+        return (!finalized_at.equals(""));
+    }
 }
 
