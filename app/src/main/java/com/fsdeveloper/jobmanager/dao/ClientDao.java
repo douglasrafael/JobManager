@@ -25,8 +25,7 @@ public class ClientDao extends DBManager implements Dao<Client> {
 
     private String[] columns = {
             DatabaseHelper.ID,
-            DatabaseHelper.CLIENT_FIRST_NAME,
-            DatabaseHelper.CLIENT_LAST_NAME,
+            DatabaseHelper.NAME,
             DatabaseHelper.EMAIL,
             DatabaseHelper.CLIENT_ADDRESS,
             DatabaseHelper.CLIENT_RATING,
@@ -52,7 +51,7 @@ public class ClientDao extends DBManager implements Dao<Client> {
         mGetReadableDatabase();
 
         // Select all clients of the user
-        Cursor cursor = db.query(DatabaseHelper.TABLE_CLIENT, columns, DatabaseHelper.USER_ID + "=?", new String[]{String.valueOf(user_id)}, null, null, DatabaseHelper.CLIENT_FIRST_NAME);
+        Cursor cursor = db.query(DatabaseHelper.TABLE_CLIENT, columns, DatabaseHelper.USER_ID + "=?", new String[]{String.valueOf(user_id)}, null, null, DatabaseHelper.NAME);
 
         if (cursor != null && cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
@@ -87,8 +86,7 @@ public class ClientDao extends DBManager implements Dao<Client> {
         long _id = 0;
 
         ContentValues values = new ContentValues();
-        values.put(DatabaseHelper.CLIENT_FIRST_NAME, o.getFirst_name());
-        values.put(DatabaseHelper.CLIENT_LAST_NAME, o.getLast_name());
+        values.put(DatabaseHelper.NAME, o.getName());
         values.put(DatabaseHelper.EMAIL, o.getEmail());
         values.put(DatabaseHelper.CLIENT_ADDRESS, o.getAddress());
         values.put(DatabaseHelper.CLIENT_RATING, o.getRating());
@@ -131,8 +129,7 @@ public class ClientDao extends DBManager implements Dao<Client> {
 
             try {
                 ContentValues values = new ContentValues();
-                values.put(DatabaseHelper.CLIENT_FIRST_NAME, o.getFirst_name());
-                values.put(DatabaseHelper.CLIENT_LAST_NAME, o.getLast_name());
+                values.put(DatabaseHelper.NAME, o.getName());
                 values.put(DatabaseHelper.EMAIL, o.getEmail());
                 values.put(DatabaseHelper.CLIENT_ADDRESS, o.getAddress());
                 values.put(DatabaseHelper.CLIENT_RATING, o.getRating());
@@ -216,8 +213,7 @@ public class ClientDao extends DBManager implements Dao<Client> {
         Client client = new Client();
 
         client.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ID)));
-        client.setFirst_name(cursor.getString(cursor.getColumnIndex(DatabaseHelper.CLIENT_FIRST_NAME)));
-        client.setLast_name(cursor.getString(cursor.getColumnIndex(DatabaseHelper.CLIENT_LAST_NAME)));
+        client.setName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.NAME)));
         client.setEmail(cursor.getString(cursor.getColumnIndex(DatabaseHelper.EMAIL)));
         client.setAddress(cursor.getString(cursor.getColumnIndex(DatabaseHelper.CLIENT_ADDRESS)));
         client.setRating(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.CLIENT_RATING)));
