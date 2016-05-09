@@ -14,8 +14,7 @@ public class Client implements Serializable {
     private static final long serialVersionUID = -3377250322480752537L;
 
     private int id;
-    private String first_name;
-    private String last_name;
+    private String name;
     private String email;
     private String address;
     private int rating;
@@ -27,7 +26,7 @@ public class Client implements Serializable {
      * Client class constructor.
      *
      * @param id         The id of client.
-     * @param first_name The first name of client.
+     * @param name       The name of client.
      * @param last_name  The last name of client.
      * @param email      The email of client.
      * @param address    The address of client.
@@ -36,10 +35,9 @@ public class Client implements Serializable {
      * @param created_at The data time created.
      * @param phoneList  The phone list
      */
-    public Client(int id, String first_name, String last_name, String email, String address, int rating, int user_id, String created_at, List<Phone> phoneList) {
+    public Client(int id, String name, String last_name, String email, String address, int rating, int user_id, String created_at, List<Phone> phoneList) {
         this.id = id;
-        this.first_name = first_name;
-        this.last_name = last_name;
+        this.name = name;
         this.email = email;
         this.address = address;
         this.rating = rating;
@@ -51,17 +49,15 @@ public class Client implements Serializable {
     /**
      * Client class constructor.
      *
-     * @param first_name The first name of client.
-     * @param last_name  The last name of client.
+     * @param name  The name of client.
      * @param email      The email of client.
      * @param address    The address of client.
      * @param rating     The rating of client.
      * @param user_id    The id of user.
      * @param phoneList  The phone list
      */
-    public Client(String first_name, String last_name, String email, String address, int rating, int user_id, List<Phone> phoneList) {
-        this.first_name = first_name;
-        this.last_name = last_name;
+    public Client(String name, String last_name, String email, String address, int rating, int user_id, List<Phone> phoneList) {
+        this.name = name;
         this.email = email;
         this.address = address;
         this.rating = rating;
@@ -95,39 +91,21 @@ public class Client implements Serializable {
     }
 
     /**
-     * Retrieve/get the first name of client.
+     * Retrieve/get the name of client.
      *
-     * @return The first name of client.
+     * @return The name of client.
      */
-    public String getFirst_name() {
-        return first_name;
+    public String getName() {
+        return name;
     }
 
     /**
-     * Set the first name of client.
+     * Set the name of client.
      *
-     * @param first_name The first name of client.
+     * @param name The name of client.
      */
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
-    }
-
-    /**
-     * Retrieve/get the last name of client.
-     *
-     * @return The last name of client.
-     */
-    public String getLast_name() {
-        return last_name;
-    }
-
-    /**
-     * Set the last name of client.
-     *
-     * @param last_name The last name of client.
-     */
-    public void setLast_name(String last_name) {
-        this.last_name = last_name;
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**
@@ -242,8 +220,7 @@ public class Client implements Serializable {
     public String toString() {
         return "Client{" +
                 "id=" + id +
-                ", first_name='" + first_name + '\'' +
-                ", last_name='" + last_name + '\'' +
+                ", name ='" + name+ '\'' +
                 ", email='" + email + '\'' +
                 ", address='" + address + '\'' +
                 ", rating=" + rating +
@@ -268,9 +245,7 @@ public class Client implements Serializable {
             return false;
         if (user_id != client.user_id)
             return false;
-        if (first_name != null ? !first_name.equals(client.first_name) : client.first_name != null)
-            return false;
-        if (last_name != null ? !last_name.equals(client.last_name) : client.last_name != null)
+        if (name != null ? !name.equals(client.name) : client.name != null)
             return false;
         if (email != null ? !email.equals(client.email) : client.email != null)
             return false;
