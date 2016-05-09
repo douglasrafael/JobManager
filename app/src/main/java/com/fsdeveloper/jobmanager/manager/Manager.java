@@ -1,4 +1,4 @@
-package com.fsdeveloper.jobmanager.dao;
+package com.fsdeveloper.jobmanager.manager;
 
 import android.content.Context;
 
@@ -7,6 +7,12 @@ import com.fsdeveloper.jobmanager.bean.Job;
 import com.fsdeveloper.jobmanager.bean.JobCategory;
 import com.fsdeveloper.jobmanager.bean.Phone;
 import com.fsdeveloper.jobmanager.bean.PhoneType;
+import com.fsdeveloper.jobmanager.dao.ClientDao;
+import com.fsdeveloper.jobmanager.dao.JobCategoryDao;
+import com.fsdeveloper.jobmanager.dao.JobDao;
+import com.fsdeveloper.jobmanager.dao.PhoneDao;
+import com.fsdeveloper.jobmanager.dao.PhoneTypeDao;
+import com.fsdeveloper.jobmanager.dao.UserDao;
 import com.fsdeveloper.jobmanager.exception.ConnectionException;
 import com.fsdeveloper.jobmanager.exception.JobManagerException;
 
