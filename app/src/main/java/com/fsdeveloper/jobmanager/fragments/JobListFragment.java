@@ -2,11 +2,16 @@ package com.fsdeveloper.jobmanager.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.ListFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fsdeveloper.jobmanager.R;
@@ -15,6 +20,7 @@ import com.fsdeveloper.jobmanager.bean.Job;
 import com.fsdeveloper.jobmanager.exception.ConnectionException;
 import com.fsdeveloper.jobmanager.exception.JobManagerException;
 import com.fsdeveloper.jobmanager.manager.Manager;
+import com.fsdeveloper.jobmanager.tool.MyDatePicker;
 
 import java.util.List;
 
@@ -29,6 +35,11 @@ public class JobListFragment extends ListFragment  {
     private List<Job> listOfJobs;
     private ArrayAdapter<Job> mAdapter;
     private Manager manager;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.list_fragment, null, false);
+    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -115,6 +126,4 @@ public class JobListFragment extends ListFragment  {
         mActionMode = activity.startSupportActionMode((ActionMode.Callback) this);
         mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
     }
-
-
 }

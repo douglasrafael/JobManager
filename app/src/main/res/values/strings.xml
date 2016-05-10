@@ -6,10 +6,33 @@
     <string name="action_logout">Logout</string>
     <string name="action_about">About</string>
     <string name="hint_search">Search for Job...</string>
-    <string name="no_job">No job registered...</string>
-    <string name="no_client">No client registered...</string>
+    <string name="no_data">Do not exist registered data...</string>
+    <string name="title_job_form">Add Job</string>
+    <string name="discard_form">Discard changes</string>
 
     <string name="currency_symbol">$ %1$s</string>
+
+    <!--Strings of form job-->
+    <string name="job_title">Title</string>
+    <string name="job_description">Description</string>
+    <string name="job_note">Note</string>
+    <string name="job_price">Price</string>
+    <string name="job_expense">Expense</string>
+    <string name="job_is_finalized">The job was finalized?</string>
+    <string name="job_finalized_at">Date of completion</string>
+    <string name="job_client">Client</string>
+    <string name="job_categories">Categories</string>
+    <string name="job_date_finalized">Date</string>
+    <string name="job_time_finalized">Time</string>
+    <string name="job_hint_title">Title for the job</string>
+    <string name="job_hint_description">Describe what should be done...</string>
+    <string name="job_hint_note">General notes, as the job was carried out...</string>
+    <string name="job_hint_price">Price charged</string>
+    <string name="job_hint_expense">Expense</string>
+    <string name="job_hint_finalized_at">Date of completion</string>
+    <string name="job_hint_client">Select the client</string>
+    <string name="job_hint_categories">Select the categories</string>
+
 
     <!-- Strings of system messages -->
     <string name="error_bd">An error occurred while trying to connect to the database. Try again!</string>
@@ -30,9 +53,9 @@
     </string>
 
     <!-- String related to date time -->
-    <string name="date_time_default">MMMM dd, yyyy</string>
     <string name="date_time_bd">yyyy-MM-dd HH:mm:ss</string>
     <string name="date_time">yyyy/MM/dd HH:mm:ss</string>
+    <string name="date_default">MMMM dd, yyyy</string>
     <string name="date_1">yyyy/MM/dd</string>
     <string name="date_2">yyyy-MM-dd</string>
     <string name="time">HH:mm</string>
@@ -75,4 +98,7 @@
         <item>Other</item>
     </string-array>
     <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_job_form">JobFormActivity</string>
+
+    <string name="country_prompt">Choose a country</string>
 </resources>

@@ -7,19 +7,41 @@
     <string name="action_logout">Sair</string>
     <string name="action_about">Sobre</string>
     <string name="hint_search">Pesquisar por...</string>
-    <string name="no_job">Nenhum trabalho cadastrado...</string>
-    <string name="no_client">Nenhum cliente cadastrado...</string>
+    <string name="no_data">Não existem dados cadastrados...</string>
+    <string name="title_job_form">Adicionar Trabalho</string>
+    <string name="discard_form">Descartar Alterações</string>
 
     <string name="currency_symbol">R$ %1$s</string>
+
+    <!--Strings of form job-->
+    <string name="job_title">Título</string>
+    <string name="job_description">Descrição</string>
+    <string name="job_note">Notas</string>
+    <string name="job_price">Preço</string>
+    <string name="job_expense">Despesa</string>
+    <string name="job_is_finalized">O trabalho foi finalizado?</string>
+    <string name="job_finalized_at">Data da conclusão</string>
+    <string name="job_client">Cliente</string>
+    <string name="job_categories">Categorias</string>
+    <string name="job_date_finalized">Data</string>
+    <string name="job_time_finalized">Hora</string>
+    <string name="job_hint_title">Título para o trabalho</string>
+    <string name="job_hint_description">Descreva o que deve ser feito...</string>
+    <string name="job_hint_note">Notas gerais, como o trabalho foi realizado...</string>
+    <string name="job_hint_price">Preço cobrado</string>
+    <string name="job_hint_expense">Despesa</string>
+    <string name="job_hint_finalized_at">Data da conclusão</string>
+    <string name="job_hint_client">Selecione o cliente</string>
+    <string name="job_hint_categories">Selecione as categorias</string>
 
     <!-- Strings of system messages -->
     <string name="error_bd">Ocorreu um erro ao tentar estabelecer conexão com o banco de dados. Tente novamente!</string>
     <string name="error_system">Desculpe. Ocorreu um erro na aplicação. Tente novamente!</string>
 
     <!-- String related to date time -->
-    <string name="date_time_default">dd MMMM de yyyy</string>
     <string name="date_time_bd">yyyy-MM-dd HH:mm:ss</string>
     <string name="date_time">dd/MM/yyyy \'às\' HH\'h\'mm</string>
+    <string name="date_default">dd MMMM de yyyy</string>
     <string name="date_1">dd/MM/yyyy</string>
     <string name="date_2">dd-MM-yyyy</string>
     <string name="time">HH:mm</string>

@@ -32,15 +32,11 @@
                 android:id="@+id/fab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginBottom="20dp"
-                android:layout_marginRight="20dp"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="@dimen/fab_margin"
                 android:src="@android:drawable/ic_input_add"
-                android:tint="@android:color/white"
-                app:fabSize="normal"
-                android:layout_gravity="right|bottom"
-                android:onClick="test"/>
+                android:tint="@android:color/white"/>
+
         </FrameLayout>
 
         <!-- The navigation drawer that comes from the left -->
@@ -56,5 +52,8 @@
             app:headerLayout="@layout/header_menu"
             app:menu="@menu/drawer_menu" />
 
+
+
     </android.support.v4.widget.DrawerLayout>
+
 </LinearLayout>

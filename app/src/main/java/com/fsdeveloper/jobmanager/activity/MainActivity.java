@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -27,7 +28,7 @@ import android.view.View;
 import com.fsdeveloper.jobmanager.R;
 import com.fsdeveloper.jobmanager.fragments.TabFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private Toolbar toolbar;
@@ -64,6 +65,18 @@ public class MainActivity extends AppCompatActivity {
         mFragmentManager = getSupportFragmentManager();
         mFragmentTransaction = mFragmentManager.beginTransaction();
         mFragmentTransaction.replace(R.id.container_view, new TabFragment()).commit();
+
+        /**
+         * Button floating
+         */
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        Intent intent = new Intent(this, JobFormActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -94,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
+        inflater.inflate(R.menu.main_menu, menu);
 
         // Associate searchable configuration with the SearchView
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -192,9 +205,4 @@ public class MainActivity extends AppCompatActivity {
         // Close the navigation drawer
         mDrawerLayout.closeDrawers();
     }
-
-    public void test(View v) {
-        Log.i("FOI", "CLICOU");
-    }
-
 }

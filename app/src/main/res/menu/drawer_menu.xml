@@ -4,20 +4,21 @@
         <item
             android:id="@+id/action_job"
             android:checked="true"
-            android:title="@string/menu_job"/>
+            android:title="@string/menu_job" />
         <item
             android:id="@+id/action_client"
-            android:title="@string/menu_client"/>
+            android:title="@string/menu_client" />
         <item
             android:id="@+id/action_balance"
-            android:title="@string/menu_balance"/>
+            android:title="@string/menu_balance" />
 
     </group>
-    <group android:id="@+id/menu_bottom"
+    <group
+        android:id="@+id/menu_bottom"
         android:checkableBehavior="single">
         <item
             android:id="@+id/action_settings"
             android:icon="@android:drawable/ic_menu_preferences"
-            android:title="@string/action_settings"/>
+            android:title="@string/action_settings" />
     </group>
 </menu>

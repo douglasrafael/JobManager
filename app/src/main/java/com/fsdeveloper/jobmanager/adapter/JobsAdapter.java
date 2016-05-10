@@ -43,21 +43,40 @@ public class JobsAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View view, ViewGroup viewGroup) {
-        View lineView = LayoutInflater.from(context).inflate(R.layout.list_job, null);
+        ViewHolder holder = null;
+        View convertView = view;
+
+        if(convertView == null) {
+            convertView = LayoutInflater.from(context).inflate(R.layout.list_job, null);
+
+            holder = new ViewHolder();
+            holder.title = (TextView) convertView.findViewById(R.id.text_title);
+            holder.description = (TextView) convertView.findViewById(R.id.text_desc);
+            holder.price = (TextView) convertView.findViewById(R.id.text_price);
+            holder.finalized = (CheckBox) convertView.findViewById(R.id.cb_finalized);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
 
         Job job = listJobs.get(position);
 
-        TextView title = (TextView) lineView.findViewById(R.id.text_title);
-        TextView description = (TextView) lineView.findViewById(R.id.text_desc);
-        TextView price = (TextView) lineView.findViewById(R.id.text_price);
-        CheckBox finalized = (CheckBox) lineView.findViewById(R.id.cb_finalized);
+        holder.title.setText(job.getTitle());
+        holder.description.setText(job.getDescription());
+        holder.price.setText(context.getResources().getString(R.string.currency_symbol, job.getPrice()));
+        holder.finalized.setChecked(job.isFinalized());
 
-        title.setText(job.getTitle());
-        description.setText(job.getDescription());
-        price.setText(context.getResources().getString(R.string.currency_symbol, job.getPrice()));
-        finalized.setChecked(job.isFinalized());
+        return convertView;
+    }
 
-        return lineView;
+    /**
+     * Optimizes the process of getView. In order not to create instance if it has already been created.
+     */
+    static class ViewHolder {
+        TextView title;
+        TextView description;
+        TextView price;
+        CheckBox finalized;
     }
 
 }
