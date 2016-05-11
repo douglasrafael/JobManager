@@ -85,6 +85,7 @@
             android:layout_alignParentStart="true"
             android:layout_below="@+id/text_note"
             android:hint="@string/job_hint_note"
+            android:imeOptions="actionNext"
             android:inputType="textMultiLine" />
 
         <LinearLayout
@@ -130,6 +131,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="@string/job_hint_price"
+                android:imeOptions="actionNext"
                 android:inputType="numberDecimal" />
 
             <EditText
@@ -138,6 +140,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="@string/job_hint_expense"
+                android:imeOptions="actionNext"
                 android:inputType="numberDecimal" />
         </LinearLayout>
 
@@ -162,6 +165,7 @@
             android:layout_toLeftOf="@+id/bt_new_client"
             android:layout_toStartOf="@+id/bt_new_client"
             android:hint="@string/job_hint_client"
+            android:imeOptions="actionNext"
             android:inputType="textPersonName|textAutoComplete" />
 
         <ImageView
@@ -193,6 +197,7 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorPrimaryDark"
             android:layout_below="@+id/text_categories"
+            android:imeOptions="actionNext"
             style="@style/Platform.Widget.AppCompat.Spinner" />
 
         <android.support.v7.widget.SwitchCompat
@@ -206,8 +211,9 @@
             android:text="@string/job_is_finalized"
             android:textColor="@android:color/tertiary_text_dark"
             app:switchPadding="15dp"
-            android:layout_marginTop="10dp"/>
-
+            android:layout_marginTop="15dp"
+            android:imeOptions="actionGo"
+            android:layout_marginBottom="5dp"/>
 
         <LinearLayout
             android:id="@+id/layout_box3"
@@ -245,7 +251,8 @@
             android:layout_alignParentStart="true"
             android:layout_below="@+id/layout_box3"
             android:orientation="horizontal"
-            android:visibility="gone">
+            android:visibility="gone"
+            android:layout_marginBottom="20dp">
 
             <EditText
                 android:id="@+id/edt_date_finalized"
@@ -254,6 +261,7 @@
                 android:layout_weight="1"
                 android:onClick="showDatePickerDialog"
                 android:focusable="false"
+                android:imeOptions="actionNext"
                 android:clickable="false" />
 
             <EditText
@@ -263,6 +271,7 @@
                 android:layout_weight="1"
                 android:onClick="showTimePickerDialog"
                 android:focusable="false"
+                android:imeOptions="actionGo"
                 android:clickable="false" />
         </LinearLayout>
 

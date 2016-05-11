@@ -41,10 +41,11 @@
     <!-- String related to date time -->
     <string name="date_time_bd">yyyy-MM-dd HH:mm:ss</string>
     <string name="date_time">dd/MM/yyyy \'às\' HH\'h\'mm</string>
-    <string name="date_default">dd MMMM de yyyy</string>
+    <string name="date_default">dd MMMM \'de\' yyyy</string>
     <string name="date_1">dd/MM/yyyy</string>
     <string name="date_2">dd-MM-yyyy</string>
     <string name="time">HH:mm</string>
+    <string name="error_convert_date">Ocorreu um erro ao tentar converter data</string>
 
     <!-- String of menu options -->
     <string name="menu_job">Trabalhos</string>

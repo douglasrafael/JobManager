@@ -59,6 +59,7 @@
     <string name="date_1">yyyy/MM/dd</string>
     <string name="date_2">yyyy-MM-dd</string>
     <string name="time">HH:mm</string>
+    <string name="error_convert_date">An error occurred while trying to convert date</string>
 
     <!-- String of menu options -->
     <string name="menu_job">Jobs</string>

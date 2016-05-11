@@ -26,7 +26,7 @@ public final class MyDataTime {
     }
 
     /**
-     * Returns current date time of system.
+     * Returns current datetime of system.
      *
      * @param format_date The date and time format.
      * @return The data time.
@@ -39,16 +39,35 @@ public final class MyDataTime {
     }
 
     /**
-     * Convert string in Date.
+     * Returns datetime according to the parameters.
      *
-     * @param s The string datetime.
+     * @param year        The year
+     * @param month       The month
+     * @param day         The day
+     * @param hourOfDay   The hour
+     * @param minute      The minute
+     * @param format_date The format date output.
+     * @return The string datetime.
+     */
+    public static String getDataTime(int year, int month, int day, int hourOfDay, int minute, String format_date) {
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.set(year, month, day, hourOfDay, minute);
+
+        dateFormat = new SimpleDateFormat(format_date);
+        return dateFormat.format(calendar.getTime());
+    }
+
+    /**
+     * Convert string in Date.
+     * Formats have to be equal.
+     *
+     * @param date_time   The string datetime.
      * @param format_date The date and time format.
      * @return The Object Date
      * @throws ParseException If an error occurs in converting string to date.
      */
-    public static Date toStringDataTime(String s, String format_date) throws ParseException {
-        dateFormat = new SimpleDateFormat(format_date);
-
-        return dateFormat.parse(s);
+    public static Date toStringDataTime(String date_time, String format_date) throws ParseException {
+        return new SimpleDateFormat(format_date).parse(date_time);
     }
+
 }
