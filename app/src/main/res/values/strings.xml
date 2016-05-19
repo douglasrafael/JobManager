@@ -1,7 +1,11 @@
 <resources>
     <string name="app_name">Job Manager</string>
     <string name="action_settings">Settings</string>
+    <string name="action_select_all">Select All</string>
     <string name="action_search">Search</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_confirm_delete">Are you sure you want to delete? You can\'t undo this action.</string>
+    <string name="action_edit">Edit</string>
     <string name="action_new">New</string>
     <string name="action_logout">Logout</string>
     <string name="action_about">About</string>
@@ -9,10 +13,21 @@
     <string name="no_data">Do not exist registered data...</string>
     <string name="title_job_form">Add Job</string>
     <string name="discard_form">Discard changes</string>
+    <string name="title_client_form">Add Client</string>
+    <string name="add">Add</string>
+    <string name="update">Update</string>
+    <string name="discard_changes">Discard your changes?</string>
+    <string name="about_title">About</string>
+    <string name="about_message">Developed by FS Developer</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
 
     <string name="currency_symbol">$ %1$s</string>
+    <string name="currency_symbol_unique">$</string>
 
-    <!--Strings of form job-->
+    <!-- Strings of form job -->
+    <string name="job_protocol">Protocol</string>
     <string name="job_title">Title</string>
     <string name="job_description">Description</string>
     <string name="job_note">Note</string>
@@ -23,6 +38,7 @@
     <string name="job_client">Client</string>
     <string name="job_categories">Categories</string>
     <string name="job_date_finalized">Date</string>
+    <string name="job_date_created">Registration date</string>
     <string name="job_time_finalized">Time</string>
     <string name="job_hint_title">Title for the job</string>
     <string name="job_hint_description">Describe what should be done...</string>
@@ -32,25 +48,33 @@
     <string name="job_hint_finalized_at">Date of completion</string>
     <string name="job_hint_client">Select the client</string>
     <string name="job_hint_categories">Select the categories</string>
+    <string name="tooltip_add_client">Add a new client</string>
+    <string name="tooltip_add_phone">Add a new phone</string>
+    <string name="tooltip_remove_phone">Remove phone</string>
 
+    <!-- Strings of form client -->
+    <string name="client_name">Name</string>
+    <string name="client_email">Email</string>
+    <string name="client_address">Address</string>
+    <string name="client_phone">Phone</string>
+    <string name="client_hint_address">19XX Arbutus Drive\nMiami, FL 33012</string>
+    <string name="client_hint_email">Contact email</string>
+    <string name="client_hint_name">Full name</string>
+    <string name="client_hint_phone">Number</string>
 
-    <!-- Strings of system messages -->
+    <!-- Strings of system messages errors -->
     <string name="error_bd">An error occurred while trying to connect to the database. Try again!</string>
     <string name="error_system">Sorry. An error occurred in the application. Try again!</string>
+    <string name="error_add_job">An error occurred while trying to save the job. Try again...</string>
+    <string name="error_delete_job">Could not remove the job. Please try again...</string>
 
-    <!-- Strings related to login -->
-    <string name="title_activity_login">Sign in</string>
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password (optional)</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
+    <!-- Strings of system messages success -->
+    <string name="success_add_job">Job added successfully!</string>
+    <string name="success_edit_job">Job successfully updated!</string>
+    <plurals name="success_delete_job">
+        <item quantity="one">Job successfully removed!</item>
+        <item quantity="other">%d Jobs removed successfully!</item>
+    </plurals>
 
     <!-- String related to date time -->
     <string name="date_time_bd">yyyy-MM-dd HH:mm:ss</string>
@@ -69,6 +93,16 @@
     <string name="menu_others">Others</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+
+    <!--validation-->
+    <string name="validate_required">is required!</string>
+    <string name="validate_name">Name is required!</string>
+    <string name="validate_name_min">Must have at least 2 characters!</string>
+    <string name="validate_email">Email invalid!</string>
+    <string name="validate_title">The title is required!</string>
+    <string name="validate_title_min">Must have at least 5 characters!</string>
+    <string name="validate_price">Price is required!</string>
+    <string name="validate_client">Client is required. If not listed register a new one before continuing...</string>
 
     <!-- Array related to tabs -->
     <string-array name="tabs">
@@ -98,8 +132,36 @@
         <item>Home</item>
         <item>Other</item>
     </string-array>
+
+    <plurals name="number_selected">
+        <item quantity="one">1 selected</item>
+        <item quantity="other">%d selected</item>
+    </plurals>
+
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_job_form">JobFormActivity</string>
 
     <string name="country_prompt">Choose a country</string>
+    <string name="title_activity_client_form">ClientFormActivity</string>
+
+    <!-- Strings related to login -->
+    <string name="title_activity_login">Sign in</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+
+
+
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

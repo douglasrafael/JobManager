@@ -25,6 +25,7 @@ public class UserDao extends DBManager implements Dao<User> {
             DatabaseHelper.NAME,
             DatabaseHelper.EMAIL,
             DatabaseHelper.USER_PASSWORD,
+            DatabaseHelper.IMAGE,
             DatabaseHelper.CREATED_AT,
             DatabaseHelper.USER_LAST_LOGIN
     };
@@ -43,7 +44,19 @@ public class UserDao extends DBManager implements Dao<User> {
 
     @Override
     public List<User> list(int id_user) throws JobManagerException, NullPointerException {
-        return null;
+        List<User> result = new ArrayList<User>();
+        mGetReadableDatabase();
+
+        // Select all users
+        Cursor cursor = db.query(DatabaseHelper.TABLE_USER, columns, null, null, null, null, DatabaseHelper.CREATED_AT + " DESC");
+
+        if (cursor != null && cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                result.add(createUser(cursor));
+            }
+            cursor.close();
+        }
+        return result;
     }
 
     @Override
@@ -55,7 +68,7 @@ public class UserDao extends DBManager implements Dao<User> {
 
         if (cursor != null) {
             cursor.moveToFirst();
-            user = createPhone(cursor);
+            user = createUser(cursor);
 
             cursor.close();
         }
@@ -70,13 +83,14 @@ public class UserDao extends DBManager implements Dao<User> {
 
         ContentValues values = new ContentValues();
         values.put(DatabaseHelper.NAME, o.getName());
-        values.put(DatabaseHelper.EMAIL, o.getEmail());
+        if (o.getEmail() != null && o.getEmail().length() > 0) {
+            values.put(DatabaseHelper.EMAIL, o.getEmail());
+        }
+        values.put(DatabaseHelper.IMAGE, o.getImage());
         values.put(DatabaseHelper.USER_PASSWORD, o.getPassword());
         values.put(DatabaseHelper.CREATED_AT, MyDataTime.getDataTime(context.getResources().getString(R.string.date_time_bd)));
 
         long _id = db.insert(DatabaseHelper.TABLE_USER, null, values);
-
-        DBClose();
 
         return (int) _id;
     }
@@ -107,13 +121,14 @@ public class UserDao extends DBManager implements Dao<User> {
      * @param cursor It contains data.
      * @return The user.
      */
-    private User createPhone(Cursor cursor) {
+    private User createUser(Cursor cursor) {
         User user = new User();
 
         user.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ID)));
         user.setName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.NAME)));
         user.setEmail(cursor.getString(cursor.getColumnIndex(DatabaseHelper.EMAIL)));
         user.setPassword(cursor.getString(cursor.getColumnIndex(DatabaseHelper.USER_PASSWORD)));
+        user.setPassword(cursor.getString(cursor.getColumnIndex(DatabaseHelper.IMAGE)));
         user.setCreated_at(cursor.getString(cursor.getColumnIndex(DatabaseHelper.CREATED_AT)));
         user.setLast_login(cursor.getString(cursor.getColumnIndex(DatabaseHelper.USER_LAST_LOGIN)));
 

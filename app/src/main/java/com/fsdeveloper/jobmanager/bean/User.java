@@ -1,6 +1,7 @@
 package com.fsdeveloper.jobmanager.bean;
 
 import java.io.Serializable;
+import java.sql.Blob;
 import java.util.List;
 
 /**
@@ -17,39 +18,40 @@ public class User implements Serializable {
     private String name;
     private String email;
     private String password;
+    private byte[] image;
     private String created_at;
     private String last_login;
 
     /**
      * User class constructor.
      *
-     * @param id         The id of user.
-     * @param name       The name of user.
-     * @param email      The email of user.
-     * @param password   The password of user.
-     * @param created_at The data and time created of user.
+     * @param id       The id of user.
+     * @param name     The name of user.
+     * @param email    The email of user.
+     * @param password The password of user.
+     * @param image    The image of user.
      */
-    public User(int id, String name, String email, String password, String created_at) {
+    public User(int id, String name, String email, String password, byte[] image) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
-        this.created_at = created_at;
+        this.image = image;
     }
 
     /**
      * User class constructor.
      *
-     * @param name       The name of user.
-     * @param email      The email of user.
-     * @param password   The password of user.
-     * @param created_at The data and time created of user.
+     * @param name     The name of user.
+     * @param email    The email of user.
+     * @param password The password of user.
+     * @param image    The image of user.
      */
-    public User(String name, String email, String password, String created_at) {
+    public User(String name, String email, String password, byte[] image) {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.created_at = created_at;
+        this.image = image;
     }
 
     /**
@@ -128,6 +130,24 @@ public class User implements Serializable {
      */
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    /**
+     * Retrieves/get the image of user.
+     *
+     * @return The image of user.
+     */
+    public byte[] getImage() {
+        return image;
+    }
+
+    /**
+     * Set the image of user.
+     *
+     * @param image The image of user.
+     */
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 
     /**

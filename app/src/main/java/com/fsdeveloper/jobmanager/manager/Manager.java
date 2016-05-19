@@ -7,6 +7,7 @@ import com.fsdeveloper.jobmanager.bean.Job;
 import com.fsdeveloper.jobmanager.bean.JobCategory;
 import com.fsdeveloper.jobmanager.bean.Phone;
 import com.fsdeveloper.jobmanager.bean.PhoneType;
+import com.fsdeveloper.jobmanager.bean.User;
 import com.fsdeveloper.jobmanager.dao.ClientDao;
 import com.fsdeveloper.jobmanager.dao.JobCategoryDao;
 import com.fsdeveloper.jobmanager.dao.JobDao;
@@ -47,6 +48,72 @@ public class Manager {
         phoneType = new PhoneTypeDao(context);
     }
 
+    /**
+     * Close connection to database.
+     *
+     * @param o Object that used the connection.
+     */
+    public void DBClose(Object o) {
+        if(o instanceof User) {
+            user.DBClose();
+        } else if(o instanceof Client) {
+            client.DBClose();
+        } else if(o instanceof Job) {
+            job.DBClose();
+        } else if(o instanceof JobCategory) {
+            category.DBClose();
+        } else if(o instanceof Phone) {
+            phone.DBClose();
+        } else if(o instanceof PhoneType) {
+            phoneType.DBClose();
+        }
+    }
+
+    /**
+     * Check if connection to database is open.
+     *
+     * @param o Object that used the connection.
+     * @return True if is open or False otherwise.
+     */
+    public boolean DBIsOpen(Object o) {
+        if(o instanceof User) {
+            return user.DBIsOpen();
+        } else if(o instanceof Client) {
+            return client.DBIsOpen();
+        } else if(o instanceof Job) {
+            return job.DBIsOpen();
+        } else if(o instanceof JobCategory) {
+            return category.DBIsOpen();
+        } else if(o instanceof Phone) {
+            return phone.DBIsOpen();
+        } else if(o instanceof PhoneType) {
+            return phoneType.DBIsOpen();
+        }
+        return false;
+    }
+
+    // TODO - Methods of UserDao
+
+    /**
+     * Select the user list.
+     *
+     * @return The list of users.
+     * @throws JobManagerException If there is an exception.
+     */
+    public List<User> listOfUsers() throws JobManagerException {
+        return user.list(0);
+    }
+
+    /**
+     * Insert new user.
+     *
+     * @param u The user.
+     * @return The id inserted or -1 if fail.
+     * @throws JobManagerException If there is an exception.
+     */
+    public int insertUser(User u) throws JobManagerException {
+        return user.insert(u);
+    }
 
     // TODO - Methods of ClientDao
 

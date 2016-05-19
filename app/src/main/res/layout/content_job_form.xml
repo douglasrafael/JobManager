@@ -2,12 +2,12 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.fsdeveloper.jobmanager.activity.JobFormActivity"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:showIn="@layout/activity_job_form"
-    android:id="@+id/scrollView"
+    android:id="@+id/scrollViewJobForm"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.fsdeveloper.jobmanager.activity.JobFormActivity"
+    tools:showIn="@layout/activity_job_form">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -38,7 +38,7 @@
             android:layout_below="@+id/text_title"
             android:hint="@string/job_hint_title"
             android:imeOptions="actionNext"
-            android:inputType="textAutoCorrect" />
+            android:inputType="textCapSentences" />
 
         <TextView
             android:id="@+id/text_desc"
@@ -62,7 +62,7 @@
             android:layout_below="@+id/text_desc"
             android:hint="@string/job_hint_description"
             android:imeOptions="actionNext"
-            android:inputType="textMultiLine" />
+            android:inputType="textMultiLine|textCapSentences" />
 
         <TextView
             android:id="@+id/text_note"
@@ -86,7 +86,7 @@
             android:layout_below="@+id/text_note"
             android:hint="@string/job_hint_note"
             android:imeOptions="actionNext"
-            android:inputType="textMultiLine" />
+            android:inputType="textMultiLine|textCapSentences" />
 
         <LinearLayout
             android:id="@+id/layout_box1"
@@ -109,7 +109,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
-                android:layout_marginLeft="22dp"
+                android:layout_marginLeft="18dp"
                 android:gravity="center"
                 android:text="@string/job_expense"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -132,7 +132,8 @@
                 android:layout_weight="1"
                 android:hint="@string/job_hint_price"
                 android:imeOptions="actionNext"
-                android:inputType="numberDecimal" />
+                android:inputType="numberDecimal"
+                android:text="" />
 
             <EditText
                 android:id="@+id/edt_expense"
@@ -164,20 +165,24 @@
             android:layout_below="@+id/text_client"
             android:layout_toLeftOf="@+id/bt_new_client"
             android:layout_toStartOf="@+id/bt_new_client"
+            android:completionThreshold="2"
             android:hint="@string/job_hint_client"
             android:imeOptions="actionNext"
-            android:inputType="textPersonName|textAutoComplete" />
+            android:inputType="textPersonName|textCapWords"
+            android:longClickable="true" />
 
-        <ImageView
+        <ImageButton
             android:id="@+id/bt_new_client"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/edt_client"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:src="@android:drawable/ic_input_add"
-            android:tint="@color/colorPrimary"
-            android:layout_alignTop="@+id/edt_client"/>
+            android:layout_alignTop="@+id/edt_client"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/tooltip_add_client"
+            android:src="@drawable/ic_action_new"
+            android:tint="@color/colorPrimaryDark" />
 
         <TextView
             android:id="@+id/text_categories"
@@ -192,13 +197,11 @@
 
         <com.fsdeveloper.jobmanager.tool.MultiSelectSpinner
             android:id="@+id/spinner_categories"
+            style="@style/AppSpinner"
             android:layout_width="match_parent"
-            android:singleLine="false"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorPrimaryDark"
             android:layout_below="@+id/text_categories"
-            android:imeOptions="actionNext"
-            style="@style/Platform.Widget.AppCompat.Spinner" />
+            android:layout_marginTop="10dp" />
 
         <android.support.v7.widget.SwitchCompat
             android:id="@+id/switch_finalized"
@@ -207,13 +210,13 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/spinner_categories"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="15dp"
             android:checked="false"
+            android:imeOptions="actionGo"
             android:text="@string/job_is_finalized"
             android:textColor="@android:color/tertiary_text_dark"
-            app:switchPadding="15dp"
-            android:layout_marginTop="15dp"
-            android:imeOptions="actionGo"
-            android:layout_marginBottom="5dp"/>
+            app:switchPadding="15dp" />
 
         <LinearLayout
             android:id="@+id/layout_box3"
@@ -237,7 +240,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
-                android:layout_marginLeft="22dp"
+                android:layout_marginLeft="0dp"
                 android:gravity="center"
                 android:text="@string/job_time_finalized"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -251,29 +254,45 @@
             android:layout_alignParentStart="true"
             android:layout_below="@+id/layout_box3"
             android:orientation="horizontal"
-            android:visibility="gone"
-            android:layout_marginBottom="20dp">
+            android:visibility="gone">
 
             <EditText
                 android:id="@+id/edt_date_finalized"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="showDatePickerDialog"
+                android:clickable="false"
                 android:focusable="false"
                 android:imeOptions="actionNext"
-                android:clickable="false" />
+                android:inputType="text"
+                android:onClick="showDatePickerDialog" />
 
             <EditText
                 android:id="@+id/edt_time_finalized"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="showTimePickerDialog"
+                android:clickable="false"
                 android:focusable="false"
                 android:imeOptions="actionGo"
-                android:clickable="false" />
+                android:inputType="text"
+                android:onClick="showTimePickerDialog" />
+
         </LinearLayout>
+
+        <Button
+            android:id="@+id/bt_add_job"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/layout_box4"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/colorPrimary"
+            android:text="@string/add"
+            android:textColor="@color/textColorPrimary" />
 
     </RelativeLayout>
 </ScrollView>

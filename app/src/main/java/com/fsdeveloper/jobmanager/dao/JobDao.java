@@ -1,9 +1,11 @@
 package com.fsdeveloper.jobmanager.dao;
 
+import android.annotation.TargetApi;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.os.Build;
 import android.util.Log;
 
 import com.fsdeveloper.jobmanager.R;
@@ -80,7 +82,6 @@ public class JobDao extends DBManager implements Dao<Job> {
         Job job = null;
 
         Cursor cursor = db.query(DatabaseHelper.TABLE_JOB, columns, DatabaseHelper.JOB_PROTOCOL + "=?", new String[]{protocol}, null, null, null);
-
         if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
             job = createJob(cursor);
@@ -101,19 +102,20 @@ public class JobDao extends DBManager implements Dao<Job> {
         values.put(DatabaseHelper.JOB_PRICE, o.getPrice());
         values.put(DatabaseHelper.JOB_EXPENSE, o.getExpense());
         values.put(DatabaseHelper.JOB_FINALIZED_AT, o.getFinalized_at());
-        values.put(DatabaseHelper.CREATED_AT, o.getCreated_at());
+        values.put(DatabaseHelper.CREATED_AT, MyDataTime.getDataTime(context.getResources().getString(R.string.date_time_bd)));
         values.put(DatabaseHelper.USER_ID, o.getUser_id());
-        values.put(DatabaseHelper.CLIENT_ID, o.getClient().getId());
 
         db.beginTransaction();
         try {
             // inserting of client if not exist
             ClientDao client = new ClientDao(context);
 
-            if (o.getClient_id() <= 0) {
+            if (o.getClient().getId() <= 0) {
                 int client_id = client.insert(o.getClient());
                 // set id the new client
                 values.put(DatabaseHelper.CLIENT_ID, client_id);
+            } else {
+                values.put(DatabaseHelper.CLIENT_ID, o.getClient().getId());
             }
 
             // Associates the categories to job
@@ -159,7 +161,6 @@ public class JobDao extends DBManager implements Dao<Job> {
                 values.put(DatabaseHelper.JOB_EXPENSE, o.getExpense());
                 values.put(DatabaseHelper.JOB_FINALIZED_AT, o.getFinalized_at());
                 values.put(DatabaseHelper.JOB_UPDATE_AT, MyDataTime.getDataTime(context.getResources().getString(R.string.date_time_bd)));
-                values.put(DatabaseHelper.CLIENT_ID, o.getClient_id());
 
                 // inserting of client if not exist
                 ClientDao client = new ClientDao(context);
@@ -168,6 +169,8 @@ public class JobDao extends DBManager implements Dao<Job> {
                     int client_id = client.insert(o.getClient());
                     // set id the new client
                     values.put(DatabaseHelper.CLIENT_ID, client_id);
+                } else {
+                    values.put(DatabaseHelper.CLIENT_ID, o.getClient().getId());
                 }
 
                 if (!old_job.getCategories().equals(o.getCategories())) {
@@ -251,6 +254,7 @@ public class JobDao extends DBManager implements Dao<Job> {
         return result;
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
     public int size(int _id) throws JobManagerException {
         mGetReadableDatabase();
@@ -268,6 +272,7 @@ public class JobDao extends DBManager implements Dao<Job> {
      * @return The number of jobs.
      * @throws JobManagerException If there is a general exception of the system.
      */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public int numberJobClient(int user_id, int client_id) throws JobManagerException {
         mGetReadableDatabase();
 
@@ -301,7 +306,7 @@ public class JobDao extends DBManager implements Dao<Job> {
 
         while (protocol.length() < 10) {
             // r.nextInt(10) >> generate number [0, 10) * SECOND
-            protocol += r.nextInt(10) * MyDataTime.getCalendar().get(Calendar.SECOND);
+            protocol += (r.nextInt(10) + 1)  * MyDataTime.getCalendar().get(Calendar.SECOND);
         }
 
         protocol = protocol.substring(0, 10);

@@ -1,5 +1,10 @@
 package com.fsdeveloper.jobmanager.bean;
 
+import android.provider.Settings;
+import android.util.Log;
+
+import com.fsdeveloper.jobmanager.tool.MyDataTime;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -99,5 +104,24 @@ public class UserTest {
         assertFalse(user.equals(user_two));
         assertTrue(user_two.equals(user_two));
         assertTrue(user.equals(user));
+    }
+
+    @Test
+    public void testDatTime() {
+        int year = 2016;
+        int month = 0;
+        int day = 14;
+        int hour = 9;
+        int minute = 35;
+
+        System.out.print("TEST " +  MyDataTime.getDataTime(year, month, day, 0, 0, "yyyy-MM-dd HH:mm:ss"));
+//        2016-02-04 09:35:38'
+//                <string name="date_time_bd">yyyy-MM-dd HH:mm:ss</string>
+//        <string name="date_time">dd/MM/yyyy \'às\' HH\'h\'mm</string>
+//                <string name="date_default">dd MMMM \'de\' yyyy</string>
+//                <string name="date_1">dd/MM/yyyy</string>
+//        <string name="date_2">dd-MM-yyyy</string>
+//        <string name="time">HH:mm</string>
+
     }
 }

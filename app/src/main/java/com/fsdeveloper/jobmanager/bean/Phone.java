@@ -47,6 +47,17 @@ public class Phone implements Serializable {
 
     /**
      * Phone class constructor.
+     *
+     * @param number    Number of phone.
+     * @param type      Type of phone.
+     */
+    public Phone(String number, PhoneType type) {
+        this.number = number;
+        this.type = type;
+    }
+
+    /**
+     * Phone class constructor.
      */
     public Phone() {
     }
@@ -140,10 +151,6 @@ public class Phone implements Serializable {
         }
 
         Phone phone = (Phone) o;
-
-        if (client_id != phone.client_id) {
-            return false;
-        }
 
         if (number != null ? !number.equals(phone.number) : phone.number != null) {
             return false;

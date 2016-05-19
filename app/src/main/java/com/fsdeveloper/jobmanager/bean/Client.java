@@ -17,6 +17,7 @@ public class Client implements Serializable {
     private String name;
     private String email;
     private String address;
+    private byte[] image;
     private int rating;
     private int user_id;
     private String created_at;
@@ -27,7 +28,6 @@ public class Client implements Serializable {
      *
      * @param id         The id of client.
      * @param name       The name of client.
-     * @param last_name  The last name of client.
      * @param email      The email of client.
      * @param address    The address of client.
      * @param rating     The rating of client.
@@ -35,7 +35,7 @@ public class Client implements Serializable {
      * @param created_at The data time created.
      * @param phoneList  The phone list
      */
-    public Client(int id, String name, String last_name, String email, String address, int rating, int user_id, String created_at, List<Phone> phoneList) {
+    public Client(int id, String name, String email, String address, int rating, int user_id, String created_at, List<Phone> phoneList) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -49,20 +49,39 @@ public class Client implements Serializable {
     /**
      * Client class constructor.
      *
-     * @param name  The name of client.
-     * @param email      The email of client.
-     * @param address    The address of client.
-     * @param rating     The rating of client.
-     * @param user_id    The id of user.
-     * @param phoneList  The phone list
+     * @param name      The name of client.
+     * @param email     The email of client.
+     * @param address   The address of client.
+     * @param image     The image of client
+     * @param rating    The rating of client.
+     * @param user_id   The id of user.
+     * @param phoneList The phone list
      */
-    public Client(String name, String last_name, String email, String address, int rating, int user_id, List<Phone> phoneList) {
+    public Client(String name, String email, String address, byte[] image, int rating, int user_id, List<Phone> phoneList) {
         this.name = name;
         this.email = email;
         this.address = address;
+        this.image = image;
         this.rating = rating;
         this.user_id = user_id;
-        this.created_at = created_at;
+        this.phoneList = phoneList;
+    }
+
+    /**
+     * Client class constructor.
+     *
+     * @param name      The name of client.
+     * @param email     The email of client.
+     * @param address   The address of client.
+     * @param user_id   The id of user.
+     * @param phoneList The phone list
+     */
+    public Client(String name, String email, String address, byte[] image, int user_id, List<Phone> phoneList) {
+        this.name = name;
+        this.email = email;
+        this.address = address;
+        this.image = image;
+        this.user_id = user_id;
         this.phoneList = phoneList;
     }
 
@@ -145,6 +164,24 @@ public class Client implements Serializable {
     }
 
     /**
+     * Retrieve/get the image of client.
+     *
+     * @return The image of client.
+     */
+    public byte[] getImage() {
+        return image;
+    }
+
+    /**
+     * Set the image of client.
+     *
+     * @param image The image of client.
+     */
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
+
+    /**
      * Retrieve/get the rating of client.
      *
      * @return the rating of client.
@@ -216,11 +253,21 @@ public class Client implements Serializable {
         this.phoneList = phoneList;
     }
 
+
+    /**
+     * Check if id is null.
+     *
+     * @return True if is null or False.
+     */
+    public boolean isIdNull() {
+        return ((Object) id) == null;
+    }
+
     @Override
     public String toString() {
         return "Client{" +
                 "id=" + id +
-                ", name ='" + name+ '\'' +
+                ", name ='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", address='" + address + '\'' +
                 ", rating=" + rating +
@@ -239,10 +286,6 @@ public class Client implements Serializable {
 
         Client client = (Client) o;
 
-        if (id != client.id)
-            return false;
-        if (rating != client.rating)
-            return false;
         if (user_id != client.user_id)
             return false;
         if (name != null ? !name.equals(client.name) : client.name != null)
@@ -250,8 +293,6 @@ public class Client implements Serializable {
         if (email != null ? !email.equals(client.email) : client.email != null)
             return false;
         if (address != null ? !address.equals(client.address) : client.address != null)
-            return false;
-        if (created_at != null ? !created_at.equals(client.created_at) : client.created_at != null)
             return false;
 
         return phoneList != null ? phoneList.equals(client.phoneList) : client.phoneList == null;

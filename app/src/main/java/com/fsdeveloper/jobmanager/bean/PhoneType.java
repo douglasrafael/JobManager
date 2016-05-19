@@ -1,5 +1,9 @@
 package com.fsdeveloper.jobmanager.bean;
 
+import android.content.Context;
+
+import com.fsdeveloper.jobmanager.R;
+
 import java.io.Serializable;
 
 /**

@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.fsdeveloper.jobmanager.R;
-import com.fsdeveloper.jobmanager.adapter.TabsAdapter;
+import com.fsdeveloper.jobmanager.adapter.PagerTabAdapter;
 
 
 public class TabFragment extends Fragment {
@@ -32,7 +32,7 @@ public class TabFragment extends Fragment {
         /**
          *Set an Adapter for the View Pager
          */
-        viewPager.setAdapter(new TabsAdapter(getContext(), getChildFragmentManager()));
+        viewPager.setAdapter(new PagerTabAdapter(getContext(), getChildFragmentManager()));
 
         /**
          * Now, this is a workaround.

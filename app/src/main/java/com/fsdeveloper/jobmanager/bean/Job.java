@@ -56,6 +56,7 @@ public class Job implements Serializable {
         this.categories = categories;
     }
 
+
     /**
      * Job class constructor.
      */
@@ -358,7 +359,12 @@ public class Job implements Serializable {
      * @return True if finalized or False if not.
      */
     public boolean isFinalized() {
-        return (!finalized_at.equals(""));
+        if(finalized_at != null) {
+            if(!finalized_at.equals("")) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 

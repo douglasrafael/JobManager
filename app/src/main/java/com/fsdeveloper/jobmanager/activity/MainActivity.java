@@ -1,5 +1,6 @@
 package com.fsdeveloper.jobmanager.activity;
 
+import android.animation.LayoutTransition;
 import android.annotation.TargetApi;
 import android.app.SearchManager;
 import android.content.Context;
@@ -10,13 +11,16 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -24,20 +28,25 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import com.fsdeveloper.jobmanager.R;
+import com.fsdeveloper.jobmanager.adapter.PagerTabAdapter;
+import com.fsdeveloper.jobmanager.fragments.GenericDialogFragment;
 import com.fsdeveloper.jobmanager.fragments.TabFragment;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    private final String TAG = "MainActivity";
+    private final int CHANGE = 1;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private Toolbar toolbar;
     private NavigationView mNavigationView;
     private ViewPager mViewPager;
-    private TabLayout mTabLayout;
-    private FragmentManager mFragmentManager;
-    private FragmentTransaction mFragmentTransaction;
+    private PagerTabAdapter mAdapter;
     private SearchView mSearchView;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Set a Toolbar to replace the ActionBar.
         setupToolbar();
+
+        setupTabLayout();
 
         // Find our drawer view
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -59,30 +70,56 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setupDrawerContent(mNavigationView);
 
         /**
-         * Lets inflate the very first fragment
-         * Here , we are inflating the TabFragment as the first Fragment
-         */
-        mFragmentManager = getSupportFragmentManager();
-        mFragmentTransaction = mFragmentManager.beginTransaction();
-        mFragmentTransaction.replace(R.id.container_view, new TabFragment()).commit();
-
-        /**
          * Button floating
          */
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(this);
+
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        // Set transition in container
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+//            if (mViewPager.getLayoutTransition() == null)
+//                mViewPager.setLayoutTransition(new LayoutTransition());
+//        }
     }
 
     @Override
     public void onClick(View view) {
-        Intent intent = new Intent(this, JobFormActivity.class);
-        startActivity(intent);
+        switch (view.getId()) {
+            case R.id.fab:
+                intent = new Intent(this, JobFormActivity.class);
+                startActivityForResult(intent, CHANGE);
+                break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == CHANGE) {
+            Log.i(TAG, "onActivityResult - WAS CHANGE");
+            mAdapter.notifyDataSetChanged();
+            mViewPager.setAdapter(mAdapter);
+        }else {
+            Log.i(TAG, "onActivityResult - NO CHANGE");
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
+        }
+        switch (item.getItemId()) {
+            case R.id.action_about:
+                GenericDialogFragment dialogAbout = GenericDialogFragment.newDialog(1, R.string.about_title, R.string.about_message, R.drawable.ic_launcher_logo, new int[]{android.R.string.ok});
+                dialogAbout.show(getSupportFragmentManager());
+
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -131,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * Set toolbar
+     * Set toolbar.
      */
     private void setupToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -140,6 +177,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer);
+    }
+
+    /**
+     * Set tab layout.
+     */
+    private void setupTabLayout() {
+        final TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        final String[] tabs = getResources().getStringArray(R.array.tabs);
+        for (String titleTab : tabs) {
+            tabLayout.addTab(tabLayout.newTab().setText(titleTab));
+        }
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+        mViewPager = (ViewPager) findViewById(R.id.container_view);
+        mAdapter = new PagerTabAdapter(this, getSupportFragmentManager());
+
+        mViewPager.setAdapter(mAdapter);
+        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                mViewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
     }
 
     /**

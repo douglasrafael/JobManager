@@ -2,7 +2,11 @@
 <resources>
     <string name="app_name">Job Manager</string>
     <string name="action_settings">Configurações</string>
+    <string name="action_select_all">Seleionar Todos</string>
     <string name="action_search">Pesquisar</string>
+    <string name="action_delete">Excluír</string>
+    <string name="action_confirm_delete">Tem certeza de que deseja excluir? Não será possível recuperar depois.</string>
+    <string name="action_edit">Editar</string>
     <string name="action_new">Novo</string>
     <string name="action_logout">Sair</string>
     <string name="action_about">Sobre</string>
@@ -10,11 +14,21 @@
     <string name="no_data">Não existem dados cadastrados...</string>
     <string name="title_job_form">Adicionar Trabalho</string>
     <string name="discard_form">Descartar Alterações</string>
+    <string name="title_client_form">Adicionar Cliente</string>
+    <string name="add">Adicionar</string>
+    <string name="update">Atualizar</string>
+    <string name="discard_changes">Descartar as alterações?</string>
+    <string name="about_title">Sobre</string>
+    <string name="about_message">Desenvolvido por FS Developer</string>
+    <string name="yes">Sim</string>
+    <string name="no">Não</string>
 
     <string name="currency_symbol">R$ %1$s</string>
+    <string name="currency_symbol_unique">R$</string>
 
-    <!--Strings of form job-->
+    <!-- Strings of form job -->
     <string name="job_title">Título</string>
+    <string name="job_protocol">Protocolo</string>
     <string name="job_description">Descrição</string>
     <string name="job_note">Notas</string>
     <string name="job_price">Preço</string>
@@ -24,6 +38,7 @@
     <string name="job_client">Cliente</string>
     <string name="job_categories">Categorias</string>
     <string name="job_date_finalized">Data</string>
+    <string name="job_date_created">Data do cadastro</string>
     <string name="job_time_finalized">Hora</string>
     <string name="job_hint_title">Título para o trabalho</string>
     <string name="job_hint_description">Descreva o que deve ser feito...</string>
@@ -33,10 +48,34 @@
     <string name="job_hint_finalized_at">Data da conclusão</string>
     <string name="job_hint_client">Selecione o cliente</string>
     <string name="job_hint_categories">Selecione as categorias</string>
+    <string name="tooltip_add_phone">Adicionar novo telefone</string>
+    <string name="tooltip_remove_phone">Remover telefone</string>
+    <string name="tooltip_add_client">Adicione um novo</string>
 
-    <!-- Strings of system messages -->
+    <!-- Strings of form client -->
+    <string name="client_name">Nome</string>
+    <string name="client_email">Email</string>
+    <string name="client_address">Endereço</string>
+    <string name="client_phone">Telefone</string>
+    <string name="client_hint_address">Rua Pequi, 89XX\nCampinas-SP\n13098-305</string>
+    <string name="client_hint_email">Email para contato</string>
+    <string name="client_hint_name">Nome completo</string>
+    <string name="client_hint_phone">Number</string>
+
+    <!-- Strings of system messages errors -->
     <string name="error_bd">Ocorreu um erro ao tentar estabelecer conexão com o banco de dados. Tente novamente!</string>
     <string name="error_system">Desculpe. Ocorreu um erro na aplicação. Tente novamente!</string>
+    <string name="error_add_job">Ocorreu um erro ao tentar salvar o trabalho. Tente novamente...</string>
+    <string name="error_delete_job">Não foi possível remover o trabalho. Tente novamente...</string>
+
+    <!-- Strings of system messages success -->
+    <string name="success_add_job">Trabalho adicionado com sucesso!</string>
+    <string name="success_edit_job">Trabalho atualizado com sucesso!</string>
+    <plurals name="success_delete_job">
+        <item quantity="one">Trabalho removido com sucesso!</item>
+        <item quantity="other">%d Trabalhos removidos com sucesso!</item>
+    </plurals>
+
 
     <!-- String related to date time -->
     <string name="date_time_bd">yyyy-MM-dd HH:mm:ss</string>
@@ -55,6 +94,16 @@
     <string name="menu_others">Outros</string>
     <string name="drawer_open">Abrir drawer</string>
     <string name="drawer_close">Fechar drawer</string>
+
+    <!--validation-->
+    <string name="validate_required">é obrigatório!</string>
+    <string name="validate_name">Nome é obrigatório!</string>
+    <string name="validate_name_min">Deve ter pelo menos 2 caracteres!</string>
+    <string name="validate_email">Email inválido!</string>
+    <string name="validate_title">Título é obrigatório!</string>
+    <string name="validate_title_min">Deve ter pelo menos 5 caracteres!</string>
+    <string name="validate_price">Preço é obrigatório!</string>
+    <string name="validate_client">Cliente é obrigatório! Se não estiver na lista cadastre um novo antes de continuar...</string>
 
     <!-- Array related to tabs -->
     <string-array name="tabs">
@@ -85,5 +134,9 @@
         <item>Outros</item>
     </string-array>
 
+    <plurals name="number_selected">
+        <item quantity="one">1 selecionado</item>
+        <item quantity="other">%d selecionados</item>
+    </plurals>
 
 </resources>

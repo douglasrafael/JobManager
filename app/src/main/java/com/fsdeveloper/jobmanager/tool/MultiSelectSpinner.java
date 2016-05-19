@@ -5,15 +5,19 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
+import android.widget.TextView;
 
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * Spinner component implements for multi selection.
+ *
  * @author Created by Douglas Rafael on 10/05/2016.
  * @version 1.0
  */

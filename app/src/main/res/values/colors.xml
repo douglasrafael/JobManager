@@ -11,6 +11,8 @@
     <color name="textColorSecondary">#000000</color>
     <color name="colorTabIndicator">#FFFF8D</color>
 
-
-
+    <color name="colorButtonMini">#80CBC4</color>
+    <color name="colorButtonMiniSecondary">#0dbfae</color>
 </resources>
+
+

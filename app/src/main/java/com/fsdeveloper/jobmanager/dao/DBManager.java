@@ -7,7 +7,6 @@ import com.fsdeveloper.jobmanager.exception.ConnectionException;
 import com.fsdeveloper.jobmanager.exception.JobManagerException;
 
 /**
- *
  * @author Created by Douglas Rafael on 30/04/2016.
  * @version 1.0
  */
@@ -61,8 +60,20 @@ public class DBManager {
      * Only closes if it is open.
      */
     public void DBClose() {
-        if (db != null || db.isOpen()) {
+        if (db != null && DBIsOpen()) {
             db.close();
         }
+    }
+
+    /**
+     * Checks whether the connection is open.
+     *
+     * @return True if is open or False otherwise.
+     */
+    public boolean DBIsOpen() {
+        if (db != null && db.isOpen()) {
+            return true;
+        }
+        return false;
     }
 }

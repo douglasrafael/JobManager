@@ -24,7 +24,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "job_manager";
 
     // Database version
-    private static final int DATABASE_VERSION = 30;
+    private static final int DATABASE_VERSION = 3;
 
     // Database tables
     public static final String TABLE_USER = "user";
@@ -40,6 +40,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper {
     public static final String NAME = "name";
     public static final String TITLE = "title";
     public static final String EMAIL = "email";
+    public static final String IMAGE = "image";
     public static final String CREATED_AT = "created_at";
     public static final String USER_ID = "user_id";
     public static final String CLIENT_ID = "client_id";
@@ -77,12 +78,12 @@ public final class DatabaseHelper extends SQLiteOpenHelper {
 
     // Script to create the user table
     private final String CREATE_TABLE_USER = "CREATE TABLE " + TABLE_USER + "(" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-            NAME + " VARCHAR(45) NOT NULL," + EMAIL + " VARCHAR(125) NOT NULL," + USER_PASSWORD + " VARCHAR(45)," + CREATED_AT + " TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
+            NAME + " VARCHAR(45) NOT NULL," + EMAIL + " VARCHAR(125) NOT NULL," + USER_PASSWORD + " VARCHAR(45)," + IMAGE + " BLOB," + CREATED_AT + " TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
             USER_LAST_LOGIN + " TIMESTAMP, CONSTRAINT 'id_UNIQUE' UNIQUE(" + ID + "), CONSTRAINT 'email_UNIQUE' UNIQUE(" + EMAIL + "));";
 
     // Script to create the client table
     private final String CREATE_TABLE_CLIENT = "CREATE TABLE " + TABLE_CLIENT + "(" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-            NAME + " VARCHAR(245) NOT NULL," + EMAIL + " VARCHAR(125)," + CLIENT_ADDRESS + " VARCHAR(255)," +
+            NAME + " VARCHAR(245) NOT NULL," + EMAIL + " VARCHAR(125) DEFAULT NULL," + CLIENT_ADDRESS + " VARCHAR(255)," + IMAGE + " BLOB," +
             CLIENT_RATING + " INTEGER DEFAULT 0," + USER_ID + " INTEGER NOT NULL," + CREATED_AT + " TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
             "CONSTRAINT 'id_UNIQUE' UNIQUE(" + ID + "), CONSTRAINT 'fk_client_user' FOREIGN KEY(" + USER_ID + ") " +
             "REFERENCES " + TABLE_USER + "(" + ID + ") ON DELETE CASCADE ON UPDATE CASCADE);" +
@@ -160,7 +161,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         String SQL_ALL = CREATE_TABLE_USER + CREATE_TABLE_CLIENT + CREATE_TABLE_JOB_CATEGORY + CREATE_TABLE_JOB + CREATE_TABLE_JOB_HAS_JOB_CATEGORY +
-                CREATE_TABLE_PHONE_TYPE + CREATE_TABLE_PHONE + insertCategories() + insertTypesPphone();
+                CREATE_TABLE_PHONE_TYPE + CREATE_TABLE_PHONE + insertCategories() + insertTypesPhone();
 
         sqLiteDatabase.beginTransaction();
         try {
@@ -213,7 +214,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper {
      *
      * @return SQL inserting phone types default.
      */
-    public String insertTypesPphone() {
+    public String insertTypesPhone() {
         String query = "";
 
         String[] typesPhoneDefault = res.getStringArray(R.array.types_phone);
