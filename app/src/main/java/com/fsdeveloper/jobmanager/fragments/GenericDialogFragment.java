@@ -3,6 +3,7 @@ package com.fsdeveloper.jobmanager.fragments;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -10,15 +11,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 
-import com.fsdeveloper.jobmanager.R;
-
 /**
  * Mount a Generic AlertDialog. Receiving the title of the titles of the buttons...
  *
  * @author Created by Douglas Rafael on 18/05/2016.
  * @version 1.0
  */
-public class GenericDialogFragment extends DialogFragment {
+public class GenericDialogFragment extends DialogFragment implements DialogInterface.OnClickListener {
     public static final int REQUEST_DIALOG = 2;
     private static final String DIALOG_TAG = "SimpleDialog";
     private static final String ID = "id";
@@ -28,6 +27,13 @@ public class GenericDialogFragment extends DialogFragment {
     private static final String ICON = "icon";
 
     private int mDialogId;
+    private static boolean isFragment;
+
+    /**
+     * Empty constructor is required for DialogFragment
+     */
+    public GenericDialogFragment() {
+    }
 
     /**
      * Initializes the AlertDialog.
@@ -38,7 +44,7 @@ public class GenericDialogFragment extends DialogFragment {
      * @param buttons The buttons
      * @return The GenericDialogFragment
      */
-    public static GenericDialogFragment newDialog(int id, int title, int message, int icon, int[] buttons) {
+    public static GenericDialogFragment newDialog(int id, int title, int message, int icon, int[] buttons, Fragment fragment) {
         Bundle bundle = new Bundle();
         bundle.putInt(ID, id);
         bundle.putInt(TITLE, title);
@@ -49,10 +55,16 @@ public class GenericDialogFragment extends DialogFragment {
         GenericDialogFragment dialogFragment = new GenericDialogFragment();
         dialogFragment.setArguments(bundle);
 
+        /**
+         * Verifies that who called the dialog was a fragment.
+         * The onClick and return is dirente of Activity
+         */
+        isFragment = (fragment != null) ? true : false;
+
         return dialogFragment;
     }
 
-    public static GenericDialogFragment newDialog(int id, int message, int[] buttons) {
+    public static GenericDialogFragment newDialog(int id, int message, int[] buttons, Fragment fragment) {
         Bundle bundle = new Bundle();
         bundle.putInt(ID, id);
         bundle.putInt(MESSAGE, message);
@@ -60,6 +72,12 @@ public class GenericDialogFragment extends DialogFragment {
 
         GenericDialogFragment dialogFragment = new GenericDialogFragment();
         dialogFragment.setArguments(bundle);
+
+        /**
+         * Verifies that who called the dialog was a fragment.
+         * The onClick and return is dirente of Activity
+         */
+        isFragment = (fragment != null) ? true : false;
 
         return dialogFragment;
     }
@@ -81,51 +99,33 @@ public class GenericDialogFragment extends DialogFragment {
         alertDiBuilder.setMessage(getArguments().getInt(MESSAGE));
 
         switch (buttons.length) {
+            case 3:
+                alertDiBuilder.setNeutralButton(buttons[2], this);
             case 2:
-                alertDiBuilder.setNegativeButton(buttons[1], new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if (getTargetRequestCode() != 0)
-                            getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_CANCELED, null);
-                    }
-                });
+                alertDiBuilder.setNegativeButton(buttons[1], this);
             case 1:
-                alertDiBuilder.setPositiveButton(buttons[0], new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if (getTargetRequestCode() != 0)
-                            getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, null);
-                    }
-                });
+                alertDiBuilder.setPositiveButton(buttons[0], this);
         }
 
         return alertDiBuilder.create();
     }
-//
-//    @Override
-//    public void onClick(DialogInterface dialogInterface, int i) {
-//        Activity activity = getActivity();
-//        if (activity instanceof OnClickDialogListener) {
-//            OnClickDialogListener listener = (OnClickDialogListener) activity;
-//            listener.onClickDialog(mDialogId, i);
-//        }
-//    }
 
+    @Override
+    public void onClick(DialogInterface dialogInterface, int witch) {
+        if (isFragment) {
+            Intent intent = new Intent();
+            intent.putExtra("witch", witch);
 
-//    // Override the Fragment.onAttach() method to instantiate the NoticeDialogListener
-//    @Override
-//    public void onAttach(Activity activity) {
-//        super.onAttach(activity);
-//        // Verify that the host activity implements the callback interface
-//        try {
-//            // Instantiate the NoticeDialogListener so we can send events to the host
-//            mListener = (OnClickDialogListener) activity;
-//        } catch (ClassCastException e) {
-//            // The activity doesn't implement the interface, throw exception
-//            throw new ClassCastException(activity.toString()
-//                    + " must implement OnClickDialogListener");
-//        }
-//    }
+            // Calls onActivityResult the targetFragment
+            getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
+        } else {
+            Activity activity = getActivity();
+            if (activity instanceof OnClickDialogListener) {
+                OnClickDialogListener listener = (OnClickDialogListener) activity;
+                listener.onClickDialog(mDialogId, witch);
+            }
+        }
+    }
 
     /**
      * Show Dialog
@@ -139,7 +139,7 @@ public class GenericDialogFragment extends DialogFragment {
         }
     }
 
-//    public interface OnClickDialogListener {
-//        void onClickDialog(DialogFragment dialogFragment, int button);
-//    }
+    public interface OnClickDialogListener {
+        void onClickDialog(int id, int button);
+    }
 }

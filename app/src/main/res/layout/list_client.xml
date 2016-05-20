@@ -18,6 +18,8 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Name Client"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:textStyle="bold"
         android:layout_alignTop="@+id/image_client"
         android:layout_toRightOf="@+id/image_client"

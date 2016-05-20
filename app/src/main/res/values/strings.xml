@@ -23,7 +23,7 @@
     <string name="no">No</string>
 
 
-    <string name="currency_symbol">$ %1$s</string>
+    <string name="currency_symbol" formatted="false">$ %1$.2f</string>
     <string name="currency_symbol_unique">$</string>
 
     <!-- Strings of form job -->
@@ -66,6 +66,7 @@
     <string name="error_bd">An error occurred while trying to connect to the database. Try again!</string>
     <string name="error_system">Sorry. An error occurred in the application. Try again!</string>
     <string name="error_add_job">An error occurred while trying to save the job. Try again...</string>
+    <string name="error_edit_job">Could not update the job. Please try again...</string>
     <string name="error_delete_job">Could not remove the job. Please try again...</string>
 
     <!-- Strings of system messages success -->

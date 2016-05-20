@@ -20,6 +20,8 @@ import android.widget.TextView;
 import com.fsdeveloper.jobmanager.R;
 import com.fsdeveloper.jobmanager.bean.Job;
 
+import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.util.List;
 
 /**
@@ -67,6 +69,7 @@ public class JobListAdapter extends BaseAdapter {
             holder.price = (TextView) convertView.findViewById(R.id.text_price_job);
             holder.client = (TextView) convertView.findViewById(R.id.text_client_job);
             holder.finalized = (CheckBox) convertView.findViewById(R.id.cb_finalized_job);
+            holder.numberFormat = NumberFormat.getCurrencyInstance();
 
             convertView.setTag(holder);
         } else {
@@ -79,7 +82,7 @@ public class JobListAdapter extends BaseAdapter {
             holder.title.setText(job.getTitle());
             holder.description.setText(job.getDescription());
             holder.client.setText(job.getClient().getName());
-            holder.price.setText(context.getResources().getString(R.string.currency_symbol, job.getPrice()));
+            holder.price.setText(holder.numberFormat.format(new BigDecimal(job.getPrice())));
             holder.finalized.setChecked(job.isFinalized());
 
             int color = ((ListView) viewGroup).isItemChecked(position) ? Color.rgb(214, 214, 214) : Color.TRANSPARENT;
@@ -99,6 +102,7 @@ public class JobListAdapter extends BaseAdapter {
         TextView price;
         TextView client;
         CheckBox finalized;
+        NumberFormat numberFormat;
     }
 
 }

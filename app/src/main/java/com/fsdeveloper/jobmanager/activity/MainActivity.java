@@ -116,7 +116,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         switch (item.getItemId()) {
             case R.id.action_about:
-                GenericDialogFragment dialogAbout = GenericDialogFragment.newDialog(1, R.string.about_title, R.string.about_message, R.drawable.ic_launcher_logo, new int[]{android.R.string.ok});
+                GenericDialogFragment dialogAbout = GenericDialogFragment.newDialog(
+                        1, R.string.about_title, R.string.about_message, R.drawable.ic_launcher_logo, new int[]{android.R.string.ok}, null);
                 dialogAbout.show(getSupportFragmentManager());
 
                 return true;

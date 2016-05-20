@@ -46,7 +46,7 @@ import java.util.Random;
 public class JobListFragment extends ListFragment implements ActionMode.Callback, AdapterView.OnItemLongClickListener {
     private final String TAG = "JobListFragment";
     private final String RESULT_JOB = "job";
-    private final int REQUEST_JOB = 3;
+    private final int REQUEST_JOB = 1;
     private Manager manager;
     private Context context;
     private ListView mListView;
@@ -171,7 +171,8 @@ public class JobListFragment extends ListFragment implements ActionMode.Callback
                 return true;
             case R.id.action_list_delete:
                 // Open dialog and and treats the return in onActivityResult
-                GenericDialogFragment dialogRemove = new GenericDialogFragment().newDialog(1, R.string.action_confirm_delete, new int[]{android.R.string.ok, android.R.string.cancel});
+                GenericDialogFragment dialogRemove = GenericDialogFragment.newDialog(
+                        1, R.string.action_confirm_delete, new int[]{android.R.string.ok, android.R.string.cancel}, JobListFragment.this);
                 dialogRemove.setTargetFragment(this, GenericDialogFragment.REQUEST_DIALOG);
                 dialogRemove.show(getFragmentManager());
 

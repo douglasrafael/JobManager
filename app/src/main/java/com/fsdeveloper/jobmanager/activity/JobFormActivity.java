@@ -49,6 +49,7 @@ import java.util.List;
 public class JobFormActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, AdapterView.OnItemClickListener, TextWatcher {
     public static final String TAG = "JobFormActivity";
     public static final int REQUEST_JOB = 1;
+    public static final int REQUEST_JOB_UPDATE = 1;
     public static final String RESULT_JOB = "job";
 
     private int[] dateFinalized = new int[3];
@@ -112,7 +113,7 @@ public class JobFormActivity extends AppCompatActivity implements View.OnClickLi
          * Instance of the DAO methods manager
          */
         try {
-            manager = new Manager(this);
+            manager = new Manager(JobFormActivity.this);
 
             /**
              * Set auto complete the clients and events
@@ -208,7 +209,7 @@ public class JobFormActivity extends AppCompatActivity implements View.OnClickLi
                         if (resultOk) {
                             // was change
                             Intent it = new Intent();
-                            it.putExtra(JobPreview.RESULT_JOB, job);
+                            it.putExtra(RESULT_JOB, job);
                             setResult(RESULT_OK, it);
                         } else {
                             // not change
@@ -229,7 +230,6 @@ public class JobFormActivity extends AppCompatActivity implements View.OnClickLi
          * Checks for customer to register
          */
         if (resultCode == RESULT_OK && requestCode == ClientFormActivity.REQUEST_CLIENT) {
-            Log.i(TAG, "onActivityResult()");
             client = (Client) data.getSerializableExtra(ClientFormActivity.RESULT_CLIENT);
             textClient.setText(client.getName());
             textClient.requestFocus();
@@ -237,12 +237,6 @@ public class JobFormActivity extends AppCompatActivity implements View.OnClickLi
         } else {
             client = null;
         }
-    }
-
-    @Override
-    protected void onStart() {
-        Log.i(TAG, "onStart()");
-        super.onStart();
     }
 
     @Override
@@ -434,19 +428,24 @@ public class JobFormActivity extends AppCompatActivity implements View.OnClickLi
      *
      * @return The Job
      */
-    private Job getJobOfForm() throws JobManagerException {
+    private Job getJobOfForm() {
         Job j = new Job();
-        j.setProtocol(isEdit() ? jobEdit.getProtocol() : manager.generateProtocol());
-        j.setTitle(String.valueOf(textTitle.getText()));
-        j.setDescription(String.valueOf(textDescription.getText()));
-        j.setNote(String.valueOf(textNote.getText()));
-        j.setPrice(getValueCurrency(String.valueOf(textPrice.getText())));
-        j.setExpense(getValueCurrency(String.valueOf(textExpense.getText())));
-        j.setFinalized_at(getDataTimeFinalized());
-        j.setClient(client);
-        j.setCategories(getCategories());
+        try {
+            j.setProtocol(isEdit() ? jobEdit.getProtocol() : manager.generateProtocol());
 
-        j.setUser_id(1); // TODO trocar pelo id da sessao
+            j.setTitle(String.valueOf(textTitle.getText()));
+            j.setDescription(String.valueOf(textDescription.getText()));
+            j.setNote(String.valueOf(textNote.getText()));
+            j.setPrice(getValueCurrency(String.valueOf(textPrice.getText())));
+            j.setExpense(getValueCurrency(String.valueOf(textExpense.getText())));
+            j.setFinalized_at(getDataTimeFinalized());
+            j.setClient(client);
+            j.setCategories(getCategories());
+
+            j.setUser_id(1); // TODO trocar pelo id da sessao
+        } catch (JobManagerException e) {
+            e.printStackTrace();
+        }
 
         return j;
     }
@@ -459,9 +458,9 @@ public class JobFormActivity extends AppCompatActivity implements View.OnClickLi
     private void fillForm(Job jobEdit) {
         textTitle.setText(jobEdit.getTitle());
         textDescription.setText(jobEdit.getDescription());
-        textNote.setText(jobEdit.getDescription());
-        textPrice.setText(String.valueOf(jobEdit.getPrice()).replace(".", ""));
-        textExpense.setText(String.valueOf(jobEdit.getExpense()).replace(".", ""));
+        textNote.setText(jobEdit.getNote());
+        textPrice.setText(getResources().getString(R.string.currency_symbol_unique) + String.format("%.2f", jobEdit.getPrice()).replace(".", ""));
+        textExpense.setText(getResources().getString(R.string.currency_symbol_unique) + String.format("%.2f", jobEdit.getExpense()).replace(".", ""));
         textClient.setText(jobEdit.getClient().getName());
 
         // Set data time is finalized

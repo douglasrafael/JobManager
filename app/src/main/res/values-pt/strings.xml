@@ -23,7 +23,7 @@
     <string name="yes">Sim</string>
     <string name="no">Não</string>
 
-    <string name="currency_symbol">R$ %1$s</string>
+    <string name="currency_symbol" formatted="false">R$ %1$.2f</string>
     <string name="currency_symbol_unique">R$</string>
 
     <!-- Strings of form job -->
@@ -65,8 +65,9 @@
     <!-- Strings of system messages errors -->
     <string name="error_bd">Ocorreu um erro ao tentar estabelecer conexão com o banco de dados. Tente novamente!</string>
     <string name="error_system">Desculpe. Ocorreu um erro na aplicação. Tente novamente!</string>
-    <string name="error_add_job">Ocorreu um erro ao tentar salvar o trabalho. Tente novamente...</string>
-    <string name="error_delete_job">Não foi possível remover o trabalho. Tente novamente...</string>
+    <string name="error_add_job">Ocorreu um erro ao tentar salvar o trabalho. Por fvaor, tente novamente...</string>
+    <string name="error_edit_job">Não foi possível atualizar o trabalho. Por favor, tente novamente...</string>
+    <string name="error_delete_job">Não foi possível remover o trabalho. Por favor, tente novamente...</string>
 
     <!-- Strings of system messages success -->
     <string name="success_add_job">Trabalho adicionado com sucesso!</string>
