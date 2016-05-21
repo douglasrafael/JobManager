@@ -17,6 +17,7 @@ import com.fsdeveloper.jobmanager.fragments.JobListFragment;
 import java.util.List;
 
 /**
+ * Adapter manager the tabs.
  *
  * @author Created by Douglas Rafael on 08/05/2016.
  * @version 1.0

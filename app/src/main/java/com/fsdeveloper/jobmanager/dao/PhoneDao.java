@@ -3,6 +3,7 @@ package com.fsdeveloper.jobmanager.dao;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 
 import com.fsdeveloper.jobmanager.bean.Phone;
 import com.fsdeveloper.jobmanager.exception.ConnectionException;
@@ -84,7 +85,6 @@ public class PhoneDao extends DBManager implements Dao<Phone> {
         values.put(DatabaseHelper.PHONE_TYPE_ID, o.getType().getId());
 
         long _id = db.insert(DatabaseHelper.TABLE_PHONE, null, values);
-
         return (int) _id;
     }
 

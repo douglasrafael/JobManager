@@ -22,6 +22,7 @@ public class Client implements Serializable {
     private int user_id;
     private String created_at;
     private List<Phone> phoneList;
+    private int totalOfJobs;
 
     /**
      * Client class constructor.
@@ -32,17 +33,15 @@ public class Client implements Serializable {
      * @param address    The address of client.
      * @param rating     The rating of client.
      * @param user_id    The id of user.
-     * @param created_at The data time created.
      * @param phoneList  The phone list
      */
-    public Client(int id, String name, String email, String address, int rating, int user_id, String created_at, List<Phone> phoneList) {
+    public Client(int id, String name, String email, String address, byte[] image, int rating, int user_id, List<Phone> phoneList) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.address = address;
         this.rating = rating;
         this.user_id = user_id;
-        this.created_at = created_at;
         this.phoneList = phoneList;
     }
 
@@ -253,6 +252,23 @@ public class Client implements Serializable {
         this.phoneList = phoneList;
     }
 
+    /**
+     * Retrieve/get the total the jobs of client.
+     *
+     * @return The phone list.
+     */
+    public int getTotalOfJobs() {
+        return totalOfJobs;
+    }
+
+    /**
+     * Set the total the jobs of client.
+     *
+     * @param totalOfJobs The total.
+     */
+    public void setTotalOfJobs(int totalOfJobs) {
+        this.totalOfJobs = totalOfJobs;
+    }
 
     /**
      * Check if id is null.
@@ -279,23 +295,15 @@ public class Client implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
         Client client = (Client) o;
 
-        if (user_id != client.user_id)
-            return false;
-        if (name != null ? !name.equals(client.name) : client.name != null)
-            return false;
-        if (email != null ? !email.equals(client.email) : client.email != null)
-            return false;
-        if (address != null ? !address.equals(client.address) : client.address != null)
-            return false;
+        if (name != null ? !name.equals(client.name) : client.name != null) return false;
+        if (email != null ? !email.equals(client.email) : client.email != null) return false;
 
-        return phoneList != null ? phoneList.equals(client.phoneList) : client.phoneList == null;
+        return address != null ? address.equals(client.address) : client.address == null;
     }
 
     @Override

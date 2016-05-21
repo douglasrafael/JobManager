@@ -1,6 +1,7 @@
 package com.fsdeveloper.jobmanager.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
@@ -70,6 +72,10 @@ public class ClientListAdapter extends BaseAdapter {
         if (client != null) {
             holder.name.setText(client.getName());
             holder.email.setText(client.getEmail());
+            holder.countJobs.setText(String.format("%02d", client.getTotalOfJobs()));
+
+            int colorBack = ((ListView) viewGroup).isItemChecked(position) ? Color.rgb(214, 214, 214) : Color.TRANSPARENT;
+            convertView.setBackgroundColor(colorBack);
 
             if(client.getImage() == null) {
             /*
@@ -84,7 +90,7 @@ public class ClientListAdapter extends BaseAdapter {
                         .toUpperCase()
                         .endConfig()
                         .round();
-                holder.image.setImageDrawable(builder.build(client.getName().substring(0, 1), color));
+               holder.image.setImageDrawable(builder.build(client.getName().substring(0, 1), color));
             }
         }
 

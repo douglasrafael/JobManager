@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Preview the job.
+ *
  * @author Created by Douglas Rafael on 17/05/2016.
  * @version 1.0
  */
@@ -94,6 +98,18 @@ public class JobPreview extends AppCompatActivity implements View.OnClickListene
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int idButton = item.getItemId();
+
+        if (idButton == android.R.id.home) {
+            // Send to the activity that called and closes the screen
+            super.onBackPressed();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.fab_edit_job:
@@ -118,11 +134,7 @@ public class JobPreview extends AppCompatActivity implements View.OnClickListene
         // Checks whether there were changes in JobFormActivity
         if (resultCode == RESULT_OK && requestCode == JobFormActivity.REQUEST_JOB_UPDATE) {
             Job jobUpdate = (Job) getIntent().getSerializableExtra(JobFormActivity.RESULT_JOB);
-            if (updatePreview(jobUpdate)) {
-                Toast.makeText(this, getResources().getString(R.string.success_edit_job), Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, getResources().getString(R.string.error_edit_job), Toast.LENGTH_SHORT).show();
-            }
+            updatePreview(jobUpdate);
         }
     }
 
@@ -180,22 +192,17 @@ public class JobPreview extends AppCompatActivity implements View.OnClickListene
      * Update the view
      *
      * @param jobUpdate The job
-     * @return
      */
-    private boolean updatePreview(Job jobUpdate) {
+    private void updatePreview(Job jobUpdate) {
         try {
             job = manager.getJobByProtocol(jobUpdate.getProtocol());
             if (job != null) {
                 createPreview(job);
-                return true;
             }
-
-            return false;
         } catch (JobManagerException e) {
             e.printStackTrace();
         }
 
-        return false;
     }
 
     /**
@@ -240,7 +247,7 @@ public class JobPreview extends AppCompatActivity implements View.OnClickListene
         /**
          * Setting values that can be displayed or not
          */
-        if (isEmpty(description)) {
+        if (MyStringsTool.isEmpty(description)) {
             findViewById(R.id.textView2).setVisibility(View.GONE);
             textDescription.setVisibility(View.GONE);
         } else {
@@ -249,7 +256,7 @@ public class JobPreview extends AppCompatActivity implements View.OnClickListene
             textDescription.setText(description);
         }
 
-        if (isEmpty(note)) {
+        if (MyStringsTool.isEmpty(note)) {
             findViewById(R.id.textView3).setVisibility(View.GONE);
             textNote.setVisibility(View.GONE);
         } else {
@@ -277,16 +284,5 @@ public class JobPreview extends AppCompatActivity implements View.OnClickListene
         }
     }
 
-    /**
-     * Check if is empty
-     *
-     * @param s The String
-     * @return The values boolean
-     */
-    private boolean isEmpty(String s) {
-        if (s != null && s.length() > 0) {
-            return false;
-        }
-        return true;
-    }
+
 }

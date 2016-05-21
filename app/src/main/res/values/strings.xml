@@ -12,8 +12,10 @@
     <string name="hint_search">Search for Job...</string>
     <string name="no_data">Do not exist registered data...</string>
     <string name="title_job_form">Add Job</string>
+    <string name="title_job_form_update">Update Job</string>
     <string name="discard_form">Discard changes</string>
     <string name="title_client_form">Add Client</string>
+    <string name="title_client_form_update">Update Client</string>
     <string name="add">Add</string>
     <string name="update">Update</string>
     <string name="discard_changes">Discard your changes?</string>
@@ -21,7 +23,7 @@
     <string name="about_message">Developed by FS Developer</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-
+    <string name="back_confirm">Are you sure you want to return without saving the data?</string>
 
     <string name="currency_symbol" formatted="false">$ %1$.2f</string>
     <string name="currency_symbol_unique">$</string>
@@ -57,6 +59,7 @@
     <string name="client_email">Email</string>
     <string name="client_address">Address</string>
     <string name="client_phone">Phone</string>
+    <string name="client_associates_last_jobs">Latest jobs associated</string>
     <string name="client_hint_address">19XX Arbutus Drive\nMiami, FL 33012</string>
     <string name="client_hint_email">Contact email</string>
     <string name="client_hint_name">Full name</string>
@@ -67,14 +70,32 @@
     <string name="error_system">Sorry. An error occurred in the application. Try again!</string>
     <string name="error_add_job">An error occurred while trying to save the job. Try again...</string>
     <string name="error_edit_job">Could not update the job. Please try again...</string>
+    <string name="error_edit_client">Could not update the client. Please try again...</string>
     <string name="error_delete_job">Could not remove the job. Please try again...</string>
+    <string name="error_delete_client">Could not remove the client. Please try again...</string>
+    <string name="error_delete_client_validation">You can not remove the client that is related to any registered work...</string>
+    <string name="error_finalized_job">Could not mark the job as finalized. Please try again...</string>
+    <string name="error_not_finalized_job">Could not mark the job as not finalized. Please try again...</string>
 
     <!-- Strings of system messages success -->
     <string name="success_add_job">Job added successfully!</string>
     <string name="success_edit_job">Job successfully updated!</string>
+    <string name="success_edit_client">Client successfully updated!</string>
+    <string name="success_finalized_job">Job marked as finalized successfully! In %1$s</string>
+    <string name="success_not_finalized_job">Job was marked as not finalized!</string>
     <plurals name="success_delete_job">
         <item quantity="one">Job successfully removed!</item>
         <item quantity="other">%d Jobs removed successfully!</item>
+    </plurals>
+
+    <plurals name="success_delete_client">
+        <item quantity="one">Client successfully removed!</item>
+        <item quantity="other">%d Clients removed successfully!</item>
+    </plurals>
+
+    <plurals name="success_delete_client_partial">
+        <item quantity="one">A client was not removed because it is related to some registered job...</item>
+        <item quantity="other">%d clients were not removed because they are related to any registered job...</item>
     </plurals>
 
     <!-- String related to date time -->
@@ -139,30 +160,5 @@
         <item quantity="other">%d selected</item>
     </plurals>
 
-    <string name="title_activity_main">MainActivity</string>
-    <string name="title_activity_job_form">JobFormActivity</string>
-
-    <string name="country_prompt">Choose a country</string>
-    <string name="title_activity_client_form">ClientFormActivity</string>
-
     <!-- Strings related to login -->
-    <string name="title_activity_login">Sign in</string>
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password (optional)</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
-
-
-
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
 </resources>

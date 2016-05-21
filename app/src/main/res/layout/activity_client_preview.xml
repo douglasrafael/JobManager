@@ -42,7 +42,7 @@
             android:paddingRight="40dp">
 
             <TextView
-                android:id="@+id/text_title_job_preview"
+                android:id="@+id/text_name_client_preview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
@@ -56,13 +56,13 @@
             android:layout_weight="0.2"
             android:orientation="horizontal">
 
-            <include layout="@layout/content_job_preview" />
+            <include layout="@layout/content_client_preview" />
         </LinearLayout>
 
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_edit_job"
+        android:id="@+id/fab_edit_client"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/fab_margin"
@@ -74,7 +74,7 @@
         app:layout_anchorGravity="bottom|left|end" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_remove_job"
+        android:id="@+id/fab_remove_client"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="65dp"
@@ -86,7 +86,7 @@
         app:layout_anchorGravity="bottom|left" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_share_job"
+        android:id="@+id/fab_share_client"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="15dp"

@@ -33,9 +33,21 @@ import android.view.animation.AnimationUtils;
 
 import com.fsdeveloper.jobmanager.R;
 import com.fsdeveloper.jobmanager.adapter.PagerTabAdapter;
+import com.fsdeveloper.jobmanager.bean.User;
+import com.fsdeveloper.jobmanager.exception.ConnectionException;
+import com.fsdeveloper.jobmanager.exception.JobManagerException;
+import com.fsdeveloper.jobmanager.fragments.ClientListFragment;
 import com.fsdeveloper.jobmanager.fragments.GenericDialogFragment;
+import com.fsdeveloper.jobmanager.fragments.JobListFragment;
 import com.fsdeveloper.jobmanager.fragments.TabFragment;
+import com.fsdeveloper.jobmanager.manager.Manager;
 
+/**
+ * Activity main system.
+ *
+ * @author Created by Douglas Rafael
+ * @version 1.0
+ */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private final String TAG = "MainActivity";
     private final int CHANGE = 1;
@@ -75,15 +87,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(this);
 
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        // Set transition in container
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-//            if (mViewPager.getLayoutTransition() == null)
-//                mViewPager.setLayoutTransition(new LayoutTransition());
+//        try {
+//            Manager m = new Manager(this);
+//            User u = new User("Rafael", "rafael@mail.com", "123456", null);
+//            m.insertUser(u);
+//        } catch (JobManagerException e) {
+//            e.printStackTrace();
+//        } catch (ConnectionException e) {
+//            e.printStackTrace();
 //        }
     }
 
@@ -92,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()) {
             case R.id.fab:
                 intent = new Intent(this, JobFormActivity.class);
-                startActivityForResult(intent, CHANGE);
+                startActivity(intent);
                 break;
         }
     }
@@ -100,13 +111,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == CHANGE) {
-            Log.i(TAG, "onActivityResult - WAS CHANGE");
-            mAdapter.notifyDataSetChanged();
-            mViewPager.setAdapter(mAdapter);
-        }else {
-            Log.i(TAG, "onActivityResult - NO CHANGE");
-        }
     }
 
     @Override
@@ -143,29 +147,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
 
         // Associate searchable configuration with the SearchView
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         mSearchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                mSearchView.clearFocus();
+                return false;
+            }
 
+            @Override
+            public boolean onQueryTextChange(String filter) {
+                // tab client
+                switch (mViewPager.getCurrentItem()){
+                    case 0:
+                        JobListFragment.search(filter);
+                        break;
+                    case 1:
+                        ClientListFragment.search(filter);
+                        break;
+                    case 2:
+                        mViewPager.setCurrentItem(0);
+                        break;
+                }
+
+                return false;
+            }
+        });
         return super.onCreateOptionsMenu(menu);
-    }
-
-    /**
-     * Treat the search field.
-     *
-     * @param intent The intent
-     */
-    @Override
-    protected void onNewIntent(Intent intent) {
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            //use the query to search
-        }
     }
 
     /**
@@ -200,11 +213,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 mViewPager.setCurrentItem(tab.getPosition());
+
+
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
+                if (mSearchView.isShown() && tab.getPosition() < 2) {
+                    mSearchView.setQuery("", true);
+                    mSearchView.setIconified(true);
+                    mSearchView.clearFocus();
+                }
             }
 
             @Override

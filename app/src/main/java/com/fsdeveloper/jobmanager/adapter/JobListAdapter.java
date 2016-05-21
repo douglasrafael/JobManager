@@ -1,5 +1,6 @@
 package com.fsdeveloper.jobmanager.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v4.app.ListFragment;
@@ -14,30 +15,37 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fsdeveloper.jobmanager.R;
 import com.fsdeveloper.jobmanager.bean.Job;
+import com.fsdeveloper.jobmanager.exception.ConnectionException;
+import com.fsdeveloper.jobmanager.exception.JobManagerException;
+import com.fsdeveloper.jobmanager.manager.Manager;
+import com.fsdeveloper.jobmanager.tool.MyDataTime;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.List;
 
 /**
+ * The adapter list the jobs.
+ *
  * @author Created by Douglas Rafael on 08/05/2016.
  * @version 1.0
  */
 public class JobListAdapter extends BaseAdapter {
     private final String TAG = "JobListAdapter";
-    Context context;
-    List<Job> listOfJobs;
-    ListFragment fragment;
+    private Context context;
+    private List<Job> listOfJobs;
+    private Manager manager;
 
-    public JobListAdapter(ListFragment fragment, Context context, List<Job> listOfJobs) {
+    public JobListAdapter(Context context, List<Job> listOfJobs) {
         this.context = context;
         this.listOfJobs = listOfJobs;
-        this.fragment = fragment;
     }
 
     @Override
@@ -76,8 +84,7 @@ public class JobListAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        Job job = listOfJobs.get(position);
-
+        final Job job = listOfJobs.get(position);
         if (job != null) {
             holder.title.setText(job.getTitle());
             holder.description.setText(job.getDescription());
@@ -88,6 +95,37 @@ public class JobListAdapter extends BaseAdapter {
             int color = ((ListView) viewGroup).isItemChecked(position) ? Color.rgb(214, 214, 214) : Color.TRANSPARENT;
 
             convertView.setBackgroundColor(color);
+
+            final ViewHolder finalHolder = holder;
+            holder.finalized.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        manager = new Manager(context);
+                        if (finalHolder.finalized.isChecked()) {
+                            if (manager.setChangeFinalizedJob(job.getProtocol(), true)) {
+                                job.setFinalized_at(MyDataTime.getDataTime(context.getResources().getString(R.string.date_time_bd)));
+
+                                Toast.makeText(context, context.getResources().getString(R.string.success_finalized_job,
+                                        MyDataTime.getDataTime(context.getResources().getString(R.string.date_time))), Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(context, context.getResources().getString(R.string.error_finalized_job), Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            if (manager.setChangeFinalizedJob(job.getProtocol(), false)) {
+                                job.setFinalized_at("");
+                                Toast.makeText(context, context.getResources().getString(R.string.success_not_finalized_job), Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context, context.getResources().getString(R.string.error_not_finalized_job), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    } catch (JobManagerException e) {
+                        e.printStackTrace();
+                    } catch (ConnectionException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
         }
 
         return convertView;
@@ -104,5 +142,4 @@ public class JobListAdapter extends BaseAdapter {
         CheckBox finalized;
         NumberFormat numberFormat;
     }
-
 }

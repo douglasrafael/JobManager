@@ -1,5 +1,6 @@
 package com.fsdeveloper.jobmanager.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -31,6 +32,7 @@ import com.fsdeveloper.jobmanager.bean.Job;
 import com.fsdeveloper.jobmanager.bean.JobCategory;
 import com.fsdeveloper.jobmanager.exception.ConnectionException;
 import com.fsdeveloper.jobmanager.exception.JobManagerException;
+import com.fsdeveloper.jobmanager.fragments.GenericDialogFragment;
 import com.fsdeveloper.jobmanager.manager.Manager;
 import com.fsdeveloper.jobmanager.tool.MonetaryMask;
 import com.fsdeveloper.jobmanager.tool.MultiSelectSpinner;
@@ -46,10 +48,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class JobFormActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, AdapterView.OnItemClickListener, TextWatcher {
+/**
+ * Activity the form job.
+ *
+ * @author Created by Douglas Rafael
+ * @version 1.0
+ */
+public class JobFormActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener,
+        AdapterView.OnItemClickListener, TextWatcher, GenericDialogFragment.OnClickDialogListener {
     public static final String TAG = "JobFormActivity";
     public static final int REQUEST_JOB = 1;
     public static final int REQUEST_JOB_UPDATE = 1;
+    public final int DIALOG_HAS_CHANGE = 3;
     public static final String RESULT_JOB = "job";
 
     private int[] dateFinalized = new int[3];
@@ -138,6 +148,7 @@ public class JobFormActivity extends AppCompatActivity implements View.OnClickLi
          */
         jobEdit = (Job) getIntent().getSerializableExtra(RESULT_JOB);
         if (isEdit() && jobEdit.getProtocol() != null) {
+            getSupportActionBar().setTitle(getResources().getString(R.string.title_job_form_update));
             client = jobEdit.getClient();
             // Fill form
             fillForm(jobEdit);
@@ -161,6 +172,20 @@ public class JobFormActivity extends AppCompatActivity implements View.OnClickLi
         // It will not be used
     }
 
+    /**
+     * Event the button back of the bottom bar.
+     */
+    @Override
+    public void onBackPressed() {
+        // Checks for client to be edited (form in edit mode)
+        if (hasChanged()) {
+            // Open dialog back confirm
+            openDialogCheckIfBack();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         Client clientSelected = (Client) adapterView.getAdapter().getItem(i);
@@ -173,6 +198,7 @@ public class JobFormActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.bt_new_client:
+                client = null;
                 Intent intent = new Intent(this, ClientFormActivity.class);
                 intent.putExtra(ClientFormActivity.RESULT_CLIENT, client);
                 startActivityForResult(intent, ClientFormActivity.REQUEST_CLIENT);
@@ -249,9 +275,20 @@ public class JobFormActivity extends AppCompatActivity implements View.OnClickLi
     public boolean onOptionsItemSelected(MenuItem item) {
         int idButton = item.getItemId();
 
-        if (idButton == R.id.action_discard_form || idButton == android.R.id.home) {
+        if (idButton == R.id.action_discard_form) {
             super.onBackPressed();
+        } else if (idButton == android.R.id.home) {
+            // The button back in top bar
+            if (hasChanged()) {
+                // Open dialog back confirm
+                openDialogCheckIfBack();
+            } else {
+                // Send to the activity that called and closes the screen
+                super.onBackPressed();
+            }
+            return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -289,10 +326,11 @@ public class JobFormActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (manager.DBIsOpen(jobEdit)) {
-            manager.DBClose(jobEdit);
+    public void onClickDialog(int id, int button) {
+        if (id == DIALOG_HAS_CHANGE) {
+            if (button == DialogInterface.BUTTON_POSITIVE) {
+                super.onBackPressed();
+            }
         }
     }
 
@@ -415,9 +453,10 @@ public class JobFormActivity extends AppCompatActivity implements View.OnClickLi
     private List<JobCategory> getCategories() {
         List<JobCategory> jobCategoryList = new ArrayList<JobCategory>();
         int id_category;
+        String[] cat = getResources().getStringArray(R.array.categories_default);
         for (Integer i : textCategories.getSelectedIndicies()) {
             id_category = i + 1;
-            jobCategoryList.add(new JobCategory(id_category, null));
+            jobCategoryList.add(new JobCategory(id_category, cat[i]));
         }
 
         return jobCategoryList;
@@ -443,6 +482,7 @@ public class JobFormActivity extends AppCompatActivity implements View.OnClickLi
             j.setCategories(getCategories());
 
             j.setUser_id(1); // TODO trocar pelo id da sessao
+
         } catch (JobManagerException e) {
             e.printStackTrace();
         }
@@ -456,39 +496,41 @@ public class JobFormActivity extends AppCompatActivity implements View.OnClickLi
      * @param jobEdit The job
      */
     private void fillForm(Job jobEdit) {
-        textTitle.setText(jobEdit.getTitle());
-        textDescription.setText(jobEdit.getDescription());
-        textNote.setText(jobEdit.getNote());
-        textPrice.setText(getResources().getString(R.string.currency_symbol_unique) + String.format("%.2f", jobEdit.getPrice()).replace(".", ""));
-        textExpense.setText(getResources().getString(R.string.currency_symbol_unique) + String.format("%.2f", jobEdit.getExpense()).replace(".", ""));
-        textClient.setText(jobEdit.getClient().getName());
+        if (jobEdit != null) {
+            textTitle.setText(jobEdit.getTitle());
+            textDescription.setText(jobEdit.getDescription());
+            textNote.setText(jobEdit.getNote());
+            textPrice.setText(getResources().getString(R.string.currency_symbol_unique) + String.format("%.2f", jobEdit.getPrice()).replace(".", ""));
+            textExpense.setText(getResources().getString(R.string.currency_symbol_unique) + String.format("%.2f", jobEdit.getExpense()).replace(".", ""));
+            textClient.setText(jobEdit.getClient().getName());
 
-        // Set data time is finalized
-        if (jobEdit.isFinalized()) {
-            isFinalized.setChecked(true);
-            int year = Integer.parseInt(jobEdit.getFinalized_at().substring(0, 4));
-            int month = Integer.parseInt(jobEdit.getFinalized_at().substring(5, 7)) - 1;
-            int day = Integer.parseInt(jobEdit.getFinalized_at().substring(8, 10));
-            int hour = Integer.parseInt(jobEdit.getFinalized_at().substring(11, 13));
-            int minute = Integer.parseInt(jobEdit.getFinalized_at().substring(14, 16));
+            // Set data time is finalized
+            if (jobEdit.isFinalized()) {
+                isFinalized.setChecked(true);
+                int year = Integer.parseInt(jobEdit.getFinalized_at().substring(0, 4));
+                int month = Integer.parseInt(jobEdit.getFinalized_at().substring(5, 7)) - 1;
+                int day = Integer.parseInt(jobEdit.getFinalized_at().substring(8, 10));
+                int hour = Integer.parseInt(jobEdit.getFinalized_at().substring(11, 13));
+                int minute = Integer.parseInt(jobEdit.getFinalized_at().substring(14, 16));
 
-            setDataTimeFinalized(jobEdit.getFinalized_at(), true, true);
+                setDataTimeFinalized(jobEdit.getFinalized_at(), true, true);
 
-            textDate.setText(MyDataTime.getDataTime(year, month, day, 0, 0, getResources().getString(R.string.date_default)));
-            textTime.setText(MyDataTime.getDataTime(0, 0, 0, hour, minute, getResources().getString(R.string.time)));
+                textDate.setText(MyDataTime.getDataTime(year, month, day, 0, 0, getResources().getString(R.string.date_default)));
+                textTime.setText(MyDataTime.getDataTime(0, 0, 0, hour, minute, getResources().getString(R.string.time)));
+            }
+
+            // Set categories
+            List<String> categories = new ArrayList<String>();
+            for (JobCategory c : jobEdit.getCategories()) {
+                categories.add(c.getName());
+            }
+            textCategories.setSelection(categories);
+
+            // Set name button
+            btAddJob.setText(getResources().getString(R.string.update));
+
+            textTitle.requestFocus();
         }
-
-        // Set categories
-        List<String> categories = new ArrayList<String>();
-        for (JobCategory c : jobEdit.getCategories()) {
-            categories.add(c.getName());
-        }
-        textCategories.setSelection(categories);
-
-        // Set name button
-        btAddJob.setText(getResources().getString(R.string.update));
-
-        textTitle.requestFocus();
     }
 
     /**
@@ -517,5 +559,32 @@ public class JobFormActivity extends AppCompatActivity implements View.OnClickLi
             timeFinalized[0] = Integer.parseInt(dataTime.substring(11, 13)); // Hour
             timeFinalized[1] = Integer.parseInt(dataTime.substring(14, 16)); // Day
         }
+    }
+
+    /**
+     * Checks whether there were changes in form
+     *
+     * @return True if yes and False otherwise
+     */
+    private boolean hasChanged() {
+        if (isEdit()) {
+            Log.i("Edit", ""+ getJobOfForm().equals(jobEdit));
+            Log.i("Edit", ""+ getJobOfForm() + "\n" + jobEdit);
+            return !(getJobOfForm().equals(jobEdit));
+        }
+        if (textTitle.getText().length() > 0 || textDescription.getText().length() > 0
+                || textNote.getText().length() > 0 || textClient.getText().length() > 0)
+            return true;
+
+        return false;
+    }
+
+    /**
+     * Opens the dialog to confirm that you really want to come back and rule changes.
+     */
+    private void openDialogCheckIfBack() {
+        GenericDialogFragment dialogHasChange = GenericDialogFragment.newDialog(DIALOG_HAS_CHANGE,
+                R.string.back_confirm, new int[]{android.R.string.ok, android.R.string.cancel}, null);
+        dialogHasChange.show(getSupportFragmentManager());
     }
 }

@@ -57,7 +57,7 @@ public class GenericDialogFragment extends DialogFragment implements DialogInter
 
         /**
          * Verifies that who called the dialog was a fragment.
-         * The onClick and return is dirente of Activity
+         * The onClick and return is different in Activity
          */
         isFragment = (fragment != null) ? true : false;
 

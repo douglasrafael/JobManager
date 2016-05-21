@@ -17,25 +17,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Name Client"
         android:maxLines="1"
         android:ellipsize="end"
         android:textStyle="bold"
         android:layout_alignTop="@+id/image_client"
         android:layout_toRightOf="@+id/image_client"
-        android:layout_toEndOf="@+id/image_client"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="2dp"/>
+        android:layout_marginTop="2dp"
+        android:layout_toLeftOf="@+id/text_count_jobs"
+        android:layout_toStartOf="@+id/text_count_jobs" />
 
     <TextView
         android:id="@+id/text_email_client"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="client_email@mail.com"
         android:layout_below="@+id/text_name_client"
         android:layout_toRightOf="@+id/image_client"
-        android:layout_toEndOf="@+id/image_client"
         android:layout_marginLeft="10dp"/>
 
     <TextView
@@ -43,7 +41,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="02"
+        android:paddingLeft="5dp"
         android:layout_alignTop="@+id/text_name_client"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />

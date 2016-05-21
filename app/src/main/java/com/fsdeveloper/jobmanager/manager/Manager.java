@@ -54,17 +54,17 @@ public class Manager {
      * @param o Object that used the connection.
      */
     public void DBClose(Object o) {
-        if(o instanceof User) {
+        if (o instanceof User) {
             user.DBClose();
-        } else if(o instanceof Client) {
+        } else if (o instanceof Client) {
             client.DBClose();
-        } else if(o instanceof Job) {
+        } else if (o instanceof Job) {
             job.DBClose();
-        } else if(o instanceof JobCategory) {
+        } else if (o instanceof JobCategory) {
             category.DBClose();
-        } else if(o instanceof Phone) {
+        } else if (o instanceof Phone) {
             phone.DBClose();
-        } else if(o instanceof PhoneType) {
+        } else if (o instanceof PhoneType) {
             phoneType.DBClose();
         }
     }
@@ -76,17 +76,17 @@ public class Manager {
      * @return True if is open or False otherwise.
      */
     public boolean DBIsOpen(Object o) {
-        if(o instanceof User) {
+        if (o instanceof User) {
             return user.DBIsOpen();
-        } else if(o instanceof Client) {
+        } else if (o instanceof Client) {
             return client.DBIsOpen();
-        } else if(o instanceof Job) {
+        } else if (o instanceof Job) {
             return job.DBIsOpen();
-        } else if(o instanceof JobCategory) {
+        } else if (o instanceof JobCategory) {
             return category.DBIsOpen();
-        } else if(o instanceof Phone) {
+        } else if (o instanceof Phone) {
             return phone.DBIsOpen();
-        } else if(o instanceof PhoneType) {
+        } else if (o instanceof PhoneType) {
             return phoneType.DBIsOpen();
         }
         return false;
@@ -432,17 +432,6 @@ public class Manager {
     }
 
     /**
-     * Sets the job as completed.
-     *
-     * @param protocol The protocol of job.
-     * @return True if updated and False if not.
-     * @throws JobManagerException If there is an exception.
-     */
-    public boolean setJobFinalized(String protocol) throws JobManagerException {
-        return job.setFinalized(protocol);
-    }
-
-    /**
      * Number of user jobs.
      *
      * @param user_id The user id.
@@ -463,5 +452,28 @@ public class Manager {
      */
     public int numberJobClient(int user_id, int client_id) throws JobManagerException {
         return job.numberJobClient(user_id, client_id);
+    }
+
+    /**
+     * Mark or unchecks the job finalized
+     * Passes True as a parameter to "marked" or pass False uncheck.
+     *
+     * @param protocol The protocol of the job
+     * @param marked   True or False
+     * @return If is success in the operation.
+     */
+    public boolean setChangeFinalizedJob(String protocol, boolean marked) throws JobManagerException {
+        return job.setChangeFinalizedJob(protocol, marked);
+    }
+
+    /**
+     * List the jobs associated with the client.
+     *
+     * @param client_id The id of client
+     * @return The List of the jobs.
+     * @throws JobManagerException If there is a general exception of the system.
+     */
+    public List<Job> listJobsAssociateClient(int client_id) throws JobManagerException {
+        return job.listJobsClient(client_id);
     }
 }

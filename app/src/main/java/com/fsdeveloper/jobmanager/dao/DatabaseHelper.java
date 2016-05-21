@@ -24,7 +24,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "job_manager";
 
     // Database version
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 10;
 
     // Database tables
     public static final String TABLE_USER = "user";

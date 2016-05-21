@@ -36,9 +36,14 @@
             android:name=".activity.JobPreview"
             android:parentActivityName=".activity.MainActivity"
             android:theme="@style/AppTheme">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.fsdeveloper.jobmanager.activity.MainActivity" />
+        </activity>
+        <activity
+            android:name=".activity.ClientPreview"
+            android:parentActivityName=".activity.MainActivity"
+            android:theme="@style/AppTheme">
+            <!--<meta-data-->
+                <!--android:name="android.support.PARENT_ACTIVITY"-->
+                <!--android:value="com.fsdeveloper.jobmanager.activity.MainActivity" />-->
         </activity>
     </application>
 

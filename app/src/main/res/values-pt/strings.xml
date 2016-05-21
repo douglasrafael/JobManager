@@ -13,8 +13,10 @@
     <string name="hint_search">Pesquisar por...</string>
     <string name="no_data">Não existem dados cadastrados...</string>
     <string name="title_job_form">Adicionar Trabalho</string>
+    <string name="title_job_form_update">Atualizar Trabalho</string>
     <string name="discard_form">Descartar Alterações</string>
     <string name="title_client_form">Adicionar Cliente</string>
+    <string name="title_client_form_update">Atualizar Cliente</string>
     <string name="add">Adicionar</string>
     <string name="update">Atualizar</string>
     <string name="discard_changes">Descartar as alterações?</string>
@@ -22,6 +24,7 @@
     <string name="about_message">Desenvolvido por FS Developer</string>
     <string name="yes">Sim</string>
     <string name="no">Não</string>
+    <string name="back_confirm">Você tem certeza que deseja voltar sem salvar os dados?</string>
 
     <string name="currency_symbol" formatted="false">R$ %1$.2f</string>
     <string name="currency_symbol_unique">R$</string>
@@ -57,6 +60,7 @@
     <string name="client_email">Email</string>
     <string name="client_address">Endereço</string>
     <string name="client_phone">Telefone</string>
+    <string name="client_associates_last_jobs">Últimos trabalhos associados</string>
     <string name="client_hint_address">Rua Pequi, 89XX\nCampinas-SP\n13098-305</string>
     <string name="client_hint_email">Email para contato</string>
     <string name="client_hint_name">Nome completo</string>
@@ -67,16 +71,31 @@
     <string name="error_system">Desculpe. Ocorreu um erro na aplicação. Tente novamente!</string>
     <string name="error_add_job">Ocorreu um erro ao tentar salvar o trabalho. Por fvaor, tente novamente...</string>
     <string name="error_edit_job">Não foi possível atualizar o trabalho. Por favor, tente novamente...</string>
+    <string name="error_edit_client">Não foi possível atualizar o cliente. Por favor, tente novamente...</string>
     <string name="error_delete_job">Não foi possível remover o trabalho. Por favor, tente novamente...</string>
+    <string name="error_delete_client">Não foi possível remover o cliente. Por favor, tente novamente...</string>
+    <string name="error_delete_client_validation">Não é possível remover o cliente que esteja relacionado com algum trabalho cadastrado...</string>
+    <string name="error_finalized_job">Não foi possível marcar o trabalho como finalizado. Por favor, tente novamente...</string>
+    <string name="error_not_finalized_job">Não foi possível marcar o trabalho como não finalizado. Por favor, tente novamente...</string>
 
     <!-- Strings of system messages success -->
     <string name="success_add_job">Trabalho adicionado com sucesso!</string>
     <string name="success_edit_job">Trabalho atualizado com sucesso!</string>
+    <string name="success_edit_client">Cliente atualizado com sucesso!</string>
+    <string name="success_finalized_job">Trabalho marcado como finalizado com sucesso! Em %1$s</string>
+    <string name="success_not_finalized_job">Trabalho foi marcado como não finalizado!</string>
     <plurals name="success_delete_job">
         <item quantity="one">Trabalho removido com sucesso!</item>
         <item quantity="other">%d Trabalhos removidos com sucesso!</item>
     </plurals>
-
+    <plurals name="success_delete_client">
+        <item quantity="one">Cliente removido com sucesso!</item>
+        <item quantity="other">%d Clientes removidos com sucesso!</item>
+    </plurals>
+    <plurals name="success_delete_client_partial">
+        <item quantity="one">Um cliente não foi removido porque está relacionado com algum trabalho cadastrado...</item>
+        <item quantity="other">%d clientes não foram removidos porque estão relacionados com algum trabalho cadastrado...</item>
+    </plurals>
 
     <!-- String related to date time -->
     <string name="date_time_bd">yyyy-MM-dd HH:mm:ss</string>

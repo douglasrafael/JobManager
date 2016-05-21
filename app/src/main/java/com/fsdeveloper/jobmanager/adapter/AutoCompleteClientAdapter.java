@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Adapter the autocomplete names clients.
+ *
  * @author Created by Douglas Rafael on 14/05/2016.
  * @version 1.0
  */
@@ -37,8 +39,8 @@ public class AutoCompleteClientAdapter extends ArrayAdapter<Client> implements F
         this.resource = resource;
         this.textViewResourceId = textViewResourceId;
         this.items = items;
-        tempItems = new ArrayList<Client>(items);
-        suggestions = new ArrayList<Client>();
+        tempItems = new ArrayList<>(items);
+        suggestions = new ArrayList<>();
 
         stringTool = new MyStringsTool();
     }
@@ -62,7 +64,7 @@ public class AutoCompleteClientAdapter extends ArrayAdapter<Client> implements F
 
     @Override
     public View getView(int position, View view, ViewGroup parent) {
-        ViewHolder holder = null;
+        ViewHolder holder;
         View convertView = view;
 
         if (convertView == null) {
@@ -109,19 +111,18 @@ public class AutoCompleteClientAdapter extends ArrayAdapter<Client> implements F
     private Filter filter = new Filter() {
         @Override
         public CharSequence convertResultToString(Object resultValue) {
-            String str = ((Client) resultValue).getName();
-            return str;
+            return ((Client) resultValue).getName();
         }
 
         @Override
         protected FilterResults performFiltering(CharSequence charSequence) {
-            String nameClient, emailClient = null;
-            String termSearch = stringTool.removeAccents(String.valueOf(charSequence)).toLowerCase();
+            String nameClient, emailClient;
+            String termSearch = MyStringsTool.removeAccents(String.valueOf(charSequence)).toLowerCase();
 
             if (charSequence != null) {
                 suggestions.clear();
                 for (Client client : tempItems) {
-                    nameClient = stringTool.removeAccents(client.getName()).toLowerCase();
+                    nameClient = MyStringsTool.removeAccents(client.getName()).toLowerCase();
                     emailClient = client.getEmail().toLowerCase();
 
                     if (nameClient.indexOf(termSearch) > -1 || emailClient.indexOf(termSearch) > -1) {

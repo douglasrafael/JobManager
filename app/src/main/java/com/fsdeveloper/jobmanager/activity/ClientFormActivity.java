@@ -2,12 +2,14 @@ package com.fsdeveloper.jobmanager.activity;
 
 import android.animation.LayoutTransition;
 import android.annotation.TargetApi;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,19 +20,32 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
 import com.fsdeveloper.jobmanager.R;
 import com.fsdeveloper.jobmanager.bean.Client;
 import com.fsdeveloper.jobmanager.bean.Phone;
 import com.fsdeveloper.jobmanager.bean.PhoneType;
+import com.fsdeveloper.jobmanager.exception.ConnectionException;
+import com.fsdeveloper.jobmanager.exception.JobManagerException;
+import com.fsdeveloper.jobmanager.fragments.GenericDialogFragment;
+import com.fsdeveloper.jobmanager.manager.Manager;
 import com.fsdeveloper.jobmanager.tool.MyValidate;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClientFormActivity extends AppCompatActivity implements View.OnClickListener {
+/**
+ * Activity the form client.
+ *
+ * @author Created by Douglas Rafael
+ * @version 1.0
+ */
+public class ClientFormActivity extends AppCompatActivity implements View.OnClickListener, GenericDialogFragment.OnClickDialogListener {
     public static final int REQUEST_CLIENT = 1;
     public static final String RESULT_CLIENT = "client";
+    public final int DIALOG_HAS_CHANGE = 1;
+    public static final int REQUEST_CLIENT_UPDATE = 1;
 
     private EditText textName, textEmail, textAddress, textPhone;
     private Button btAddClient;
@@ -42,6 +57,7 @@ public class ClientFormActivity extends AppCompatActivity implements View.OnClic
     private ScrollView scrollView;
     private MyValidate validate;
     private Client client, clientEdit;
+    private Manager manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +94,9 @@ public class ClientFormActivity extends AppCompatActivity implements View.OnClic
          * If the client is null, form will register.
          */
         clientEdit = (Client) getIntent().getSerializableExtra(RESULT_CLIENT);
-        if (clientEdit != null && clientEdit.getId() > 0) {
+        if (isEdit() && clientEdit.getId() > 0) {
+            getSupportActionBar().setTitle(getResources().getString(R.string.title_client_form_update));
+
             // Fill form
             fillForm(clientEdit);
         } else {
@@ -103,14 +121,12 @@ public class ClientFormActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void onBackPressed() {
         // Checks for client to be edited (form in edit mode)
-        if (clientEdit != null) {
-            if (hasChanged()) {
-                if (validateForm()) {
-                    // TODO implement edit client
-                }
-            }
+        if (hasChanged()) {
+            // Open dialog back confirm
+            GenericDialogFragment dialogHasChange = GenericDialogFragment.newDialog(DIALOG_HAS_CHANGE,
+                    R.string.back_confirm, new int[]{android.R.string.ok, android.R.string.cancel}, null);
+            dialogHasChange.show(getSupportFragmentManager());
         } else {
-            // Send to the activity that called and closes the screen
             sendClient();
         }
     }
@@ -131,13 +147,11 @@ public class ClientFormActivity extends AppCompatActivity implements View.OnClic
                 return true;
             case android.R.id.home:
                 // The button back in top bar
-                // Checks for client to be edited (form in edit mode)
-                if (clientEdit != null) {
-                    if (hasChanged()) {
-                        if (validateForm()) {
-                            // TODO implement edit client
-                        }
-                    }
+                if (hasChanged()) {
+                    // Open dialog back confirm
+                    GenericDialogFragment dialogHasChange = GenericDialogFragment.newDialog(DIALOG_HAS_CHANGE,
+                            R.string.back_confirm, new int[]{android.R.string.ok, android.R.string.cancel}, null);
+                    dialogHasChange.show(getSupportFragmentManager());
                 } else {
                     // Send to the activity that called and closes the screen
                     sendClient();
@@ -152,9 +166,17 @@ public class ClientFormActivity extends AppCompatActivity implements View.OnClic
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.bt_add_client:
-                if (validateForm()) {
-                    client = getClientOfForm();
-                    sendClient();
+                if (isEdit()) {
+                    if (validateForm()) {
+                        client = getClientOfForm();
+                        updateClient(client);
+                    }
+                } else {
+                    // Creating
+                    if (validateForm()) {
+                        client = getClientOfForm();
+                        sendClient();
+                    }
                 }
                 break;
             case R.id.bt_new_phone:
@@ -166,10 +188,44 @@ public class ClientFormActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
+    @Override
+    public void onClickDialog(int id, int button) {
+        if (id == DIALOG_HAS_CHANGE) {
+            if (button == DialogInterface.BUTTON_POSITIVE) {
+                sendClient();
+            }
+        }
+    }
+
+    /**
+     * Update the client.
+     *
+     * @param client The client
+     */
+    private void updateClient(Client client) {
+        if (client != null) {
+            try {
+                manager = new Manager(ClientFormActivity.this);
+                if (manager.updateClient(client)) {
+                    Toast.makeText(this, getResources().getString(R.string.success_edit_client), Toast.LENGTH_SHORT).show();
+                    sendClient();
+                } else {
+                    Toast.makeText(this, getResources().getString(R.string.error_edit_client), Toast.LENGTH_SHORT).show();
+                }
+            } catch (JobManagerException e) {
+                Toast.makeText(this, getResources().getString(R.string.error_system), Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            } catch (ConnectionException e) {
+                Toast.makeText(this, getResources().getString(R.string.error_bd), Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
+        }
+    }
+
     /**
      * Add the components teh phone (EditText, Spinner and ImageButton) in layout
      */
-    private void addComponentsPhone() {
+    private View addComponentsPhone() {
         LayoutInflater inflater = getLayoutInflater();
         final View rowPhone = inflater.inflate(R.layout.row_phone, null);
 
@@ -186,6 +242,8 @@ public class ClientFormActivity extends AppCompatActivity implements View.OnClic
                 rowPhone.requestFocus();
             }
         });
+
+        return rowPhone;
     }
 
     /**
@@ -240,15 +298,17 @@ public class ClientFormActivity extends AppCompatActivity implements View.OnClic
      * @return The client
      */
     private Client getClientOfForm() {
-        String name = String.valueOf(textName.getText());
-        String email = String.valueOf(textEmail.getText());
-        String address = String.valueOf(textAddress.getText());
+        Client c = new Client();
+        c.setId(isEdit() ? clientEdit.getId() : 0);
+        c.setName(String.valueOf(textName.getText()));
+        c.setEmail(String.valueOf(textEmail.getText()));
+        c.setAddress(String.valueOf(textAddress.getText()));
+        c.setPhoneList(getListPhone());
 
-        int user_id = 1; // TODO GET of session
+        c.setUser_id(1); // TODO GET of session
 
-        return new Client(name, email, address, null, user_id, getListPhone());
+        return c;
     }
-
 
     /**
      * Send client to the activity that called.
@@ -284,13 +344,67 @@ public class ClientFormActivity extends AppCompatActivity implements View.OnClic
         return true;
     }
 
+
     /**
-     * @return
+     * If clientEdit is different from null it is because the form is in edit mode
+     *
+     * @returnTrue it is in edit mode and False otherwise
      */
-    private boolean hasChanged() {
-        return !getClientOfForm().equals(clientEdit);
+    private boolean isEdit() {
+        return clientEdit != null;
     }
 
-    private void fillForm(Client c) {
+    /**
+     * Checks whether there were changes in form
+     *
+     * @return True if yes and False otherwise
+     */
+    private boolean hasChanged() {
+        if (isEdit()) {
+            return !(getClientOfForm().equals(clientEdit));
+        }
+        if (textName.getText().length() > 0 || textEmail.getText().length() > 0
+                || textAddress.getText().length() > 0 || getListPhone().size() > 0)
+            return true;
+
+        return false;
     }
+
+    /**
+     * Fill form teh client.
+     *
+     * @param c The client
+     */
+    private void fillForm(final Client c) {
+        if (c != null) {
+            textName.setText(c.getName());
+            textEmail.setText(c.getEmail());
+            textAddress.setText(c.getAddress());
+            int totalPhones = c.getPhoneList().size();
+
+            if (totalPhones > 0) {
+                textPhone.setText(c.getPhoneList().get(0).getNumber());
+                spinnerTypesPhone.setSelection(c.getPhoneList().get(0).getType().getId() - 1);
+
+                for (int i = 1; i < totalPhones; i++) {
+                    View v = addComponentsPhone();
+                    EditText phone = (EditText) v.findViewById(R.id.edt_phone);
+                    final AppCompatSpinner type = (AppCompatSpinner) v.findViewById(R.id.spinner_type_phone);
+
+                    phone.setText(c.getPhoneList().get(i).getNumber());
+
+                    final int position = i;
+                    type.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            type.setSelection(c.getPhoneList().get(position).getType().getId() - 1);
+                        }
+                    });
+                }
+            }
+
+            btAddClient.setText(getResources().getString(R.string.update));
+        }
+    }
+
 }

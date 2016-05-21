@@ -3,6 +3,7 @@ package com.fsdeveloper.jobmanager.dao;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 
 import com.fsdeveloper.jobmanager.R;
 import com.fsdeveloper.jobmanager.bean.Client;
@@ -123,49 +124,46 @@ public class ClientDao extends DBManager implements Dao<Client> {
 
         Client old_client = getById(o.getId());
 
-        // Checks for data to be actually changed.
-        if (!old_client.equals(o)) {
-            db.beginTransaction();
+        db.beginTransaction();
 
-            try {
-                ContentValues values = new ContentValues();
-                values.put(DatabaseHelper.NAME, o.getName());
-                values.put(DatabaseHelper.EMAIL, o.getEmail());
-                values.put(DatabaseHelper.CLIENT_ADDRESS, o.getAddress());
-                values.put(DatabaseHelper.CLIENT_RATING, o.getRating());
-                values.put(DatabaseHelper.USER_ID, o.getUser_id());
+        try {
+            ContentValues values = new ContentValues();
+            values.put(DatabaseHelper.NAME, o.getName());
+            values.put(DatabaseHelper.EMAIL, o.getEmail());
+            values.put(DatabaseHelper.CLIENT_ADDRESS, o.getAddress());
+            values.put(DatabaseHelper.CLIENT_RATING, o.getRating());
+            values.put(DatabaseHelper.USER_ID, o.getUser_id());
 
-                if (!old_client.getPhoneList().equals(o.getPhoneList())) {
-
-                    // remove client phones
-                    PhoneDao phone = new PhoneDao(context);
-                    if (old_client.getPhoneList().size() > 0) {
-                        for (Phone p : old_client.getPhoneList()) {
-                            phone.delete(p);
-                        }
+            if (!old_client.getPhoneList().equals(o.getPhoneList())) {
+                // remove client phones
+                PhoneDao phone = new PhoneDao(context);
+                if (old_client.getPhoneList().size() > 0) {
+                    for (Phone p : old_client.getPhoneList()) {
+                        phone.delete(p);
                     }
-
-                    // inserting client phones
-                    for (Phone p : o.getPhoneList()) {
-                        phone.insert(p);
-                    }
-
                 }
 
-                // update client
-                int rowsAffected = db.update(DatabaseHelper.TABLE_CLIENT, values, DatabaseHelper.ID + "=?", new String[]{String.valueOf(o.getId())});
-
-                // Verifies that was successfully updated
-                if (rowsAffected == 1) {
-                    db.setTransactionSuccessful();
-                    return true;
+                // inserting client phones
+                for (Phone p : o.getPhoneList()) {
+                    p.setClient_id(o.getId());
+                    phone.insert(p);
                 }
-
-            } catch (ConnectionException e) {
-                e.printStackTrace();
-            } finally {
-                db.endTransaction();
             }
+
+            // update client
+            int rowsAffected = db.update(DatabaseHelper.TABLE_CLIENT, values, DatabaseHelper.ID + "=?", new String[]{String.valueOf(o.getId())});
+            Log.i("RESUL", rowsAffected + "");
+
+            // Verifies that was successfully updated
+            if (rowsAffected == 1) {
+                db.setTransactionSuccessful();
+                return true;
+            }
+
+        } catch (ConnectionException e) {
+            e.printStackTrace();
+        } finally {
+            db.endTransaction();
         }
 
         return false;
@@ -221,8 +219,11 @@ public class ClientDao extends DBManager implements Dao<Client> {
         client.setCreated_at(cursor.getString(cursor.getColumnIndex(DatabaseHelper.CREATED_AT)));
 
         try {
-            // Get list all the phone of client.
+            // Get list all and set the phone of client.
             client.setPhoneList(new PhoneDao(context).list(client.getId()));
+
+            // Get and set total teh jobs
+            client.setTotalOfJobs(new JobDao(context).numberJobClient(client.getUser_id(), client.getId()));
         } catch (ConnectionException e) {
             e.printStackTrace();
         }

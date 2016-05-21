@@ -2,11 +2,9 @@ package com.fsdeveloper.jobmanager.fragments;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.ListFragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -34,12 +32,15 @@ import com.fsdeveloper.jobmanager.exception.ConnectionException;
 import com.fsdeveloper.jobmanager.exception.JobManagerException;
 import com.fsdeveloper.jobmanager.manager.Manager;
 import com.fsdeveloper.jobmanager.tool.MyDataTime;
+import com.fsdeveloper.jobmanager.tool.MyStringsTool;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 /**
+ * Handles listView of the jobs
+ *
  * @author Created by Douglas Rafael on 06/05/2016.
  * @version 1.0
  */
@@ -47,13 +48,15 @@ public class JobListFragment extends ListFragment implements ActionMode.Callback
     private final String TAG = "JobListFragment";
     private final String RESULT_JOB = "job";
     private final int REQUEST_JOB = 1;
-    private Manager manager;
-    private Context context;
+
+    private static JobListAdapter mAdapter;
+    private static Manager manager;
+    private static Context context;
+    private static List<Job> listOriOfJobs, listOfJobs, itemsFoundJob;
+
     private ListView mListView;
     private ActionMode mActionMode;
-    private JobListAdapter mAdapter;
     private Menu mMenu;
-    private List<Job> listOfJobs;
 
     /**
      * The Constructor
@@ -79,20 +82,31 @@ public class JobListFragment extends ListFragment implements ActionMode.Callback
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mListView = getListView();
+
+        // Instance list empty
+        listOriOfJobs = new ArrayList<Job>();
+        itemsFoundJob = new ArrayList<Job>();
+        listOfJobs = new ArrayList<Job>();
+
         // Setting Event
         getListView().setOnItemLongClickListener(this);
 
-        // Get list the jobs
-        listOfJobs = new ArrayList<Job>(getListJobs());
-
         // Setting Adapter
-        mAdapter = new JobListAdapter(this, context, listOfJobs);
+        mAdapter = new JobListAdapter(context, listOfJobs);
         setListAdapter(mAdapter);
     }
 
     @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
+    public void onStart() {
+        super.onStart();
+
+        updateListView();
+    }
+
+    @Override
+    public void onListItemClick(final ListView l, View v, final int position, long id) {
         super.onListItemClick(l, v, position, id);
+
         if (mActionMode == null) {
             Job job = (Job) l.getItemAtPosition(position);
 
@@ -106,7 +120,6 @@ public class JobListFragment extends ListFragment implements ActionMode.Callback
              * Open view detail job
              */
             if (job != null) {
-                Log.i("onListItemClick", "OPEN Preview job " + job);
                 Intent intent = new Intent(context, JobPreview.class);
                 intent.putExtra(RESULT_JOB, job);
                 startActivityForResult(intent, REQUEST_JOB);
@@ -124,7 +137,6 @@ public class JobListFragment extends ListFragment implements ActionMode.Callback
         boolean consumed = (mActionMode == null);
 
         if (consumed) {
-            Log.i(TAG, "onItemLongClick");
             AppCompatActivity activity = (AppCompatActivity) getActivity();
 
             mActionMode = activity.startSupportActionMode(this);
@@ -139,7 +151,6 @@ public class JobListFragment extends ListFragment implements ActionMode.Callback
 
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-        Log.i(TAG, "onCreateActionMode");
         getActivity().getMenuInflater().inflate(R.menu.list_item_menu, menu);
 
         return true;
@@ -155,7 +166,7 @@ public class JobListFragment extends ListFragment implements ActionMode.Callback
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         SparseBooleanArray checked = mListView.getCheckedItemPositions();
-        int position = 0;
+        int position;
         switch (item.getItemId()) {
             case R.id.action_list_edit:
                 // Edit item
@@ -188,7 +199,6 @@ public class JobListFragment extends ListFragment implements ActionMode.Callback
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == getActivity().RESULT_OK && requestCode == JobFormActivity.REQUEST_JOB) {
-            Log.i(TAG, "onActivityResult()");
             updateListView();
         } else if (requestCode == GenericDialogFragment.REQUEST_DIALOG && resultCode == Activity.RESULT_OK) {
             removeItemsChecked();
@@ -197,7 +207,6 @@ public class JobListFragment extends ListFragment implements ActionMode.Callback
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
-        Log.i(TAG, "onDestroyActionMode");
         mActionMode = null;
         mListView.clearChoices();
         mListView.setChoiceMode(ListView.CHOICE_MODE_NONE);
@@ -214,7 +223,7 @@ public class JobListFragment extends ListFragment implements ActionMode.Callback
     private boolean removeItemsChecked() {
         SparseBooleanArray checked = mListView.getCheckedItemPositions();
         boolean result = false;
-        int position = 0;
+        int position;
         for (int i = 0; i < checked.size(); i++) {
             if (checked.valueAt(i)) {
                 position = checked.keyAt(i);
@@ -228,6 +237,9 @@ public class JobListFragment extends ListFragment implements ActionMode.Callback
             String message = context.getResources().getQuantityString(R.plurals.success_delete_job, checked.size(), checked.size());
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
 
+            // Update the list the clients because the number the jobs
+            ClientListFragment.updateListView();
+
             mActionMode.finish();
         }
 
@@ -237,7 +249,7 @@ public class JobListFragment extends ListFragment implements ActionMode.Callback
     /**
      * Update listView
      */
-    private void updateListView() {
+    public static void updateListView() {
         listOfJobs.clear();
         listOfJobs.addAll(getListJobs());
         mAdapter.notifyDataSetChanged();
@@ -320,7 +332,7 @@ public class JobListFragment extends ListFragment implements ActionMode.Callback
      *
      * @return List the job
      */
-    private List<Job> getListJobs() {
+    private static List<Job> getListJobs() {
         List<Job> result = new ArrayList<Job>();
         try {
             manager = new Manager(context);
@@ -333,16 +345,10 @@ public class JobListFragment extends ListFragment implements ActionMode.Callback
             Toast.makeText(context, R.string.error_system, Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
+        listOriOfJobs.clear();
+        listOriOfJobs.addAll(result);
         return result;
     }
-
-    /**
-     * Interface to see if the item was clicked.
-     */
-    public interface OnJobClick {
-        void onJobClick(Job job);
-    }
-
 
     /**
      * Delete job selected.
@@ -361,6 +367,43 @@ public class JobListFragment extends ListFragment implements ActionMode.Callback
         }
 
         return false;
+    }
+
+    /**
+     * Search the job.
+     *
+     * @param filter The filter
+     * @return The list of the jobs
+     */
+    public static List<Job> search(String filter) {
+        String termSearch = MyStringsTool.removeAccents(filter).toLowerCase();
+
+        itemsFoundJob.clear();
+        for (Job job : listOriOfJobs) {
+            String titleJob = MyStringsTool.removeAccents(job.getTitle()).toLowerCase();
+            String nameClient = MyStringsTool.removeAccents(job.getClient().getName()).toLowerCase();
+
+            if (titleJob.indexOf(termSearch) != -1 || nameClient.indexOf(termSearch) != -1) {
+                itemsFoundJob.add(job);
+            }
+        }
+
+        listOfJobs.clear();
+        if (filter == "") {
+            listOfJobs.addAll(getListJobs());
+        } else {
+            listOfJobs.addAll(itemsFoundJob);
+        }
+        mAdapter.notifyDataSetChanged();
+
+        return itemsFoundJob;
+    }
+
+    /**
+     * Interface to see if the item was clicked.
+     */
+    public interface OnJobClick {
+        void onJobClick(Job job);
     }
 
     //TODO Removet - apenas apara teste

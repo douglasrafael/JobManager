@@ -15,13 +15,13 @@ import java.util.regex.Pattern;
  * @version 1.0
  */
 public class MyStringsTool {
-    private String[] REPLACES = {"a", "e", "i", "o", "u", "c"};
-    private Pattern[] PATTERNS = null;
+    private static String[] REPLACES = {"a", "e", "i", "o", "u", "c"};
+    private static Pattern[] PATTERNS = null;
 
     /**
      * Creates the patterns with all the accentuation possibilities.
      */
-    public void compilePatterns() {
+    public static void compilePatterns() {
         PATTERNS = new Pattern[REPLACES.length];
         PATTERNS[0] = Pattern.compile("[âãáàä]", Pattern.CASE_INSENSITIVE);
         PATTERNS[1] = Pattern.compile("[éèêë]", Pattern.CASE_INSENSITIVE);
@@ -37,7 +37,7 @@ public class MyStringsTool {
      * @param text The string.
      * @return The string without accent.
      */
-    public String removeAccents(String text) {
+    public static String removeAccents(String text) {
         String result = text;
 
         if (PATTERNS == null) {
@@ -62,6 +62,19 @@ public class MyStringsTool {
             builder.append(delimiter).append(iterator.next());
         }
         return builder.toString();
+    }
+
+    /**
+     * Check if is empty
+     *
+     * @param s The String
+     * @return The values boolean
+     */
+    public static boolean isEmpty(String s) {
+        if (s != null && s.length() > 0) {
+            return false;
+        }
+        return true;
     }
 
 }

@@ -87,17 +87,13 @@ public class JobCategory implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
         JobCategory category = (JobCategory) o;
 
-        return (id == category.id && name.equals(category.name));
+        if (id != category.id) return false;
+        return name != null ? name.equals(category.name) : category.name == null;
     }
 
     @Override

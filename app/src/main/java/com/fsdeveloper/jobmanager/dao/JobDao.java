@@ -213,14 +213,22 @@ public class JobDao extends DBManager implements Dao<Job> {
      * Sets the job as completed.
      *
      * @param protocol The job protocol.
+     * @param marked   True or False
      * @return True if updated and False if not.
      * @throws JobManagerException If there is a general exception of the system.
      */
-    public boolean setFinalized(String protocol) throws JobManagerException {
+    public boolean setChangeFinalizedJob(String protocol, boolean marked) throws JobManagerException {
         mGetWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(DatabaseHelper.JOB_FINALIZED_AT, MyDataTime.getDataTime(context.getResources().getString(R.string.date_time_bd)));
+
+        if (marked) {
+            // Is finalized
+            values.put(DatabaseHelper.JOB_FINALIZED_AT, MyDataTime.getDataTime(context.getResources().getString(R.string.date_time_bd)));
+        } else {
+            // Not finalized
+            values.put(DatabaseHelper.JOB_FINALIZED_AT, "");
+        }
 
         int rowsAffected = db.update(DatabaseHelper.TABLE_JOB, values, DatabaseHelper.JOB_PROTOCOL + "=?", new String[]{protocol});
 
@@ -306,7 +314,7 @@ public class JobDao extends DBManager implements Dao<Job> {
 
         while (protocol.length() < 10) {
             // r.nextInt(10) >> generate number [0, 10) * SECOND
-            protocol += (r.nextInt(10) + 1)  * MyDataTime.getCalendar().get(Calendar.SECOND);
+            protocol += (r.nextInt(10) + 1) * MyDataTime.getCalendar().get(Calendar.SECOND);
         }
 
         protocol = protocol.substring(0, 10);
@@ -346,15 +354,39 @@ public class JobDao extends DBManager implements Dao<Job> {
         job.setClient_id(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.CLIENT_ID)));
 
         try {
-            // get all categories
+            // Get and set all categories
             job.setCategories(new JobCategoryDao(context).getCategoriesJob(job.getProtocol()));
 
-            // get Client
+            // Get and set Client
             job.setClient(new ClientDao(context).getById(job.getClient_id()));
         } catch (ConnectionException e) {
             e.printStackTrace();
         }
 
         return job;
+    }
+
+    /**
+     * List the jobs associated with the client.
+     *
+     * @param client_id The id of client
+     * @return The List of the jobs.
+     * @throws JobManagerException If there is a general exception of the system.
+     */
+    public List<Job> listJobsClient(int client_id) throws JobManagerException {
+        List<Job> result = new ArrayList<>();
+        mGetReadableDatabase();
+
+        // Select all clients of the user
+        Cursor cursor = db.query(DatabaseHelper.TABLE_JOB, columns, DatabaseHelper.CLIENT_ID + "=?", new String[]{String.valueOf(client_id)}, null, null, DatabaseHelper.CREATED_AT + " DESC", "5");
+
+        if (cursor != null && cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                result.add(createJob(cursor));
+            }
+            cursor.close();
+        }
+
+        return result;
     }
 }

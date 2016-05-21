@@ -146,16 +146,14 @@ public class Phone implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Phone)) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
         Phone phone = (Phone) o;
 
-        if (number != null ? !number.equals(phone.number) : phone.number != null) {
-            return false;
-        }
-
+        if (id != phone.id) return false;
+        if (client_id != phone.client_id) return false;
+        if (number != null ? !number.equals(phone.number) : phone.number != null) return false;
         return type != null ? type.equals(phone.type) : phone.type == null;
     }
 
