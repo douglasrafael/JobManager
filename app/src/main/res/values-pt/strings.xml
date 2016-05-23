@@ -141,7 +141,7 @@
     <string name="input_balance">Entrada</string>
     <string name="output_balance">Saída</string>
     <string name="total_balance">Total</string>
-    <string name="today_balance">Today</string>
+    <string name="today_balance">Hoje</string>
     <string name="include_not_finalized">Incluir os trabalhos ainda não finalizados no balanço?</string>
     <string name="date_filter_balance">%1$s à %2$s</string>
     <string name="average_input_balance">Média das entradas</string>

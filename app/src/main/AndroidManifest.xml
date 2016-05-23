@@ -12,16 +12,14 @@
             android:label="@string/app_name"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
             android:name=".activity.JobFormActivity"
             android:label="@string/title_job_form"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden"></activity>
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activity.ClientFormActivity"
             android:label="@string/title_client_form"
@@ -34,15 +32,19 @@
         <activity
             android:name=".activity.JobPreview"
             android:parentActivityName=".activity.MainActivity"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.ClientPreview"
             android:parentActivityName=".activity.MainActivity"
             android:theme="@style/AppTheme">
 
-            <!-- <meta-data -->
-            <!-- android:name="android.support.PARENT_ACTIVITY" -->
-            <!-- android:value="com.fsdeveloper.jobmanager.activity.MainActivity" /> -->
+        </activity>
+
+        <activity android:name=".activity.SplashActivity" android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 
