@@ -10,6 +10,7 @@
     <string name="action_new">Novo</string>
     <string name="action_logout">Sair</string>
     <string name="action_about">Sobre</string>
+    <string name="action_share">Compartilhar</string>
     <string name="hint_search">Pesquisar por...</string>
     <string name="no_data">Não existem dados cadastrados...</string>
     <string name="title_job_form">Adicionar Trabalho</string>
@@ -25,6 +26,10 @@
     <string name="yes">Sim</string>
     <string name="no">Não</string>
     <string name="back_confirm">Você tem certeza que deseja voltar sem salvar os dados?</string>
+    <string name="job">Trabalho</string>
+    <string name="client">Cliente</string>
+    <string name="balance">Balanço</string>
+    <string name="no_support_functionality">Você não possui aplicações instaladas para tratar essa ação, ou a versão do seu sistema não suporta essa funcionalidade.</string>
 
     <string name="currency_symbol" formatted="false">R$ %1$.2f</string>
     <string name="currency_symbol_unique">R$</string>
@@ -64,7 +69,7 @@
     <string name="client_hint_address">Rua Pequi, 89XX\nCampinas-SP\n13098-305</string>
     <string name="client_hint_email">Email para contato</string>
     <string name="client_hint_name">Nome completo</string>
-    <string name="client_hint_phone">Number</string>
+    <string name="client_hint_phone">Número</string>
 
     <!-- Strings of system messages errors -->
     <string name="error_bd">Ocorreu um erro ao tentar estabelecer conexão com o banco de dados. Tente novamente!</string>
@@ -103,6 +108,8 @@
     <string name="date_default">dd MMMM \'de\' yyyy</string>
     <string name="date_1">dd/MM/yyyy</string>
     <string name="date_2">dd-MM-yyyy</string>
+    <string name="date_balance">yyyy-MM-dd</string>
+    <string name="date_balance_view">dd MMM \'de\' yyyy</string>
     <string name="time">HH:mm</string>
     <string name="error_convert_date">Ocorreu um erro ao tentar converter data</string>
 
@@ -124,6 +131,22 @@
     <string name="validate_title_min">Deve ter pelo menos 5 caracteres!</string>
     <string name="validate_price">Preço é obrigatório!</string>
     <string name="validate_client">Cliente é obrigatório! Se não estiver na lista cadastre um novo antes de continuar...</string>
+
+    <!--share-->
+    <string name="share_job">Compartilhar trabalho...</string>
+    <string name="share_client">Compartilhar cliente...</string>
+    <string name="share_balance">Compartilhar balanço...</string>
+
+    <!-- Strings of the Balance -->
+    <string name="input_balance">Entrada</string>
+    <string name="output_balance">Saída</string>
+    <string name="total_balance">Total</string>
+    <string name="today_balance">Today</string>
+    <string name="include_not_finalized">Incluir os trabalhos ainda não finalizados no balanço?</string>
+    <string name="date_filter_balance">%1$s à %2$s</string>
+    <string name="average_input_balance">Média das entradas</string>
+    <string name="average_output_balance">Média das saídas</string>
+    <string name="average_profit_balance">Média do lucro</string>
 
     <!-- Array related to tabs -->
     <string-array name="tabs">

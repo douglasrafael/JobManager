@@ -99,4 +99,27 @@ public final class MyDataTime {
         return new SimpleDateFormat(format_date).parse(date_time);
     }
 
+    /**
+     * Returns a date with years ago or forward starting from the current date.
+     *
+     * @param years       The total years
+     * @param format_date The format of the date
+     * @return The date
+     */
+    public static String getCurrentDateYearsAgoOrForward(int years, String format_date) {
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.add(Calendar.YEAR, years);
+
+        dateFormat = new SimpleDateFormat(format_date);
+        return dateFormat.format(calendar.getTime());
+    }
+
+    public static int[] dateToArray(String date_input) {
+        int[] array_date = new int[3];
+        array_date[0] = Integer.parseInt(date_input.substring(0, 4));
+        array_date[1] = Integer.parseInt(date_input.substring(5, 7));
+        array_date[2] = Integer.parseInt(date_input.substring(8, 10));
+
+        return array_date;
+    }
 }

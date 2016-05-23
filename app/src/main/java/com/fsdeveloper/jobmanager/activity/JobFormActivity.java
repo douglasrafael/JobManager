@@ -568,8 +568,8 @@ public class JobFormActivity extends AppCompatActivity implements View.OnClickLi
      */
     private boolean hasChanged() {
         if (isEdit()) {
-            Log.i("Edit", ""+ getJobOfForm().equals(jobEdit));
-            Log.i("Edit", ""+ getJobOfForm() + "\n" + jobEdit);
+            Log.i("Edit", "" + getJobOfForm().equals(jobEdit));
+            Log.i("Edit", "" + getJobOfForm() + "\n" + jobEdit);
             return !(getJobOfForm().equals(jobEdit));
         }
         if (textTitle.getText().length() > 0 || textDescription.getText().length() > 0

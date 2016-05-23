@@ -1,7 +1,10 @@
 package com.fsdeveloper.jobmanager.manager;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
 
+import com.fsdeveloper.jobmanager.bean.Balance;
 import com.fsdeveloper.jobmanager.bean.Client;
 import com.fsdeveloper.jobmanager.bean.Job;
 import com.fsdeveloper.jobmanager.bean.JobCategory;
@@ -17,6 +20,7 @@ import com.fsdeveloper.jobmanager.dao.UserDao;
 import com.fsdeveloper.jobmanager.exception.ConnectionException;
 import com.fsdeveloper.jobmanager.exception.JobManagerException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,12 +30,15 @@ import java.util.List;
  * @version 1.0
  */
 public class Manager {
-    UserDao user;
-    ClientDao client;
-    JobDao job;
-    JobCategoryDao category;
-    PhoneDao phone;
-    PhoneTypeDao phoneType;
+    public static final String SHARED_PREF = "jmconfigs";
+
+    private UserDao user;
+    private ClientDao client;
+    private JobDao job;
+    private JobCategoryDao category;
+    private PhoneDao phone;
+    private PhoneTypeDao phoneType;
+    private Context context;
 
     /**
      * Create instances of the DAOs.
@@ -40,6 +47,8 @@ public class Manager {
      * @throws JobManagerException If there is an exception.
      */
     public Manager(Context context) throws JobManagerException, ConnectionException {
+        this.context = context;
+
         user = new UserDao(context);
         client = new ClientDao(context);
         job = new JobDao(context);
@@ -114,6 +123,11 @@ public class Manager {
     public int insertUser(User u) throws JobManagerException {
         return user.insert(u);
     }
+
+    public User getUserById(int user_id) throws JobManagerException {
+        return user.getById(user_id);
+    }
+
 
     // TODO - Methods of ClientDao
 
@@ -475,5 +489,66 @@ public class Manager {
      */
     public List<Job> listJobsAssociateClient(int client_id) throws JobManagerException {
         return job.listJobsClient(client_id);
+    }
+
+    // TODO - Methods of Balance
+    public Balance getBalanceJobs(String dateStart, String dateEnd, int user_id, boolean includeNotFinalized) throws JobManagerException {
+        List<Job> jobsCurrentBalance, jobsNotCurrentBalance;
+        Balance balance = null;
+
+        if ((dateStart != null && dateStart.length() > 0) && (dateEnd != null && dateEnd.length() > 0)) {
+            jobsCurrentBalance = new ArrayList<Job>();
+            jobsNotCurrentBalance = new ArrayList<Job>();
+            Double valueInput = 0.0;
+            Double valueOutput = 0.0;
+            Double valueProfit = 0.0;
+
+            balance = new Balance();
+            balance.setDateStart(dateStart);
+            balance.setDateEnd(dateEnd);
+
+            List<Job> jobsBalance = new ArrayList<Job>(job.listJobToBalance(balance, user_id));
+            if (jobsBalance != null && jobsBalance.size() > 0) {
+
+                for (Job job : jobsBalance) {
+                    if (includeNotFinalized) {
+                        valueInput += job.getPrice();
+                        valueOutput += job.getExpense();
+                        jobsCurrentBalance.add(job);
+                    } else {
+                        if (job.isFinalized()) {
+                            valueInput += job.getPrice();
+                            valueOutput += job.getExpense();
+                            jobsCurrentBalance.add(job);
+                        } else {
+                            jobsNotCurrentBalance.add(job);
+                        }
+                    }
+                }
+            }
+
+            /**
+             * Calc
+             */
+            balance.setInputValue(valueInput);
+            balance.setOutputValue(valueOutput);
+
+            valueProfit = valueInput - valueOutput;
+            balance.setTotalValue(valueProfit);
+            balance.setCurrentBalance(jobsCurrentBalance);
+            balance.setNotCurrentBalance(jobsNotCurrentBalance);
+
+            if (jobsCurrentBalance.size() > 0) {
+                balance.setAverageInput(valueInput / jobsCurrentBalance.size());
+                balance.setAverageOutput(valueOutput / jobsCurrentBalance.size());
+                balance.setAverageProfit(valueProfit / jobsCurrentBalance.size());
+            } else {
+                balance.setAverageInput(0.0);
+                balance.setAverageOutput(0.0);
+                balance.setAverageProfit(0.0);
+            }
+        }
+
+        return balance;
     }
 }

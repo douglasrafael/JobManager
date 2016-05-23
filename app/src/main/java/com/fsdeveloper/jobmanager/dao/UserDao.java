@@ -3,6 +3,7 @@ package com.fsdeveloper.jobmanager.dao;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 
 import com.fsdeveloper.jobmanager.R;
 import com.fsdeveloper.jobmanager.bean.User;
@@ -66,13 +67,11 @@ public class UserDao extends DBManager implements Dao<User> {
 
         Cursor cursor = db.query(DatabaseHelper.TABLE_USER, columns, DatabaseHelper.ID + "=?", new String[]{String.valueOf(_id)}, null, null, null);
 
-        if (cursor != null) {
-            cursor.moveToFirst();
+        if (cursor != null && cursor.getCount() > 0) {
+            cursor.moveToLast();
             user = createUser(cursor);
-
-            cursor.close();
         }
-        DBClose();
+        cursor.close();
 
         return user;
     }

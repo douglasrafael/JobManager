@@ -112,14 +112,28 @@
             android:textStyle="bold"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
-        <TextView
+        <!--<TextView-->
+            <!--android:id="@+id/text_client_job_preview"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="asfasf"-->
+            <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+            <!--android:textIsSelectable="true"-->
+            <!--android:layout_marginBottom="10dp" />-->
+
+        <Button
             android:id="@+id/text_client_job_preview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textIsSelectable="true"
-            android:layout_marginBottom="10dp" />
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:text="Fulano de tal"
+            android:gravity="left|center"
+            android:textSize="18sp"
+            android:textColor="@android:color/tertiary_text_dark"
+            android:textStyle="normal"
+            android:textAllCaps="false"
+            android:fontFamily="@string/job_client"
+            android:layout_marginTop="-5dp"
+            style="@style/Widget.AppCompat.Button.Borderless" />
 
         <TextView
             android:id="@+id/textView7"

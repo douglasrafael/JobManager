@@ -10,54 +10,53 @@
     tools:showIn="@layout/activity_client_preview">
 
     <LinearLayout
+        android:id="@+id/container_client_preview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:paddingBottom="40dp"
         android:paddingLeft="@dimen/activity_vertical_margin"
         android:paddingRight="@dimen/activity_vertical_margin"
-        android:paddingTop="40dp"
-        android:paddingBottom="40dp"
-        android:id="@+id/container_client_preview">
+        android:paddingTop="40dp">
 
         <TextView
             android:id="@+id/textView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/client_email"
-            android:textStyle="bold"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/text_email_client_preview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:autoLink="email"
+            android:layout_marginBottom="10dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textIsSelectable="true"
-            android:layout_marginBottom="10dp"/>
+            android:textIsSelectable="true" />
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/client_address"
-            android:textStyle="bold"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/text_address_client_preview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""
+            android:layout_marginBottom="10dp"
+            android:autoLink="map"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textIsSelectable="true"
-            android:layout_marginBottom="10dp" />
-
-
+            android:textIsSelectable="true" />
 
         <LinearLayout
             android:id="@+id/box_list_phones_client"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
@@ -65,54 +64,53 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="@string/client_phone"
-                android:textStyle="bold"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textStyle="bold" />
 
             <ListView
                 android:id="@+id/list_phones_client"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="10dp"
-                />
+                android:layout_marginBottom="10dp" />
         </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/box_list_jobs_client"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/client_associates_last_jobs"
-            android:textStyle="bold"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
-
-        <ListView
-            android:id="@+id/list_associates_jobs"
+        <LinearLayout
+            android:id="@+id/box_list_jobs_client"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"/>
-    </LinearLayout>
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/client_associates_last_jobs"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textStyle="bold" />
+
+            <ListView
+                android:id="@+id/list_associates_jobs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/textView5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/job_date_created"
-            android:textStyle="bold"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/text_created_client_preview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:text=""
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textIsSelectable="true"
-            android:layout_marginBottom="10dp" />
+            android:textIsSelectable="true" />
 
     </LinearLayout>
 

@@ -78,7 +78,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper {
 
     // Script to create the user table
     private final String CREATE_TABLE_USER = "CREATE TABLE " + TABLE_USER + "(" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-            NAME + " VARCHAR(45) NOT NULL," + EMAIL + " VARCHAR(125) NOT NULL," + USER_PASSWORD + " VARCHAR(45)," + IMAGE + " BLOB," + CREATED_AT + " TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
+            NAME + " VARCHAR(45) NOT NULL," + EMAIL + " VARCHAR(125) NOT NULL," + USER_PASSWORD + " VARCHAR(45)," + IMAGE + " BLOB," + CREATED_AT + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL," +
             USER_LAST_LOGIN + " TIMESTAMP, CONSTRAINT 'id_UNIQUE' UNIQUE(" + ID + "), CONSTRAINT 'email_UNIQUE' UNIQUE(" + EMAIL + "));";
 
     // Script to create the client table
@@ -161,7 +161,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         String SQL_ALL = CREATE_TABLE_USER + CREATE_TABLE_CLIENT + CREATE_TABLE_JOB_CATEGORY + CREATE_TABLE_JOB + CREATE_TABLE_JOB_HAS_JOB_CATEGORY +
-                CREATE_TABLE_PHONE_TYPE + CREATE_TABLE_PHONE + insertCategories() + insertTypesPhone();
+                CREATE_TABLE_PHONE_TYPE + CREATE_TABLE_PHONE + insertCategories() + insertTypesPhone() + insetUserDefault();
 
         sqLiteDatabase.beginTransaction();
         try {
@@ -224,5 +224,9 @@ public final class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         return query;
+    }
+
+    private String insetUserDefault() {
+        return "INSERT INTO " + TABLE_USER + "(" + ID + "," + NAME + "," + EMAIL + "," + USER_PASSWORD +") VALUES (1, 'Job Manager Admin', 'jobmanager@mail.com', '123456');";
     }
 }

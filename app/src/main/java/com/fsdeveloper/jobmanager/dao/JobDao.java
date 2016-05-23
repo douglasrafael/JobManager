@@ -9,6 +9,7 @@ import android.os.Build;
 import android.util.Log;
 
 import com.fsdeveloper.jobmanager.R;
+import com.fsdeveloper.jobmanager.bean.Balance;
 import com.fsdeveloper.jobmanager.bean.Job;
 import com.fsdeveloper.jobmanager.bean.JobCategory;
 import com.fsdeveloper.jobmanager.exception.ConnectionException;
@@ -86,6 +87,7 @@ public class JobDao extends DBManager implements Dao<Job> {
             cursor.moveToFirst();
             job = createJob(cursor);
         }
+        cursor.close();
         return job;
     }
 
@@ -383,6 +385,43 @@ public class JobDao extends DBManager implements Dao<Job> {
         if (cursor != null && cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
                 result.add(createJob(cursor));
+            }
+            cursor.close();
+        }
+
+        return result;
+    }
+
+    /**
+     * Get the jobs for balance.
+     * Date star and date end.
+     *
+     * @param balance The balance
+     * @param user_id The user of teh jobs.
+     * @return The List of jobs
+     * @throws JobManagerException If there is a general exception of the system.
+     */
+    public List<Job> listJobToBalance(Balance balance, int user_id) throws JobManagerException {
+        List<Job> result = new ArrayList<>();
+        mGetReadableDatabase();
+
+        // Select all clients of the user
+        Cursor cursor = db.query(DatabaseHelper.TABLE_JOB, columns, DatabaseHelper.CREATED_AT + " >= ? AND " + DatabaseHelper.CREATED_AT + " <= ? AND " + DatabaseHelper.USER_ID + "=?",
+                new String[]{balance.getDateStart(), balance.getDateEnd(), String.valueOf(user_id)}, null, null, null);
+
+        if (cursor != null && cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                Job job = new Job();
+
+                job.setProtocol(cursor.getString(cursor.getColumnIndex(DatabaseHelper.JOB_PROTOCOL)));
+                job.setTitle(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TITLE)));
+                job.setDescription(cursor.getString(cursor.getColumnIndex(DatabaseHelper.JOB_DESCRIPTION)));
+                job.setCreated_at(cursor.getString(cursor.getColumnIndex(DatabaseHelper.CREATED_AT)));
+                job.setFinalized_at(cursor.getString(cursor.getColumnIndex(DatabaseHelper.JOB_FINALIZED_AT)));
+                job.setPrice(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.JOB_PRICE)));
+                job.setExpense(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.JOB_EXPENSE)));
+
+                result.add(job);
             }
             cursor.close();
         }

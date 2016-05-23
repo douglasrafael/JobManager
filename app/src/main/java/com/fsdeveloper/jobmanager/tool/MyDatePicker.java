@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +22,13 @@ import java.util.Calendar;
  * @version 1.0
  */
 public class MyDatePicker extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+    private String title;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

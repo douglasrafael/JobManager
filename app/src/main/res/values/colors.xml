@@ -13,6 +13,14 @@
 
     <color name="colorButtonMini">#80CBC4</color>
     <color name="colorButtonMiniSecondary">#0dbfae</color>
+
+    <color name="cardview_background_primary">#4ea9bb</color>
+    <color name="cardview_background_secondary">#ff626b</color>
+    <color name="cardview_background_Tertiary">#8fbd63</color>
+
+    <color name="cardview_background_button_primary">#1c9ab1</color>
+    <color name="cardview_background_button_secondary">#ee4a53</color>
+    <color name="cardview_background_button_tertiary">#7bb24a</color>
 </resources>
 
 

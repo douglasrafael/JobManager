@@ -5,12 +5,15 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +31,7 @@ import com.fsdeveloper.jobmanager.manager.Manager;
 import com.fsdeveloper.jobmanager.tool.MyDataTime;
 import com.fsdeveloper.jobmanager.tool.MyStringsTool;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +44,8 @@ import java.util.List;
 public class ClientPreview extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener, GenericDialogFragment.OnClickDialogListener {
     private final String TAG = "ClientPreview";
 
+    public final int DIALOG_REMOVE = 2;
+    public static final int REQUEST_CLIENT_UPDATE = 3;
     public static final String RESULT_CLIENT = "client";
 
     private TextView textName, textEmail, textAddress, textDateCreation;
@@ -125,9 +131,11 @@ public class ClientPreview extends AppCompatActivity implements View.OnClickList
             case R.id.fab_remove_client:
                 // Open dialog and and treats the return in onActivityResult
                 GenericDialogFragment dialogRemove = GenericDialogFragment.newDialog(
-                        1, R.string.action_confirm_delete, new int[]{android.R.string.ok, android.R.string.cancel}, null);
+                        DIALOG_REMOVE, R.string.action_confirm_delete, new int[]{android.R.string.ok, android.R.string.cancel}, null);
                 dialogRemove.show(getSupportFragmentManager());
-
+                break;
+            case R.id.fab_share_client:
+                shareClient(client);
                 break;
         }
     }
@@ -145,7 +153,7 @@ public class ClientPreview extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClickDialog(int id, int button) {
-        if (button == DialogInterface.BUTTON_POSITIVE) {
+        if (button == DialogInterface.BUTTON_POSITIVE && id == DIALOG_REMOVE) {
             if (client.getTotalOfJobs() == 0) {
                 if (removeClient()) {
                     Toast.makeText(this, getResources().getQuantityString(R.plurals.success_delete_client, 1, 1), Toast.LENGTH_SHORT).show();
@@ -282,12 +290,9 @@ public class ClientPreview extends AppCompatActivity implements View.OnClickList
             if (listOfPhone.size() > 0) {
                 linearLayoutBoxPhones.setVisibility(View.VISIBLE);
 
-                // Setting the height to layout
-                listViewPhones.getLayoutParams().height = listOfPhone.size() * 175;
-                listViewPhones.requestLayout();
-
                 adapterPhones = new ClientListPhoneAdapter(this, listOfPhone);
                 listViewPhones.setAdapter(adapterPhones);
+                justifyListViewHeightBasedOnChildren(listViewPhones);
             } else {
                 linearLayoutBoxPhones.setVisibility(View.GONE);
             }
@@ -297,17 +302,97 @@ public class ClientPreview extends AppCompatActivity implements View.OnClickList
             if (listOfJobs.size() > 0) {
                 linearLayoutBoxJobs.setVisibility(View.VISIBLE);
 
-                // Setting the height to layout
-                listViewJobs.getLayoutParams().height = listOfJobs.size() * 175;
-                listViewJobs.requestLayout();
-
                 adapterJobs = new ClientListJobsAssociatesAdapter(this, listOfJobs);
                 listViewJobs.setAdapter(adapterJobs);
+                justifyListViewHeightBasedOnChildren(listViewJobs);
             } else {
                 linearLayoutBoxJobs.setVisibility(View.GONE);
             }
         } catch (JobManagerException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Share the client
+     */
+    private void shareClient(Client client) {
+        if (client != null) {
+            NumberFormat numberFormat = NumberFormat.getCurrencyInstance();
+            StringBuilder shareHtmlText = new StringBuilder();
+
+            // Setting the title
+            shareHtmlText.append("<h2>" + client.getName() + "</h2>");
+
+            // Setting email if exist
+            if (!MyStringsTool.isEmpty(client.getEmail())) {
+                shareHtmlText.append(MyStringsTool.setStyleSimpleBox(getResources().getString(R.string.client_email), client.getEmail()));
+            }
+
+            // Setting address if exist
+            if (!MyStringsTool.isEmpty(client.getAddress())) {
+                shareHtmlText.append(MyStringsTool.setStyleSimpleBox(getResources().getString(R.string.client_address), client.getAddress()));
+            }
+
+            // Setting phone if exist
+            if (client.getPhoneList().size() > 0) {
+                StringBuilder htmlPhones = new StringBuilder();
+                for (Phone phone : client.getPhoneList()) {
+                    htmlPhones.append("<a href='tel:" + phone.getNumber() + "'>" + phone.getNumber() + "</a>,&nbsp;<i>" + phone.getType().getTitle() + "</i><br />");
+                }
+
+                shareHtmlText.append(MyStringsTool.setStyleSimpleBox(getResources().getString(R.string.client_phone), String.valueOf(htmlPhones)));
+            }
+
+            // Setting date creating
+            String dateCreated = client.getCreated_at();
+
+            int year = Integer.parseInt(dateCreated.substring(0, 4));
+            int month = Integer.parseInt(dateCreated.substring(5, 7)) - 1;
+            int day = Integer.parseInt(dateCreated.substring(8, 10));
+            int hour = Integer.parseInt(dateCreated.substring(11, 13));
+            int minute = Integer.parseInt(dateCreated.substring(14, 16));
+            shareHtmlText.append(MyStringsTool.setStyleSimpleBox(getResources().getString(R.string.job_date_created),
+                    MyDataTime.getDataTime(year, month, day, hour, minute, getResources().getString(R.string.date_time))));
+
+            Intent shareIntent = ShareCompat.IntentBuilder.from(this)
+                    .setType("text/html")
+                    .setHtmlText(String.valueOf(shareHtmlText))
+                    .setSubject(getResources().getString(R.string.app_name) + " - " + getResources().getString(R.string.client))
+                    .getIntent();
+
+            if (shareIntent.resolveActivity(getPackageManager()) != null) {
+                startActivity(Intent.createChooser(shareIntent, getResources().getString(R.string.share_client)));
+            } else {
+                GenericDialogFragment alertDialog = GenericDialogFragment.newDialog(1, R.string.no_support_functionality,
+                        new int[]{android.R.string.ok}, null);
+                alertDialog.show(getSupportFragmentManager());
+            }
+        }
+    }
+
+    /**
+     * Justify layout the ListView
+     *
+     * @param listView The listView
+     */
+    public void justifyListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter adapter = listView.getAdapter();
+
+        if (adapter == null) {
+            return;
+        }
+        ViewGroup vg = listView;
+        int totalHeight = 0;
+        for (int i = 0; i < adapter.getCount(); i++) {
+            View listItem = adapter.getView(i, null, vg);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams par = listView.getLayoutParams();
+        par.height = totalHeight + (listView.getDividerHeight() * (adapter.getCount() - 1));
+        listView.setLayoutParams(par);
+        listView.requestLayout();
     }
 }

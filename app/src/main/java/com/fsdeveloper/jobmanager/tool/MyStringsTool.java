@@ -51,7 +51,7 @@ public class MyStringsTool {
         return result;
     }
 
-    public static String join (List<String> s, String delimiter) {
+    public static String join(List<String> s, String delimiter) {
         if (s == null || s.isEmpty()) {
             return "";
         }
@@ -77,4 +77,11 @@ public class MyStringsTool {
         return true;
     }
 
+    public static String setStyleBox(String title, String text_content) {
+        return "<div style='background:#eee;border:1px solid #ccc;padding:5px 10px;'><strong>" + title + ":</strong><br />" + text_content + "</div>";
+    }
+
+    public static String setStyleSimpleBox(String title, String text_content) {
+        return "<p>" + title + ":<br />" + text_content + "</p>";
+    }
 }

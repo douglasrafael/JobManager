@@ -2,19 +2,25 @@ package com.fsdeveloper.jobmanager.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fsdeveloper.jobmanager.R;
+import com.fsdeveloper.jobmanager.bean.Client;
 import com.fsdeveloper.jobmanager.bean.Job;
 import com.fsdeveloper.jobmanager.bean.JobCategory;
+import com.fsdeveloper.jobmanager.bean.Phone;
 import com.fsdeveloper.jobmanager.exception.ConnectionException;
 import com.fsdeveloper.jobmanager.exception.JobManagerException;
 import com.fsdeveloper.jobmanager.fragments.GenericDialogFragment;
@@ -36,9 +42,11 @@ import java.util.List;
 public class JobPreview extends AppCompatActivity implements View.OnClickListener, GenericDialogFragment.OnClickDialogListener {
     private final String TAG = "JobPreview";
 
+    public final int DIALOG_REMOVE = 2;
     public static final String RESULT_JOB = "job";
-    private TextView textProtocol, textTitle, textDescription, textNote, textPrice, textExpense,
-            textClient, textCategories, textIsFinalized, textDateFinalized, textDateCreation;
+
+    private TextView textProtocol, textTitle, textDescription, textNote, textPrice, textExpense, textCategories, textIsFinalized, textDateFinalized, textDateCreation;
+    private Button textClient;
     private Job job;
     private Manager manager;
     private NumberFormat numberFormat;
@@ -55,12 +63,14 @@ public class JobPreview extends AppCompatActivity implements View.OnClickListene
         textNote = (TextView) findViewById(R.id.text_note_job_preview);
         textPrice = (TextView) findViewById(R.id.text_price_job_preview);
         textExpense = (TextView) findViewById(R.id.text_expense_job_preview);
-        textClient = (TextView) findViewById(R.id.text_client_job_preview);
+        textClient = (Button) findViewById(R.id.text_client_job_preview);
         textCategories = (TextView) findViewById(R.id.text_categories_job_preview);
         textIsFinalized = (TextView) findViewById(R.id.text_is_finalized_job_preview);
         textDateFinalized = (TextView) findViewById(R.id.text_finalized_job_preview);
         textDateCreation = (TextView) findViewById(R.id.text_created_job_preview);
         numberFormat = NumberFormat.getNumberInstance();
+
+        textClient.setOnClickListener(this);
 
         FloatingActionButton fabEdit = (FloatingActionButton) findViewById(R.id.fab_edit_job);
         FloatingActionButton fabDelete = (FloatingActionButton) findViewById(R.id.fab_remove_job);
@@ -120,10 +130,18 @@ public class JobPreview extends AppCompatActivity implements View.OnClickListene
             case R.id.fab_remove_job:
                 // Open dialog and and treats the return in onActivityResult
                 GenericDialogFragment dialogRemove = GenericDialogFragment.newDialog(
-                        1, R.string.action_confirm_delete, new int[]{android.R.string.ok, android.R.string.cancel}, null);
+                        DIALOG_REMOVE, R.string.action_confirm_delete, new int[]{android.R.string.ok, android.R.string.cancel}, null);
                 dialogRemove.show(getSupportFragmentManager());
-
                 break;
+            case R.id.fab_share_job:
+                shareJob(job);
+                break;
+            case R.id.text_client_job_preview:
+                if(job.getClient() != null) {
+                    Intent intentClient = new Intent(this, ClientPreview.class);
+                    intentClient.putExtra(ClientPreview.RESULT_CLIENT, job.getClient());
+                    startActivity(intentClient);
+                }
         }
     }
 
@@ -140,7 +158,7 @@ public class JobPreview extends AppCompatActivity implements View.OnClickListene
 
     @Override
     public void onClickDialog(int id, int button) {
-        if (button == DialogInterface.BUTTON_POSITIVE) {
+        if (button == DialogInterface.BUTTON_POSITIVE && id == DIALOG_REMOVE) {
             if (removeJob()) {
                 Toast.makeText(this, getResources().getQuantityString(R.plurals.success_delete_job, 1, 1), Toast.LENGTH_SHORT).show();
                 // was change
@@ -285,4 +303,96 @@ public class JobPreview extends AppCompatActivity implements View.OnClickListene
     }
 
 
+    /**
+     * Share the job
+     */
+    private void shareJob(Job job) {
+        if (job != null) {
+            NumberFormat numberFormat = NumberFormat.getCurrencyInstance();
+            StringBuilder shareHtmlText = new StringBuilder();
+
+            // Setting the title
+            shareHtmlText.append("<h2>" + job.getTitle() + "</h2>");
+
+            // Setting protocol
+            shareHtmlText.append(MyStringsTool.setStyleSimpleBox(getResources().getString(R.string.job_protocol), job.getProtocol()));
+
+            // Setting description if exist
+            if (!MyStringsTool.isEmpty(job.getDescription())) {
+                shareHtmlText.append(MyStringsTool.setStyleSimpleBox(getResources().getString(R.string.job_description), job.getDescription()));
+            }
+
+            // Setting note if exist
+            if (!MyStringsTool.isEmpty(job.getNote())) {
+                shareHtmlText.append(MyStringsTool.setStyleSimpleBox(getResources().getString(R.string.job_note), job.getNote()));
+            }
+
+            // Setting the price and expense
+            shareHtmlText.append(MyStringsTool.setStyleSimpleBox(getResources().getString(R.string.job_price), numberFormat.format(new BigDecimal(job.getPrice()))));
+            shareHtmlText.append(MyStringsTool.setStyleSimpleBox(getResources().getString(R.string.job_expense), numberFormat.format(new BigDecimal(job.getExpense()))));
+
+            // Setting client
+            StringBuilder htmlClient = new StringBuilder();
+            htmlClient.append(job.getClient().getName());
+            if (job.getClient().getPhoneList().size() > 0) {
+                htmlClient.append("<br />" + getResources().getString(R.string.client_phone) + ":");
+
+                for (Phone phone : job.getClient().getPhoneList()) {
+                    htmlClient.append("<br /><a href='tel:" + phone.getNumber() + "'>" + phone.getNumber() + "</a>,&nbsp;<i>" + phone.getType().getTitle() + "</i>");
+                }
+            }
+            shareHtmlText.append(MyStringsTool.setStyleSimpleBox(getResources().getString(R.string.job_client), String.valueOf(htmlClient)));
+
+            // Setting categories
+            List<String> categories = new ArrayList<>();
+            for (JobCategory c : job.getCategories()) {
+                categories.add(c.getName());
+            }
+            shareHtmlText.append(MyStringsTool.setStyleSimpleBox(getResources().getString(R.string.job_categories), MyStringsTool.join(categories, ", ")));
+
+            // Setting is finalized
+            StringBuilder htmlFinalized = new StringBuilder();
+            htmlFinalized.append(job.isFinalized() ? getResources().getString(R.string.yes) : getResources().getString(R.string.no));
+
+            if (job.isFinalized()) {
+                String dateFinalized = job.getFinalized_at();
+
+                int year = Integer.parseInt(dateFinalized.substring(0, 4));
+                int month = Integer.parseInt(dateFinalized.substring(5, 7)) - 1;
+                int day = Integer.parseInt(dateFinalized.substring(8, 10));
+                int hour = Integer.parseInt(dateFinalized.substring(11, 13));
+                int minute = Integer.parseInt(dateFinalized.substring(14, 16));
+
+                htmlFinalized.append("<br />" + getResources().getString(R.string.job_date_finalized) + ":<br />" +
+                        MyDataTime.getDataTime(year, month, day, hour, minute, getResources().getString(R.string.date_time)));
+            }
+
+            shareHtmlText.append(MyStringsTool.setStyleSimpleBox(getResources().getString(R.string.job_is_finalized), String.valueOf(htmlFinalized)));
+
+            // Setting date creating
+            String dateCreated = job.getCreated_at();
+
+            int year = Integer.parseInt(dateCreated.substring(0, 4));
+            int month = Integer.parseInt(dateCreated.substring(5, 7)) - 1;
+            int day = Integer.parseInt(dateCreated.substring(8, 10));
+            int hour = Integer.parseInt(dateCreated.substring(11, 13));
+            int minute = Integer.parseInt(dateCreated.substring(14, 16));
+            shareHtmlText.append(MyStringsTool.setStyleSimpleBox(getResources().getString(R.string.job_date_created),
+                    MyDataTime.getDataTime(year, month, day, hour, minute, getResources().getString(R.string.date_time))));
+
+            Intent shareIntent = ShareCompat.IntentBuilder.from(this)
+                    .setType("text/html")
+                    .setHtmlText(String.valueOf(shareHtmlText))
+                    .setSubject(getResources().getString(R.string.app_name) + " - " + getResources().getString(R.string.job) + " [" + job.getProtocol() + "]")
+                    .getIntent();
+
+            if (shareIntent.resolveActivity(getPackageManager()) != null) {
+                startActivity(Intent.createChooser(shareIntent, getResources().getString(R.string.share_job)));
+            } else {
+                GenericDialogFragment alertDialog = GenericDialogFragment.newDialog(1, R.string.no_support_functionality,
+                        new int[]{android.R.string.ok}, null);
+                alertDialog.show(getSupportFragmentManager());
+            }
+        }
+    }
 }

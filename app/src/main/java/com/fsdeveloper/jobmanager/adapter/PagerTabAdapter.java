@@ -37,14 +37,14 @@ public class PagerTabAdapter extends FragmentPagerAdapter {
      */
     @Override
     public Fragment getItem(int position) {
-        switch (position) {
-            case 0:
-                return new JobListFragment(context);
-            case 1:
-                return new ClientListFragment(context);
-            case 2:
-                return new BalanceFragment();
+        if (position == 0) {
+            return new JobListFragment(context);
+        } else if (position == 1) {
+            return new ClientListFragment(context);
+        } else if (position == 2) {
+            return new BalanceFragment(context);
         }
+
         return null;
     }
 
