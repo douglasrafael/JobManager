@@ -3,6 +3,7 @@ Job Manager
 ![enter image description here](https://github.com/faelsantos/JobManager/blob/master/app/src/main/assets/jobManager_wallpaper.png?raw=true)
 
 Gerenciador de trabalhos prestados. Útil para qualquer tipo de freelancer...
+[APK](https://github.com/faelsantos/JobManager/blob/master/docs/job_manager_1.0.1.apk?raw=true)
 
 ----------
 Screenshots
