@@ -44,8 +44,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final String TAG = "MainActivity";
     private final int CHANGE = 1;
     private DrawerLayout mDrawerLayout;
-    //    private ActionBarDrawerToggle mDrawerToggle;
-    //    private NavigationView mNavigationView;
     private Toolbar toolbar;
     private ViewPager mViewPager;
     private PagerTabAdapter mAdapter;
@@ -64,17 +62,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setupToolbar();
 
         setupTabLayout();
-
-//        // Find our drawer view
-//        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.app_name, R.string.app_name);
-//
-//        // Tie DrawerLayout events to the ActionBarToggle
-//        mDrawerLayout.addDrawerListener(mDrawerToggle);
-
-        // Setup drawer view
-//        mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
-//        setupDrawerContent(mNavigationView);
 
         /**
          * Button floating
@@ -101,9 +88,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-//        if (mDrawerToggle.onOptionsItemSelected(item)) {
-//            return true;
-//        }
         switch (item.getItemId()) {
             case R.id.action_about:
                 GenericDialogFragment dialogAbout = GenericDialogFragment.newDialog(
@@ -120,16 +104,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-
-//        mDrawerToggle.syncState();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        // Pass any configuration change to the drawer toggles
-//        mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -177,10 +156,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void setupToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-//        getSupportActionBar().setHomeButtonEnabled(true);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer);
     }
 
     /**
@@ -217,9 +192,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         fabAddJob.setVisibility(View.GONE);
                     }
                     fabChanger = true;
-
-//                    toolbar.getMenu().clear();
-//                    toolbar.inflateMenu(R.menu.share_menu);
                 } else {
                     if (fabChanger) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
@@ -239,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                if (mSearchView.isShown() && tab.getPosition() < 2) {
+                if (mSearchView != null && mSearchView.isShown() && tab.getPosition() < 2) {
                     mSearchView.setQuery("", true);
                     mSearchView.setIconified(true);
                     mSearchView.clearFocus();
@@ -252,68 +224,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
     }
-
-//    /**
-//     * Set navigation drawer.
-//     *
-//     * @param navigationView The navigationView
-//     */
-//    private void setupDrawerContent(NavigationView navigationView) {
-//        navigationView.setNavigationItemSelectedListener(
-//                new NavigationView.OnNavigationItemSelectedListener() {
-//                    @Override
-//                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-//                        selectDrawerItem(menuItem);
-//                        return true;
-//                    }
-//                });
-//    }
-
-//    /**
-//     * Treat the items clicked in menu navigation drawer.
-//     *
-//     * @param menuItem The menu clicked.
-//     */
-//    public void selectDrawerItem(MenuItem menuItem) {
-//        // Create a new fragment and specify the fragment to show based on nav item clicked
-//        Fragment fragment = null;
-//        Class fragmentClass = null;
-//
-//        setTitle(getString(R.string.app_name));
-//        switch (menuItem.getItemId()) {
-//            case R.id.action_job:
-////                fragmentClass = FirstFragment.class;
-//                Log.i("MAIN", "JOb clicked");
-//                break;
-//            case R.id.action_client:
-////                fragmentClass = SecondFragment.class;
-//                Log.i("MAIN", "Client clicked");
-//                break;
-//            case R.id.action_balance:
-////                fragmentClass = ThirdFragment.class;
-//                Log.i("MAIN", "Balance clicked");
-//                break;
-//            default:
-//                setTitle(menuItem.getTitle());
-////                fragmentClass = FirstFragment.class;
-//                Log.i("MAIN", "None");
-//        }
-//
-////        try {
-////            fragment = (Fragment) fragmentClass.newInstance();
-////        } catch (Exception e) {
-////            e.printStackTrace();
-////        }
-//
-//        // Insert the fragment by replacing any existing fragment
-////        FragmentManager fragmentManager = getSupportFragmentManager();
-////        fragmentManager.beginTransaction().replace(R.id.frame_content, fragment).commit();
-//
-//        // Highlight the selected item has been done by NavigationView
-//        menuItem.setChecked(true);
-//        // Set action bar title
-////        setTitle(menuItem.getTitle());
-//        // Close the navigation drawer
-//        mDrawerLayout.closeDrawers();
-//    }
 }
