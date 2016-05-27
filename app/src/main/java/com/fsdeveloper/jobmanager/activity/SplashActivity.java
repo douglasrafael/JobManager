@@ -12,17 +12,11 @@ import android.view.WindowManager;
 import com.fsdeveloper.jobmanager.R;
 
 public class SplashActivity extends Activity implements Runnable {
-    private final int DELAY = 5000;
+    private final int DELAY = 2000;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-
-        /** Making this activity, full screen */
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
         setContentView(R.layout.activity_splash);
 
         Handler handler = new Handler();
