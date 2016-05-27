@@ -53,15 +53,6 @@ public class BalanceFragment extends Fragment implements View.OnClickListener, C
     private int[] dateStart, dateEnd;
     private Toolbar toolbar;
 
-    /**
-     * The Constructor
-     *
-     * @param context The context
-     */
-    public BalanceFragment(Context context) {
-        this.context = context;
-    }
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,17 +68,11 @@ public class BalanceFragment extends Fragment implements View.OnClickListener, C
 
         dateStart = new int[3];
         dateEnd = new int[3];
-
-        /**
-         * Getting date current of teh system
-         */
-        dateEnd = MyDataTime.dateToArray(MyDataTime.getDataTime(context.getResources().getString(R.string.date_balance)));
-        dateCurrent = MyDataTime.getDataTime(dateEnd[0], dateEnd[1] - 1, dateEnd[2], 0, 0, context.getResources().getString(R.string.date_balance));
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        this.context = inflater.getContext();
         View view = inflater.inflate(R.layout.balance_fragment, container, false);
 
         textInputValue = (TextView) view.findViewById(R.id.text_value_input_balance);
@@ -105,6 +90,12 @@ public class BalanceFragment extends Fragment implements View.OnClickListener, C
         // Add event in the SwitchCompat
         switchIncludeFinalized.setOnCheckedChangeListener(this);
 
+        /**
+         * Getting date current of teh system
+         */
+        dateEnd = MyDataTime.dateToArray(MyDataTime.getDataTime(context.getResources().getString(R.string.date_balance)));
+        dateCurrent = MyDataTime.getDataTime(dateEnd[0], dateEnd[1] - 1, dateEnd[2], 0, 0, context.getResources().getString(R.string.date_balance));
+
         return view;
     }
 
@@ -112,14 +103,13 @@ public class BalanceFragment extends Fragment implements View.OnClickListener, C
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getCurrentBalance(switchIncludeFinalized.isChecked());
-
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
         inflater.inflate(R.menu.share_menu, menu); //define o arquivo de menu
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -254,7 +244,6 @@ public class BalanceFragment extends Fragment implements View.OnClickListener, C
         return true;
     }
 
-
     /**
      * Share the balance
      */
@@ -281,25 +270,25 @@ public class BalanceFragment extends Fragment implements View.OnClickListener, C
             shareHtmlText.append(MyStringsTool.setStyleSimpleBox(getResources().getString(R.string.output_balance), numberFormat.format(new BigDecimal(balance.getOutputValue()))));
 
             // Setting the total
-            shareHtmlText.append(MyStringsTool.setStyleSimpleBox(getResources().getString(R.string.today_balance), numberFormat.format(new BigDecimal(balance.getTotalValue()))));
+            shareHtmlText.append(MyStringsTool.setStyleSimpleBox(getResources().getString(R.string.total_balance), numberFormat.format(new BigDecimal(balance.getTotalValue()))));
 
             // Setting the average input
             shareHtmlText.append(MyStringsTool.setStyleSimpleBox(getResources().getString(R.string.average_input_balance), numberFormat.format(new BigDecimal(balance.getAverageInput()))));
 
             // Setting the average output
-            shareHtmlText.append(MyStringsTool.setStyleSimpleBox(getResources().getString(R.string.average_input_balance), numberFormat.format(new BigDecimal(balance.getAverageOutput()))));
+            shareHtmlText.append(MyStringsTool.setStyleSimpleBox(getResources().getString(R.string.average_output_balance), numberFormat.format(new BigDecimal(balance.getAverageOutput()))));
 
             // Setting the average profit
-            shareHtmlText.append(MyStringsTool.setStyleSimpleBox(getResources().getString(R.string.average_input_balance), numberFormat.format(new BigDecimal(balance.getAverageProfit()))));
+            shareHtmlText.append(MyStringsTool.setStyleSimpleBox(getResources().getString(R.string.average_profit_balance), numberFormat.format(new BigDecimal(balance.getAverageProfit()))));
 
             Intent shareIntent = ShareCompat.IntentBuilder.from(this.getActivity())
                     .setType("text/html")
                     .setHtmlText(String.valueOf(shareHtmlText))
-                    .setSubject(getResources().getString(R.string.app_name) + " - " + getResources().getString(R.string.client))
+                    .setSubject(getResources().getString(R.string.app_name) + " - " + getResources().getString(R.string.balance))
                     .getIntent();
 
             if (shareIntent.resolveActivity(context.getPackageManager()) != null) {
-                startActivity(Intent.createChooser(shareIntent, getResources().getString(R.string.share_client)));
+                startActivity(Intent.createChooser(shareIntent, getResources().getString(R.string.share_balance)));
             } else {
                 GenericDialogFragment alertDialog = GenericDialogFragment.newDialog(1, R.string.no_support_functionality,
                         new int[]{android.R.string.ok}, null);

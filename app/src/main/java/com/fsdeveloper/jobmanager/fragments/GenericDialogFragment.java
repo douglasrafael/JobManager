@@ -117,7 +117,7 @@ public class GenericDialogFragment extends DialogFragment implements DialogInter
             intent.putExtra("witch", witch);
 
             // Calls onActivityResult the targetFragment
-            getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
+            getTargetFragment().onActivityResult(getTargetRequestCode(), AlertDialog.BUTTON_POSITIVE, intent);
         } else {
             Activity activity = getActivity();
             if (activity instanceof OnClickDialogListener) {

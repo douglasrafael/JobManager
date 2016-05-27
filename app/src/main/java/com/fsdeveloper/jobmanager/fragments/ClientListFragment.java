@@ -2,6 +2,7 @@ package com.fsdeveloper.jobmanager.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -54,16 +55,6 @@ public class ClientListFragment extends ListFragment implements ActionMode.Callb
     private Menu mMenu;
     private ListView mListView;
 
-    /**
-     * The Constructor
-     *
-     * @param context
-     */
-    public ClientListFragment(Context context) {
-        this.context = context;
-    }
-
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +63,7 @@ public class ClientListFragment extends ListFragment implements ActionMode.Callb
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        this.context = inflater.getContext();
         return inflater.inflate(R.layout.list_fragment, null, false);
     }
 
@@ -179,10 +171,11 @@ public class ClientListFragment extends ListFragment implements ActionMode.Callb
                 return true;
             case R.id.action_list_delete:
                 // Open dialog and and treats the return in onActivityResult
-                GenericDialogFragment dialogRemove = GenericDialogFragment.newDialog(
-                        1, R.string.action_confirm_delete, new int[]{android.R.string.ok, android.R.string.cancel}, ClientListFragment.this);
-                dialogRemove.setTargetFragment(this, GenericDialogFragment.REQUEST_DIALOG);
-                dialogRemove.show(getFragmentManager());
+//                GenericDialogFragment dialogRemove = GenericDialogFragment.newDialog(
+//                        1, R.string.action_confirm_delete, new int[]{android.R.string.ok, android.R.string.cancel}, ClientListFragment.this);
+//                dialogRemove.setTargetFragment(this, GenericDialogFragment.REQUEST_DIALOG);
+//                dialogRemove.show(getFragmentManager());
+                removeItemsChecked();
 
                 return true;
             case R.id.action_list_select_all:
@@ -197,7 +190,7 @@ public class ClientListFragment extends ListFragment implements ActionMode.Callb
 
         if (resultCode == getActivity().RESULT_OK && requestCode == ClientFormActivity.REQUEST_CLIENT) {
             updateListView();
-        } else if (requestCode == GenericDialogFragment.REQUEST_DIALOG && resultCode == Activity.RESULT_OK) {
+        } else if (requestCode == GenericDialogFragment.REQUEST_DIALOG && resultCode == DialogInterface.BUTTON_POSITIVE ) {
             removeItemsChecked();
         }
     }

@@ -25,7 +25,7 @@ public class TabFragment extends Fragment {
         /**
          *Inflate tab_layout and setup Views.
          */
-        View view =  inflater.inflate(R.layout.tab_layout, null);
+        View view = inflater.inflate(R.layout.tab_layout, null);
         tabLayout = (TabLayout) view.findViewById(R.id.tabs);
         viewPager = (ViewPager) view.findViewById(R.id.view_pager);
 
